@@ -55,6 +55,26 @@ const Home: NextPage<Props> = ({ habits }) => {
           lose={80}
           icon={MdOutlineLocalLaundryService}
         />
+        <Habit title="Workout" gain={10} lose={40} icon={CgGym} />
+        <Habit
+          title="Work on Side Project"
+          gain={20}
+          lose={200}
+          icon={RiComputerLine}
+        />
+        <Habit
+          title="Chores"
+          gain={25}
+          lose={80}
+          icon={MdOutlineLocalLaundryService}
+        />
+        <Habit
+          title="Meditate"
+          gain={30}
+          lose={50}
+          status={HabitStatus.Completed}
+          icon={GiMeditation}
+        />
         <Habit
           title="Meditate"
           gain={30}

@@ -1,9 +1,9 @@
+import React, { useState } from "react";
 import { Button, Flex, Text } from "@chakra-ui/react";
-import React from "react";
-import { ReactNode } from "react";
 import { IconType } from "react-icons";
 import { AiOutlineCloseCircle, AiOutlineCheckCircle } from "react-icons/ai";
 import { MdTaskAlt } from "react-icons/md";
+
 import Card from "./Card";
 
 export enum HabitStatus {
@@ -24,6 +24,15 @@ interface Props {
 }
 
 export default function Habit({ title, lose, gain, status, icon }: Props) {
+  const uncompleteButtonIcon = <AiOutlineCloseCircle size={30} />;
+  const completeButtonIcon = <AiOutlineCheckCircle size={30} />;
+
+  const [uncompleteButtonElement, setUncompleteButtonElement] =
+    useState(uncompleteButtonIcon);
+
+  const [completeButtonElement, setCompleteButtonElement] =
+    useState(completeButtonIcon);
+
   const habitStatus = status || HabitStatus.Pending;
   const isPending = habitStatus === HabitStatus.Pending;
 
@@ -59,6 +68,22 @@ export default function Habit({ title, lose, gain, status, icon }: Props) {
     );
   }
 
+  function onHoverUncomplete() {
+    setUncompleteButtonElement(renderLosePoints());
+  }
+
+  function onHoverComplete() {
+    setCompleteButtonElement(renderGainPoints());
+  }
+
+  function onUnHoverUncomplete() {
+    setUncompleteButtonElement(uncompleteButtonIcon);
+  }
+
+  function onUnHoverComplete() {
+    setCompleteButtonElement(completeButtonIcon);
+  }
+
   return (
     <Card
       display="flex"
@@ -84,41 +109,39 @@ export default function Habit({ title, lose, gain, status, icon }: Props) {
       {isPending ? (
         <>
           {/* Point Totals */}
-          <Flex alignItems="center" marginRight={8} gap={3}>
+          {/* <Flex alignItems="center" marginRight={8} gap={3}>
             {renderLosePoints()}
             <Text fontSize="lg" fontWeight="bold" textColor="gray.300">
               /
             </Text>
             {renderGainPoints()}
-          </Flex>
+          </Flex> */}
 
           {/* Mark Uncompleted Button */}
           <Button
             backgroundColor="#ffebcc"
-            // border="2px"
-            // borderRight="1px"
-            // borderColor="#f7a400"
             textColor="#f7a400"
             borderRadius={0}
             height="auto"
             width="150px"
+            onMouseEnter={() => onHoverUncomplete()}
+            onMouseLeave={() => onUnHoverUncomplete()}
           >
-            <AiOutlineCloseCircle size={30} />
+            {uncompleteButtonElement}
           </Button>
 
           {/* Mark Completed Button */}
           <Button
             backgroundColor="#e6f3fe"
-            // border="2px"
-            // borderLeft="1px"
-            // borderColor="#3a9efd"
             textColor="#3a9efd"
             borderRadius={0}
             borderRightRadius="xl"
             height="auto"
             width="150px"
+            onMouseEnter={() => onHoverComplete()}
+            onMouseLeave={() => onUnHoverComplete()}
           >
-            <AiOutlineCheckCircle size={30} />
+            {completeButtonElement}
           </Button>
         </>
       ) : (
