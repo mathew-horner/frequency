@@ -1,5 +1,9 @@
 import { Flex } from "@chakra-ui/react";
 import { ComponentMeta } from "@storybook/react";
+import { CgGym } from "react-icons/cg";
+import { GiMeditation } from "react-icons/gi";
+import { MdOutlineLocalLaundryService } from "react-icons/md";
+import { RiComputerLine } from "react-icons/ri";
 
 import Habit, { HabitStatus } from "../components/Habit";
 
@@ -24,20 +28,25 @@ export const Completed = () => (
 
 export const Group = () => (
   <Flex flexDirection="column" gap={4}>
-    <Habit title="Workout" gain={100} lose={400} />
-    <Habit title="Workout" gain={100} lose={400} />
+    <Habit title="Workout" gain={10} lose={40} icon={CgGym} />
     <Habit
-      title="Workout"
-      gain={100}
-      lose={400}
-      status={HabitStatus.Completed}
+      title="Work on Side Project"
+      gain={20}
+      lose={200}
+      icon={RiComputerLine}
     />
-    <Habit title="Workout" gain={100} lose={400} />
     <Habit
-      title="Workout"
-      gain={100}
-      lose={400}
-      status={HabitStatus.Uncompleted}
+      title="Meditate"
+      gain={30}
+      lose={50}
+      status={HabitStatus.Completed}
+      icon={GiMeditation}
+    />
+    <Habit
+      title="Chores"
+      gain={25}
+      lose={80}
+      icon={MdOutlineLocalLaundryService}
     />
   </Flex>
 );

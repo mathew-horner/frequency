@@ -1,6 +1,10 @@
 import { Box, Flex } from "@chakra-ui/react";
 import type { GetServerSidePropsContext, NextPage } from "next";
 import { useMemo } from "react";
+import { CgGym } from "react-icons/cg";
+import { GiMeditation } from "react-icons/gi";
+import { MdOutlineLocalLaundryService } from "react-icons/md";
+import { RiComputerLine } from "react-icons/ri";
 import { AddHabit } from "../components/AddHabit";
 import Habit, { HabitStatus } from "../components/Habit";
 
@@ -35,9 +39,29 @@ const Home: NextPage<Props> = ({ habits }) => {
   return (
     <Box as="main" p={6}>
       <Flex flexDirection="column" gap={4}>
-        {orderedHabits.map((habit) => (
+        {/* {orderedHabits.map((habit) => (
           <Habit key={habit.title} {...habit} />
-        ))}
+        ))} */}
+        <Habit title="Workout" gain={10} lose={40} icon={CgGym} />
+        <Habit
+          title="Work on Side Project"
+          gain={20}
+          lose={200}
+          icon={RiComputerLine}
+        />
+        <Habit
+          title="Chores"
+          gain={25}
+          lose={80}
+          icon={MdOutlineLocalLaundryService}
+        />
+        <Habit
+          title="Meditate"
+          gain={30}
+          lose={50}
+          status={HabitStatus.Completed}
+          icon={GiMeditation}
+        />
         <AddHabit onClick={() => {}} />
       </Flex>
     </Box>
