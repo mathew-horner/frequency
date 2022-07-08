@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Icon {
+  Workout
+}
+
+enum HabitStatus {
+  Pending
+  Incomplete
+  Complete
+}
+
+enum RewardType {
+  OneTime
+  Repeatable
+}
+
+model Habit {
+  id      Int         @id @default(autoincrement())
+  userId  String
+  title   String
+  icon    Icon
+
+  habitDays HabitDay[]
+}
+
+model HabitDay {
+  id      Int         @id @default(autoincrement())
+  habitId Int
+  status  HabitStatus
+  date    DateTime
+
+  habit   Habit       @relation(fields: [habitId], references: [id])
+}
+
+model Reward {
+  id            Int         @id @default(autoincrement())
+  userId        String
+  cost          Int
+  type          RewardType
+  icon          Icon
+
+  title         String
+  description   String
+
+  redeemed      Int
+  lastRedeemed  DateTime
+}
