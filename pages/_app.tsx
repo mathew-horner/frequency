@@ -15,7 +15,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             <Flex alignItems="center" gap={1} flexGrow={1}>
               <Image src="/logo-5.svg" height={50} width={50} />
               <Text as="h1" fontSize="4xl" fontWeight="bold">
-                thirty7
+                1percent
               </Text>
             </Flex>
 

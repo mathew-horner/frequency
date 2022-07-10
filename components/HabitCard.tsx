@@ -1,29 +1,19 @@
 import React, { useState } from "react";
 import { Button, Flex, Text } from "@chakra-ui/react";
-import { IconType } from "react-icons";
 import { AiOutlineCloseCircle, AiOutlineCheckCircle } from "react-icons/ai";
 import { MdTaskAlt } from "react-icons/md";
 
 import Card from "./Card";
-
-export enum HabitStatus {
-  /** The habit has not been marked by the user yet. */
-  Pending,
-  /** The user did not complete this habit today. */
-  Uncompleted,
-  /** The user completed this habit today. */
-  Completed,
-}
+import { TodayHabit } from "../utils/types";
+import { HabitStatus } from "@prisma/client";
 
 interface Props {
-  title: string;
   lose: number;
   gain: number;
-  status?: HabitStatus;
-  icon?: IconType;
+  habit: TodayHabit;
 }
 
-export default function Habit({ title, lose, gain, status, icon }: Props) {
+export default function HabitCard({ lose, gain, habit }: Props) {
   const uncompleteButtonIcon = <AiOutlineCloseCircle size={30} />;
   const completeButtonIcon = <AiOutlineCheckCircle size={30} />;
 
@@ -33,20 +23,20 @@ export default function Habit({ title, lose, gain, status, icon }: Props) {
   const [completeButtonElement, setCompleteButtonElement] =
     useState(completeButtonIcon);
 
-  const habitStatus = status || HabitStatus.Pending;
+  const habitStatus = habit.today?.status || HabitStatus.Pending;
   const isPending = habitStatus === HabitStatus.Pending;
 
-  const habitIcon = icon || MdTaskAlt;
+  const habitIcon = habit.icon || MdTaskAlt;
   const iconElement = React.createElement(habitIcon, {
     size: 32,
     color: "#3a9efd",
   });
 
   function renderPointNet() {
-    if (habitStatus === HabitStatus.Completed) {
+    if (habitStatus === HabitStatus.Complete) {
       return renderGainPoints();
     }
-    if (habitStatus === HabitStatus.Uncompleted) {
+    if (habitStatus === HabitStatus.Incomplete) {
       return renderLosePoints();
     }
     return null;
@@ -104,7 +94,7 @@ export default function Habit({ title, lose, gain, status, icon }: Props) {
         gap={2}
       >
         {iconElement}
-        {title}
+        {habit.title}
       </Text>
       {isPending ? (
         <>
