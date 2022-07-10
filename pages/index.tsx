@@ -2,7 +2,10 @@ import { Box, Flex } from "@chakra-ui/react";
 import { HabitStatus } from "@prisma/client";
 import type { GetServerSidePropsContext, NextPage } from "next";
 import { useMemo } from "react";
+import NiceModal from "@ebay/nice-modal-react";
+
 import { AddHabit } from "../components/AddHabit";
+import CreateHabitModal from "../components/CreateHabitModal";
 import HabitCard from "../components/HabitCard";
 import { prisma } from "../utils/db";
 import { TodayHabit } from "../utils/types";
@@ -35,7 +38,7 @@ const Home: NextPage<Props> = ({ habits }) => {
         {orderedHabits.map((habit) => (
           <HabitCard key={habit.title} habit={habit} lose={10} gain={40} />
         ))}
-        <AddHabit onClick={() => {}} />
+        <AddHabit onClick={() => NiceModal.show(CreateHabitModal)} />
       </Flex>
     </Box>
   );

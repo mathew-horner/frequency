@@ -1,6 +1,5 @@
 import { Box } from "@chakra-ui/react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
-import Card from "./Card";
 
 interface Props {
   onClick: () => void;
