@@ -1,14 +1,34 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import { Box, Button, ChakraProvider, Flex, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  ChakraProvider,
+  extendTheme,
+  Flex,
+  Text,
+} from "@chakra-ui/react";
 import Image from "next/image";
 import { withTRPC } from "@trpc/next";
 import NiceModal from "@ebay/nice-modal-react";
 import { AppRouter } from "./api/trpc/[trpc]";
 
+const theme = extendTheme({
+  colors: {
+    primaryBlue: {
+      100: "#e6f3fe",
+      500: "#3a9efd",
+    },
+    primaryOrange: {
+      100: "#ffebcc",
+      500: "#f7a400",
+    },
+  },
+});
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <NiceModal.Provider>
         <Flex justifyContent="center">
           <Box width="full" maxWidth="1000px">
@@ -24,14 +44,14 @@ function MyApp({ Component, pageProps }: AppProps) {
               {/* Controls */}
               <Flex fontWeight="bold" marginRight={6} fontSize="lg" gap={2}>
                 <Text>300pts</Text>
-                <Text fontWeight="medium" textColor="#3a9efd">
+                <Text fontWeight="medium" textColor="primaryBlue.500">
                   (+23)
                 </Text>
               </Flex>
               <Button
-                backgroundColor="#e6f3fe"
+                backgroundColor="primaryBlue.100"
                 fontSize="lg"
-                textColor="#3a9efd"
+                textColor="primaryBlue.500"
                 w="146px"
                 h={12}
               >
@@ -40,9 +60,9 @@ function MyApp({ Component, pageProps }: AppProps) {
               <Button
                 backgroundColor="transparent"
                 border="1px"
-                borderColor="#3a9efd"
+                borderColor="primaryBlue.500"
                 fontSize="lg"
-                textColor="#3a9efd"
+                textColor="primaryBlue.500"
                 w="146px"
                 h={12}
               >

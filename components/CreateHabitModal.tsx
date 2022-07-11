@@ -121,8 +121,8 @@ export default NiceModal.create(() => {
               </ModalBody>
               <ModalFooter>
                 <Button
-                  backgroundColor="#e6f3fe"
-                  textColor="#3a9efd"
+                  backgroundColor="primaryBlue.100"
+                  textColor="primaryBlue.500"
                   type="submit"
                   disabled={isSubmitting}
                   size="lg"

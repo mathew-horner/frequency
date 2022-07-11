@@ -12,8 +12,8 @@ export function AddHabit({ onClick }: Props) {
         display="flex"
         alignItems="center"
         justifyContent="center"
-        textColor="#3a9efd"
-        backgroundColor="#e6f3fe"
+        textColor="primaryBlue.500"
+        backgroundColor="primaryBlue.100"
         h={16}
         borderRadius="xl"
       >

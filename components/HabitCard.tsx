@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import { AiOutlineCloseCircle, AiOutlineCheckCircle } from "react-icons/ai";
 import { MdTaskAlt } from "react-icons/md";
 
@@ -29,7 +29,6 @@ export default function HabitCard({ lose, gain, habit }: Props) {
   const habitIcon = habit.icon || MdTaskAlt;
   const iconElement = React.createElement(habitIcon, {
     size: 32,
-    color: "#3a9efd",
   });
 
   function renderPointNet() {
@@ -44,7 +43,7 @@ export default function HabitCard({ lose, gain, habit }: Props) {
 
   function renderLosePoints() {
     return (
-      <Text fontSize="lg" fontWeight="bold" textColor="#f7a400">
+      <Text fontSize="lg" fontWeight="bold" textColor="primaryOrange.500">
         -{lose}
       </Text>
     );
@@ -52,7 +51,7 @@ export default function HabitCard({ lose, gain, habit }: Props) {
 
   function renderGainPoints() {
     return (
-      <Text fontSize="lg" fontWeight="bold" textColor="#3a9efd">
+      <Text fontSize="lg" fontWeight="bold" textColor="primaryBlue.500">
         +{gain}
       </Text>
     );
@@ -93,7 +92,7 @@ export default function HabitCard({ lose, gain, habit }: Props) {
         px={4}
         gap={2}
       >
-        {iconElement}
+        <Box color="primaryBlue.500">{iconElement}</Box>
         {habit.title}
       </Text>
       {isPending ? (
@@ -109,8 +108,8 @@ export default function HabitCard({ lose, gain, habit }: Props) {
 
           {/* Mark Uncompleted Button */}
           <Button
-            backgroundColor="#ffebcc"
-            textColor="#f7a400"
+            backgroundColor="primaryOrange.100"
+            textColor="primaryOrange.500"
             borderRadius={0}
             height="auto"
             width="150px"
@@ -122,8 +121,8 @@ export default function HabitCard({ lose, gain, habit }: Props) {
 
           {/* Mark Completed Button */}
           <Button
-            backgroundColor="#e6f3fe"
-            textColor="#3a9efd"
+            backgroundColor="primaryBlue.100"
+            textColor="primaryBlue.500"
             borderRadius={0}
             borderRightRadius="xl"
             height="auto"
