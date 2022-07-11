@@ -7,21 +7,19 @@ import NiceModal from "@ebay/nice-modal-react";
 import { AddHabit } from "../components/AddHabit";
 import CreateHabitModal from "../components/CreateHabitModal";
 import HabitCard from "../components/HabitCard";
-import { prisma } from "../utils/db";
 import { TodayHabit } from "../utils/types";
+import { trpc } from "../utils/trpc";
 
-interface Props {
-  habits: TodayHabit[];
-}
+const Home: NextPage = () => {
+  const habitList = trpc.useQuery(["habit.list"]);
 
-const Home: NextPage<Props> = ({ habits }) => {
   // It's a desirable UX for the "pending" habits to float to the top.
   const orderedHabits = useMemo(() => {
     const pending: TodayHabit[] = [];
     const nonPending: TodayHabit[] = [];
 
     // NOTE: Idk why I have to do `|| []` here, but I'm getting an undefined error on first render...
-    (habits || []).forEach((habit) => {
+    (habitList.data || []).forEach((habit) => {
       if (habit.today?.status !== HabitStatus.Pending) {
         nonPending.push(habit);
       } else {
@@ -30,7 +28,7 @@ const Home: NextPage<Props> = ({ habits }) => {
     });
 
     return pending.concat(nonPending);
-  }, [habits]);
+  }, [habitList.data]);
 
   return (
     <Box as="main" p={6}>
@@ -38,19 +36,14 @@ const Home: NextPage<Props> = ({ habits }) => {
         {orderedHabits.map((habit) => (
           <HabitCard key={habit.title} habit={habit} />
         ))}
-        <AddHabit onClick={() => NiceModal.show(CreateHabitModal)} />
+        <AddHabit
+          onClick={() =>
+            NiceModal.show(CreateHabitModal).then(() => habitList.refetch())
+          }
+        />
       </Flex>
     </Box>
   );
 };
-
-export async function getServerSideProps(_context: GetServerSidePropsContext) {
-  const habits = await prisma.habit.findMany({ where: { userId: "1" } });
-  return {
-    props: {
-      habits,
-    },
-  };
-}
 
 export default Home;

@@ -23,6 +23,7 @@ import {
   formikOnSubmitHandler,
   toFormikValidationSchema,
 } from "../utils/forms";
+import { trpc } from "../utils/trpc";
 
 interface FormValues {
   title: string;
@@ -36,6 +37,7 @@ const FormSchema = z.object({
 
 export default NiceModal.create(() => {
   const modal = useModal();
+  const createHabit = trpc.useMutation("habit.create");
   return (
     <Modal isOpen={modal.visible} onClose={modal.remove} size="xl">
       <ModalHeader>
@@ -55,11 +57,15 @@ export default NiceModal.create(() => {
       <Formik
         initialValues={{ title: "", frequency: 1 } as FormValues}
         validationSchema={toFormikValidationSchema(FormSchema)}
-        onSubmit={formikOnSubmitHandler(({ title, frequency }) => {
-          // TODO: Call out to tRPC
-          console.log("Nothingburger");
-          return Promise.resolve();
-        })}
+        onSubmit={formikOnSubmitHandler(({ title, frequency }) =>
+          createHabit
+            .mutateAsync({
+              title,
+              frequency,
+            })
+            .then(() => modal.resolve())
+            .then(() => modal.remove())
+        )}
         validateOnBlur={false}
         validateOnChange={false}
       >
