@@ -17,10 +17,12 @@ const theme = extendTheme({
   colors: {
     primaryBlue: {
       100: "#e6f3fe",
+      300: "#b0d8fe",
       500: "#3a9efd",
     },
     primaryOrange: {
       100: "#ffebcc",
+      300: "#fcdb99",
       500: "#f7a400",
     },
   },
@@ -41,28 +43,38 @@ function MyApp({ Component, pageProps }: AppProps) {
                 </Text>
               </Flex>
 
-              {/* Controls */}
+              {/* Points */}
               <Flex fontWeight="bold" marginRight={6} fontSize="lg" gap={2}>
                 <Text>300pts</Text>
                 <Text fontWeight="medium" textColor="primaryBlue.500">
                   (+23)
                 </Text>
               </Flex>
+
+              {/* Rewards Button */}
               <Button
                 backgroundColor="primaryBlue.100"
                 fontSize="lg"
                 textColor="primaryBlue.500"
+                _hover={{
+                  backgroundColor: "primaryBlue.300",
+                }}
                 w="146px"
                 h={12}
               >
                 Rewards
               </Button>
+
+              {/* Sign Out */}
               <Button
                 backgroundColor="transparent"
                 border="1px"
                 borderColor="primaryBlue.500"
                 fontSize="lg"
                 textColor="primaryBlue.500"
+                _hover={{
+                  backgroundColor: "primaryBlue.300",
+                }}
                 w="146px"
                 h={12}
               >

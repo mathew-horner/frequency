@@ -123,6 +123,9 @@ export default NiceModal.create(() => {
                 <Button
                   backgroundColor="primaryBlue.100"
                   textColor="primaryBlue.500"
+                  _hover={{
+                    backgroundColor: "primaryBlue.300",
+                  }}
                   type="submit"
                   disabled={isSubmitting}
                   size="lg"

@@ -110,6 +110,9 @@ export default function HabitCard({ lose, gain, habit }: Props) {
           <Button
             backgroundColor="primaryOrange.100"
             textColor="primaryOrange.500"
+            _hover={{
+              backgroundColor: "primaryOrange.300",
+            }}
             borderRadius={0}
             height="auto"
             width="150px"
@@ -123,6 +126,9 @@ export default function HabitCard({ lose, gain, habit }: Props) {
           <Button
             backgroundColor="primaryBlue.100"
             textColor="primaryBlue.500"
+            _hover={{
+              backgroundColor: "primaryBlue.300",
+            }}
             borderRadius={0}
             borderRightRadius="xl"
             height="auto"
