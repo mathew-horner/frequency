@@ -1,5 +1,5 @@
-import { Box, Button } from "@chakra-ui/react";
-import { AiOutlinePlusCircle } from "react-icons/ai";
+import { Button } from "@chakra-ui/react";
+import { IoAddCircleOutline } from "react-icons/io5";
 
 interface Props {
   onClick: () => void;
@@ -8,7 +8,7 @@ interface Props {
 export function AddHabit({ onClick }: Props) {
   return (
     <Button h={12} onClick={() => onClick()}>
-      <AiOutlinePlusCircle size={32} />
+      <IoAddCircleOutline size={32} />
     </Button>
   );
 }

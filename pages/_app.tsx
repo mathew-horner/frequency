@@ -3,6 +3,7 @@ import type { AppProps } from "next/app";
 import { Box, Button, ChakraProvider, Flex, Text } from "@chakra-ui/react";
 import { withTRPC } from "@trpc/next";
 import NiceModal from "@ebay/nice-modal-react";
+import { IoHammer, IoLogOut, IoSettingsSharp } from "react-icons/io5";
 import { TbWaveSawTool } from "react-icons/tb";
 import { AppRouter } from "./api/trpc/[trpc]";
 
@@ -30,8 +31,16 @@ function MyApp({ Component, pageProps }: AppProps) {
                 </Text>
               </Flex>
 
-              {/* Sign Out */}
-              <Button size="lg">Sign Out</Button>
+              {/* Controls */}
+              <Button size="lg" h={12} w={12} p={0}>
+                <IoHammer size={24} />
+              </Button>
+              <Button size="lg" h={12} w={12} p={0}>
+                <IoSettingsSharp size={24} />
+              </Button>
+              <Button size="lg" h={12} w={12} p={0}>
+                <IoLogOut size={24} />
+              </Button>
             </Flex>
             <Component {...pageProps} />
           </Box>

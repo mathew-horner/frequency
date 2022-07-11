@@ -16,7 +16,7 @@ import {
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import { Formik } from "formik";
 import { z } from "zod";
-import { MdTaskAlt } from "react-icons/md";
+import { IoCheckmarkCircleSharp } from "react-icons/io5";
 
 import Modal from "./Modal";
 import {
@@ -43,7 +43,7 @@ export default NiceModal.create(() => {
       <ModalHeader>
         <Flex flexDirection="column" gap={3}>
           <Flex alignItems="center" gap={1.5}>
-            <MdTaskAlt size={40} style={{ position: "relative", top: "1px" }} />
+            <IoCheckmarkCircleSharp size={40} />
             <Text fontSize="3xl" fontWeight="bold">
               Create Habit
             </Text>
