@@ -9,6 +9,7 @@ import CreateHabitModal from "../components/CreateHabitModal";
 import HabitCard from "../components/HabitCard";
 import { TodayHabit } from "../utils/types";
 import { trpc } from "../utils/trpc";
+import IntroCard from "../components/IntroCard";
 
 const Home: NextPage = () => {
   const habitList = trpc.useQuery(["habit.list"]);
@@ -33,9 +34,15 @@ const Home: NextPage = () => {
   return (
     <Box as="main" p={6}>
       <Flex flexDirection="column" gap={4}>
-        {orderedHabits.map((habit) => (
-          <HabitCard key={habit.title} habit={habit} />
-        ))}
+        {orderedHabits.length === 0 ? (
+          <IntroCard />
+        ) : (
+          <>
+            {orderedHabits.map((habit) => (
+              <HabitCard key={habit.title} habit={habit} />
+            ))}
+          </>
+        )}
         <AddHabit
           onClick={() =>
             NiceModal.show(CreateHabitModal).then(() => habitList.refetch())

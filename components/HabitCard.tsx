@@ -3,6 +3,7 @@ import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import {
   IoCheckmarkCircleOutline,
   IoCloseCircleOutline,
+  IoFlameSharp,
 } from "react-icons/io5";
 
 import Card from "./Card";
@@ -22,7 +23,7 @@ export default function HabitCard({ habit }: Props) {
       return <IoCheckmarkCircleOutline size={30} />;
     }
     if (habitStatus === HabitStatus.Incomplete) {
-      return <AiOutlineCloseCircle size={30} />;
+      return <IoCloseCircleOutline size={30} />;
     }
     return null;
   }
@@ -49,11 +50,16 @@ export default function HabitCard({ habit }: Props) {
       >
         <Box>
           {habit.title}
-          <Text fontSize="xs" textColor="red">
+          <Text fontSize="xs" textColor="gray.500">
             due today
           </Text>
         </Box>
       </Text>
+      {/* TODO: Streaks */}
+      <Flex alignItems="center" marginRight={4} textColor="gray.500">
+        <IoFlameSharp size={24} />
+        <Text>6</Text>
+      </Flex>
       {isPending ? (
         <>
           {/* Mark Incomplete Button */}
