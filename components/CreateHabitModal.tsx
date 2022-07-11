@@ -41,10 +41,7 @@ export default NiceModal.create(() => {
       <ModalHeader>
         <Flex flexDirection="column" gap={3}>
           <Flex alignItems="center" gap={1.5}>
-            <MdTaskAlt
-              size={40}
-              style={{ position: "relative", top: "1px", color: "#3a9efd" }}
-            />
+            <MdTaskAlt size={40} style={{ position: "relative", top: "1px" }} />
             <Text fontSize="3xl" fontWeight="bold">
               Create Habit
             </Text>

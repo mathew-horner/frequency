@@ -33,10 +33,11 @@ export default function HabitCard({ habit }: Props) {
   return (
     <Card
       display="flex"
-      alignItems="stretch"
-      p={0}
+      alignItems="center"
+      p={4}
+      gap={4}
+      h={24}
       opacity={!isPending ? "0.5" : "1"}
-      h={16}
       position="relative"
       overflow="hidden"
     >
@@ -44,51 +45,40 @@ export default function HabitCard({ habit }: Props) {
         as="h1"
         display="flex"
         alignItems="center"
-        fontSize="xl"
+        fontSize="2xl"
         fontWeight="bold"
         flexGrow={1}
-        px={4}
         gap={0.5}
       >
-        <Text>
+        <Box>
           {habit.title}
-          <Text fontSize="xs" textColor="gray.500">
+          {/* <Box fontSize="sm" textColor="gray.500">
             due in 3 days
-          </Text>
-          {/* <Text fontSize="xs" textColor="red">
+          </Box> */}
+          <Text fontSize="xs" textColor="red">
             due today
-          </Text> */}
-        </Text>
+          </Text>
+        </Box>
       </Text>
       {isPending ? (
         <>
-          {/* Mark Uncompleted Button */}
-          <Button
-            backgroundColor="primaryOrange.100"
-            textColor="primaryOrange.500"
-            _hover={{
-              backgroundColor: "primaryOrange.300",
-            }}
-            borderRadius={0}
-            height="auto"
-            width={{ base: "75px", md: "150px" }}
-          >
-            <AiOutlineCloseCircle size={30} />
+          {/* Mark Incomplete Button */}
+          <Button h={16} w={16} p={0}>
+            <AiOutlineCloseCircle size={32} />
           </Button>
 
           {/* Mark Completed Button */}
           <Button
-            backgroundColor="primaryBlue.100"
-            textColor="primaryBlue.500"
+            backgroundColor="black"
+            textColor="white"
             _hover={{
-              backgroundColor: "primaryBlue.300",
+              backgroundColor: "gray.700",
             }}
-            borderRadius={0}
-            borderRightRadius="xl"
-            height="auto"
-            width={{ base: "75px", md: "150px" }}
+            h={16}
+            w={16}
+            p={0}
           >
-            <AiOutlineCheckCircle size={30} />
+            <AiOutlineCheckCircle size={32} />
           </Button>
         </>
       ) : (
