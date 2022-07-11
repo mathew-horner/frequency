@@ -1,6 +1,6 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { HabitStatus } from "@prisma/client";
-import type { GetServerSidePropsContext, NextPage } from "next";
+import type { NextPage } from "next";
 import { useMemo } from "react";
 import NiceModal from "@ebay/nice-modal-react";
 
@@ -10,8 +10,10 @@ import HabitCard from "../components/HabitCard";
 import { TodayHabit } from "../utils/types";
 import { trpc } from "../utils/trpc";
 import IntroCard from "../components/IntroCard";
+import useSettings from "../hooks/useSettings";
 
 const Home: NextPage = () => {
+  const { settings } = useSettings();
   const habitList = trpc.useQuery(["habit.list"]);
 
   // It's a desirable UX for the "pending" habits to float to the top.
@@ -31,6 +33,8 @@ const Home: NextPage = () => {
     return pending.concat(nonPending);
   }, [habitList.data]);
 
+  if (habitList.isLoading) return null;
+
   return (
     <Box as="main" p={6}>
       <Flex flexDirection="column" gap={4}>
@@ -39,7 +43,11 @@ const Home: NextPage = () => {
         ) : (
           <>
             {orderedHabits.map((habit) => (
-              <HabitCard key={habit.title} habit={habit} />
+              <HabitCard
+                key={habit.title}
+                habit={habit}
+                compact={settings.viewMode === "Compact"}
+              />
             ))}
           </>
         )}

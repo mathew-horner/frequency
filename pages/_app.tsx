@@ -16,8 +16,14 @@ import {
 import { TbWaveSawTool } from "react-icons/tb";
 import { AppRouter } from "./api/trpc/[trpc]";
 import theme from "../utils/theme";
+import SettingsModal from "../components/SettingsModal";
+import useSettings from "../hooks/useSettings";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const { loaded } = useSettings();
+
+  if (!loaded) return null;
+
   return (
     <ChakraProvider theme={theme}>
       <NiceModal.Provider>
@@ -48,7 +54,13 @@ function MyApp({ Component, pageProps }: AppProps) {
               <Button size="lg" h={12} w={12} p={0}>
                 <IoAnalyticsSharp size={24} />
               </Button>
-              <Button size="lg" h={12} w={12} p={0}>
+              <Button
+                size="lg"
+                h={12}
+                w={12}
+                p={0}
+                onClick={() => NiceModal.show(SettingsModal)}
+              >
                 <IoSettingsSharp size={24} />
               </Button>
               <Button size="lg" h={12} w={12} p={0}>
