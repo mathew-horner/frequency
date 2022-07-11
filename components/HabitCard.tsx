@@ -9,9 +9,10 @@ import { HabitStatus } from "@prisma/client";
 
 interface Props {
   habit: TodayHabit;
+  todayRequired?: boolean;
 }
 
-export default function HabitCard({ habit }: Props) {
+export default function HabitCard({ habit, todayRequired }: Props) {
   const habitStatus = habit.today?.status || HabitStatus.Pending;
   const isPending = habitStatus === HabitStatus.Pending;
 
@@ -35,10 +36,22 @@ export default function HabitCard({ habit }: Props) {
       display="flex"
       alignItems="stretch"
       p={0}
-      // overflow="hidden"
       opacity={!isPending ? "0.5" : "1"}
       h={16}
+      position="relative"
+      overflow="hidden"
     >
+      {!todayRequired && (
+        <Box
+          position="absolute"
+          backgroundColor="primaryBlue.100"
+          opacity={0.5}
+          w="full"
+          h="full"
+          zIndex={20}
+          pointerEvents="none"
+        />
+      )}
       <Text
         as="h1"
         display="flex"
