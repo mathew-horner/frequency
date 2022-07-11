@@ -14,6 +14,9 @@ export function AddHabit({ onClick }: Props) {
         justifyContent="center"
         textColor="primaryBlue.500"
         backgroundColor="primaryBlue.100"
+        _hover={{
+          backgroundColor: "primaryBlue.300",
+        }}
         h={16}
         borderRadius="xl"
       >

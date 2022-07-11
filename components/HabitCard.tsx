@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import { AiOutlineCloseCircle, AiOutlineCheckCircle } from "react-icons/ai";
 import { MdTaskAlt } from "react-icons/md";
@@ -8,21 +8,10 @@ import { TodayHabit } from "../utils/types";
 import { HabitStatus } from "@prisma/client";
 
 interface Props {
-  lose: number;
-  gain: number;
   habit: TodayHabit;
 }
 
-export default function HabitCard({ lose, gain, habit }: Props) {
-  const uncompleteButtonIcon = <AiOutlineCloseCircle size={30} />;
-  const completeButtonIcon = <AiOutlineCheckCircle size={30} />;
-
-  const [uncompleteButtonElement, setUncompleteButtonElement] =
-    useState(uncompleteButtonIcon);
-
-  const [completeButtonElement, setCompleteButtonElement] =
-    useState(completeButtonIcon);
-
+export default function HabitCard({ habit }: Props) {
   const habitStatus = habit.today?.status || HabitStatus.Pending;
   const isPending = habitStatus === HabitStatus.Pending;
 
@@ -31,46 +20,14 @@ export default function HabitCard({ lose, gain, habit }: Props) {
     size: 32,
   });
 
-  function renderPointNet() {
+  function renderCompletionIcon() {
     if (habitStatus === HabitStatus.Complete) {
-      return renderGainPoints();
+      return <AiOutlineCheckCircle size={30} />;
     }
     if (habitStatus === HabitStatus.Incomplete) {
-      return renderLosePoints();
+      return <AiOutlineCloseCircle size={30} />;
     }
     return null;
-  }
-
-  function renderLosePoints() {
-    return (
-      <Text fontSize="lg" fontWeight="bold" textColor="primaryOrange.500">
-        -{lose}
-      </Text>
-    );
-  }
-
-  function renderGainPoints() {
-    return (
-      <Text fontSize="lg" fontWeight="bold" textColor="primaryBlue.500">
-        +{gain}
-      </Text>
-    );
-  }
-
-  function onHoverUncomplete() {
-    setUncompleteButtonElement(renderLosePoints());
-  }
-
-  function onHoverComplete() {
-    setCompleteButtonElement(renderGainPoints());
-  }
-
-  function onUnHoverUncomplete() {
-    setUncompleteButtonElement(uncompleteButtonIcon);
-  }
-
-  function onUnHoverComplete() {
-    setCompleteButtonElement(completeButtonIcon);
   }
 
   return (
@@ -92,20 +49,11 @@ export default function HabitCard({ lose, gain, habit }: Props) {
         px={4}
         gap={2}
       >
-        <Box color="primaryBlue.500">{iconElement}</Box>
+        {/* <Box color="primaryBlue.500">{iconElement}</Box> */}
         {habit.title}
       </Text>
       {isPending ? (
         <>
-          {/* Point Totals */}
-          {/* <Flex alignItems="center" marginRight={8} gap={3}>
-            {renderLosePoints()}
-            <Text fontSize="lg" fontWeight="bold" textColor="gray.300">
-              /
-            </Text>
-            {renderGainPoints()}
-          </Flex> */}
-
           {/* Mark Uncompleted Button */}
           <Button
             backgroundColor="primaryOrange.100"
@@ -115,11 +63,9 @@ export default function HabitCard({ lose, gain, habit }: Props) {
             }}
             borderRadius={0}
             height="auto"
-            width="150px"
-            onMouseEnter={() => onHoverUncomplete()}
-            onMouseLeave={() => onUnHoverUncomplete()}
+            width={{ base: "75px", md: "150px" }}
           >
-            {uncompleteButtonElement}
+            <AiOutlineCloseCircle size={30} />
           </Button>
 
           {/* Mark Completed Button */}
@@ -132,17 +78,15 @@ export default function HabitCard({ lose, gain, habit }: Props) {
             borderRadius={0}
             borderRightRadius="xl"
             height="auto"
-            width="150px"
-            onMouseEnter={() => onHoverComplete()}
-            onMouseLeave={() => onUnHoverComplete()}
+            width={{ base: "75px", md: "150px" }}
           >
-            {completeButtonElement}
+            <AiOutlineCheckCircle size={30} />
           </Button>
         </>
       ) : (
         // Show how many points the user got for this habit.
         <Flex alignItems="center" p={6}>
-          {renderPointNet()}
+          {renderCompletionIcon()}
         </Flex>
       )}
     </Card>

@@ -90,7 +90,6 @@ export default NiceModal.create(() => {
                         setFieldError("title", "");
                         handleChange(e);
                       }}
-                      placeholder="Workout"
                       // TODO: Add error message
                       isInvalid={touched.title && !!errors.title}
                       size="lg"

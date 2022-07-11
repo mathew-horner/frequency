@@ -38,32 +38,10 @@ function MyApp({ Component, pageProps }: AppProps) {
               {/* Site Brand */}
               <Flex alignItems="center" gap={1} flexGrow={1}>
                 <Image src="/logo-5.svg" height={50} width={50} />
-                <Text as="h1" fontSize="4xl" fontWeight="bold">
-                  1percent
+                <Text as="h1" fontSize="3xl" fontWeight="bold">
+                  frequency.io
                 </Text>
               </Flex>
-
-              {/* Points */}
-              <Flex fontWeight="bold" marginRight={6} fontSize="lg" gap={2}>
-                <Text>300pts</Text>
-                <Text fontWeight="medium" textColor="primaryBlue.500">
-                  (+23)
-                </Text>
-              </Flex>
-
-              {/* Rewards Button */}
-              <Button
-                backgroundColor="primaryBlue.100"
-                fontSize="lg"
-                textColor="primaryBlue.500"
-                _hover={{
-                  backgroundColor: "primaryBlue.300",
-                }}
-                w="146px"
-                h={12}
-              >
-                Rewards
-              </Button>
 
               {/* Sign Out */}
               <Button
@@ -75,7 +53,6 @@ function MyApp({ Component, pageProps }: AppProps) {
                 _hover={{
                   backgroundColor: "primaryBlue.300",
                 }}
-                w="146px"
                 h={12}
               >
                 Sign Out
