@@ -35,33 +35,9 @@ const Home: NextPage<Props> = ({ habits }) => {
   return (
     <Box as="main" p={6}>
       <Flex flexDirection="column" gap={4}>
-        <HabitCard
-          habit={{
-            id: 1,
-            userId: "1",
-            title: "Work on Side Project",
-            icon: null,
-          }}
-          todayRequired={true}
-        />
         {orderedHabits.map((habit) => (
-          <HabitCard key={habit.title} habit={habit} todayRequired={false} />
+          <HabitCard key={habit.title} habit={habit} />
         ))}
-        <HabitCard
-          habit={{
-            id: 2,
-            userId: "1",
-            title: "Run",
-            icon: null,
-            today: {
-              id: 1,
-              habitId: 2,
-              status: HabitStatus.Complete,
-              date: new Date(),
-            },
-          }}
-          todayRequired={true}
-        />
         <AddHabit onClick={() => NiceModal.show(CreateHabitModal)} />
       </Flex>
     </Box>
