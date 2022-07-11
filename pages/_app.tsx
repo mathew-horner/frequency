@@ -1,4 +1,8 @@
+import "@fontsource/andika/400.css";
+import "@fontsource/andika/700.css";
+
 import "../styles/globals.css";
+
 import type { AppProps } from "next/app";
 import { Box, Button, ChakraProvider, Flex, Text } from "@chakra-ui/react";
 import { withTRPC } from "@trpc/next";
@@ -6,10 +10,11 @@ import NiceModal from "@ebay/nice-modal-react";
 import { IoHammer, IoLogOut, IoSettingsSharp } from "react-icons/io5";
 import { TbWaveSawTool } from "react-icons/tb";
 import { AppRouter } from "./api/trpc/[trpc]";
+import theme from "../utils/theme";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <NiceModal.Provider>
         <Flex justifyContent="center">
           <Box width="full" maxWidth="1000px">

@@ -1916,6 +1916,11 @@
     "minimatch" "^3.1.2"
     "strip-json-comments" "^3.1.1"
 
+"@fontsource/andika@^4.5.9":
+  "integrity" "sha512-IvdnncyYowGqrZio1XkBGq2ar05f38y38WEWIxmPp+NazlR/Kt1/j6AdpcYpFDAPuJptuVttHQ+NmDO7ZxNjaQ=="
+  "resolved" "https://registry.npmjs.org/@fontsource/andika/-/andika-4.5.9.tgz"
+  "version" "4.5.9"
+
 "@gar/promisify@^1.0.1":
   "integrity" "sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw=="
   "resolved" "https://registry.npmjs.org/@gar/promisify/-/promisify-1.1.3.tgz"
