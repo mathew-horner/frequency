@@ -41,6 +41,8 @@ model HabitDay {
   date    DateTime
 
   habit   Habit       @relation(fields: [habitId], references: [id])
+
+  @@unique(fields: [habitId, date])
 }
 
 model Reward {

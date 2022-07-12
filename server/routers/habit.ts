@@ -1,3 +1,4 @@
+import { HabitStatus } from "@prisma/client";
 import * as trpc from "@trpc/server";
 import { z } from "zod";
 import { prisma } from "../../utils/db";
@@ -15,10 +16,57 @@ export const habitRouter = trpc
     },
   })
   .query("list", {
-    async resolve() {
+    input: z.object({
+      dateTimestamp: z.number().int(),
+    }),
+    async resolve({ input: { dateTimestamp } }) {
       const habits = await prisma.habit.findMany();
-      return habits.map(
-        (habit) => ({ ...habit, today: undefined } as TodayHabit)
+      const date = new Date(dateTimestamp);
+
+      return Promise.all(
+        habits.map(async (habit) => {
+          const today = await prisma.habitDay.findFirst({
+            where: { habitId: habit.id, date },
+          });
+          return { ...habit, today: today || undefined } as TodayHabit;
+        })
       );
+    },
+  })
+  .mutation("setStatus", {
+    input: z.object({
+      habitId: z.number().int(),
+      dateTimestamp: z.number().int(),
+      status: z.enum([
+        HabitStatus.Incomplete,
+        HabitStatus.Complete,
+        HabitStatus.Pending,
+      ]),
+    }),
+    async resolve({ input: { habitId, dateTimestamp, status } }) {
+      const date = new Date(dateTimestamp);
+      try {
+        await prisma.habitDay.upsert({
+          create: {
+            habitId,
+            status,
+            date,
+          },
+          update: {
+            status,
+          },
+          where: {
+            habitId_date: {
+              habitId,
+              date,
+            },
+          },
+        });
+      } catch (ex) {
+        console.error(ex);
+        return false;
+      }
+
+      return true;
     },
   });

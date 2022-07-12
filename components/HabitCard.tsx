@@ -12,9 +12,16 @@ import { HabitStatus } from "@prisma/client";
 interface Props {
   habit: TodayHabit;
   compact?: boolean;
+  onSetComplete: () => void;
+  onSetIncomplete: () => void;
 }
 
-export default function HabitCard({ habit, compact }: Props) {
+export default function HabitCard({
+  habit,
+  compact,
+  onSetComplete,
+  onSetIncomplete,
+}: Props) {
   const habitStatus = habit.today?.status || HabitStatus.Pending;
   const isPending = habitStatus === HabitStatus.Pending;
 
@@ -58,7 +65,7 @@ export default function HabitCard({ habit, compact }: Props) {
         {isPending ? (
           <>
             {/* Mark Incomplete Button */}
-            <Button h={16} w={16} p={0}>
+            <Button h={16} w={16} p={0} onClick={() => onSetIncomplete()}>
               <IoCloseCircleOutline size={32} />
             </Button>
 
@@ -72,6 +79,7 @@ export default function HabitCard({ habit, compact }: Props) {
               h={16}
               w={16}
               p={0}
+              onClick={() => onSetComplete()}
             >
               <IoCheckmarkCircleOutline size={32} />
             </Button>

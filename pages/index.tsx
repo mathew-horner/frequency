@@ -11,10 +11,18 @@ import { TodayHabit } from "../utils/types";
 import { trpc } from "../utils/trpc";
 import IntroCard from "../components/IntroCard";
 import SettingsContext from "../contexts/SettingsContext";
+import { getTodayTimestamp } from "../utils/date";
 
 const Home: NextPage = () => {
   const { settings } = useContext(SettingsContext);
-  const habitList = trpc.useQuery(["habit.list"]);
+  const todayTimestamp = getTodayTimestamp();
+
+  const habitList = trpc.useQuery([
+    "habit.list",
+    { dateTimestamp: todayTimestamp },
+  ]);
+
+  const habitSetStatus = trpc.useMutation("habit.setStatus");
 
   // It's a desirable UX for the "pending" habits to float to the top.
   const orderedHabits = useMemo(() => {
@@ -23,7 +31,7 @@ const Home: NextPage = () => {
 
     // NOTE: Idk why I have to do `|| []` here, but I'm getting an undefined error on first render...
     (habitList.data || []).forEach((habit) => {
-      if (habit.today?.status !== HabitStatus.Pending) {
+      if (habit.today?.status && habit.today.status !== HabitStatus.Pending) {
         nonPending.push(habit);
       } else {
         pending.push(habit);
@@ -47,6 +55,24 @@ const Home: NextPage = () => {
                 key={habit.title}
                 habit={habit}
                 compact={settings.viewMode === "Compact"}
+                onSetComplete={() =>
+                  habitSetStatus
+                    .mutateAsync({
+                      habitId: habit.id,
+                      dateTimestamp: todayTimestamp,
+                      status: HabitStatus.Complete,
+                    })
+                    .then(() => habitList.refetch())
+                }
+                onSetIncomplete={() =>
+                  habitSetStatus
+                    .mutateAsync({
+                      habitId: habit.id,
+                      dateTimestamp: todayTimestamp,
+                      status: HabitStatus.Incomplete,
+                    })
+                    .then(() => habitList.refetch())
+                }
               />
             ))}
           </>
