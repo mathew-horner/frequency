@@ -1,7 +1,7 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { HabitStatus } from "@prisma/client";
 import type { NextPage } from "next";
-import { useContext, useMemo, useReducer } from "react";
+import { useContext, useMemo } from "react";
 import NiceModal from "@ebay/nice-modal-react";
 
 import { AddHabit } from "../components/AddHabit";
@@ -10,7 +10,7 @@ import HabitCard from "../components/HabitCard";
 import { TodayHabit } from "../utils/types";
 import { trpc } from "../utils/trpc";
 import IntroCard from "../components/IntroCard";
-import { SettingsContext } from "./_app";
+import SettingsContext from "../contexts/SettingsContext";
 
 const Home: NextPage = () => {
   const { settings } = useContext(SettingsContext);

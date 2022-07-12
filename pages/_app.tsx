@@ -17,58 +17,17 @@ import { TbWaveSawTool } from "react-icons/tb";
 import { AppRouter } from "./api/trpc/[trpc]";
 import theme from "../utils/theme";
 import SettingsModal from "../components/SettingsModal";
-import { useEffect, useState } from "react";
-import { z } from "zod";
 import React from "react";
-
-const ViewModeSchema = z.enum(["Standard", "Compact"]);
-type ViewMode = z.infer<typeof ViewModeSchema>;
-
-interface Settings {
-  viewMode: ViewMode;
-}
-
-export const SettingsSchema = z.object({
-  viewMode: ViewModeSchema,
-});
-
-const INITIAL_SETTINGS: Settings = {
-  viewMode: "Standard",
-};
-
-export const SettingsContext = React.createContext({
-  settings: INITIAL_SETTINGS,
-  setSettings: (() => {}) as any,
-});
-
-const SETTINGS_KEY = "FREQ_SETTINGS";
-
-function getSettings(): Settings {
-  const settings = localStorage.getItem(SETTINGS_KEY);
-  return !!settings ? (JSON.parse(settings) as Settings) : INITIAL_SETTINGS;
-}
+import useSettings from "../hooks/useSettings";
+import SettingsContext from "../contexts/SettingsContext";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const [settings, setSettings] = useState(INITIAL_SETTINGS);
-  const [settingsLoaded, setSettingsLoaded] = useState(false);
+  const settings = useSettings();
 
-  useEffect(() => {
-    const storageSettings = getSettings();
-    setSettings(storageSettings);
-    setSettingsLoaded(true);
-  }, []);
-
-  function setSettingsWrapper(value: Settings) {
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(value));
-    setSettings(value);
-  }
-
-  if (!settingsLoaded) return null;
+  if (!settings.loaded) return null;
 
   return (
-    <SettingsContext.Provider
-      value={{ settings, setSettings: setSettingsWrapper }}
-    >
+    <SettingsContext.Provider value={settings}>
       <ChakraProvider theme={theme}>
         <NiceModal.Provider>
           <Flex justifyContent="center">

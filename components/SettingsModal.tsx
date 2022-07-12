@@ -15,7 +15,7 @@ import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import { Formik } from "formik";
 import { useContext } from "react";
 import { IoSettingsSharp } from "react-icons/io5";
-import { SettingsContext, SettingsSchema } from "../pages/_app";
+import SettingsContext, { SettingsSchema } from "../contexts/SettingsContext";
 import {
   formikOnSubmitHandler,
   toFormikValidationSchema,
