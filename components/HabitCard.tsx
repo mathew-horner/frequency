@@ -85,7 +85,7 @@ export default function HabitCard({
             </Button>
           </>
         ) : (
-          <Flex alignItems="center" p={6}>
+          <Flex alignItems="center" p={4}>
             {renderCompletionIcon()}
           </Flex>
         )}
