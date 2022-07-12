@@ -21,6 +21,7 @@ import {
   toFormikValidationSchema,
 } from "../utils/forms";
 import Modal from "./Modal";
+import UpgradePrompt from "./UpgradePrompt";
 
 export default NiceModal.create(() => {
   const modal = useModal();
@@ -59,7 +60,8 @@ export default NiceModal.create(() => {
         }) => {
           return (
             <form onSubmit={handleSubmit}>
-              <ModalBody>
+              <ModalBody display="flex" flexDirection="column" gap={4}>
+                <UpgradePrompt />
                 <FormControl as="fieldset">
                   <FormLabel as="legend" fontWeight="bold">
                     View Mode
