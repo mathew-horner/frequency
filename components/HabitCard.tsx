@@ -3,7 +3,6 @@ import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import {
   IoCheckmarkCircleOutline,
   IoCloseCircleOutline,
-  IoFlameSharp,
 } from "react-icons/io5";
 
 import Card from "./Card";

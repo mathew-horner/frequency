@@ -13,8 +13,9 @@ import {
 } from "@chakra-ui/react";
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import { Formik } from "formik";
+import { useContext } from "react";
 import { IoSettingsSharp } from "react-icons/io5";
-import useSettings, { SettingsSchema } from "../hooks/useSettings";
+import { SettingsContext, SettingsSchema } from "../pages/_app";
 import {
   formikOnSubmitHandler,
   toFormikValidationSchema,
@@ -23,7 +24,7 @@ import Modal from "./Modal";
 
 export default NiceModal.create(() => {
   const modal = useModal();
-  const { settings, setSettings } = useSettings();
+  const { settings, setSettings } = useContext(SettingsContext);
   return (
     <Modal isOpen={modal.visible} onClose={modal.remove} size="xl">
       <ModalHeader>

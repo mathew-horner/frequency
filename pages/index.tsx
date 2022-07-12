@@ -1,7 +1,7 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { HabitStatus } from "@prisma/client";
 import type { NextPage } from "next";
-import { useMemo } from "react";
+import { useContext, useMemo, useReducer } from "react";
 import NiceModal from "@ebay/nice-modal-react";
 
 import { AddHabit } from "../components/AddHabit";
@@ -10,10 +10,10 @@ import HabitCard from "../components/HabitCard";
 import { TodayHabit } from "../utils/types";
 import { trpc } from "../utils/trpc";
 import IntroCard from "../components/IntroCard";
-import useSettings from "../hooks/useSettings";
+import { SettingsContext } from "./_app";
 
 const Home: NextPage = () => {
-  const { settings } = useSettings();
+  const { settings } = useContext(SettingsContext);
   const habitList = trpc.useQuery(["habit.list"]);
 
   // It's a desirable UX for the "pending" habits to float to the top.
