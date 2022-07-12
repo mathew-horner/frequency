@@ -51,12 +51,6 @@ function MyApp({ Component, pageProps }: AppProps) {
                 </Flex>
 
                 {/* Controls */}
-                <Button size="lg" h={12} w={12} p={0}>
-                  <IoGiftSharp size={24} />
-                </Button>
-                <Button size="lg" h={12} w={12} p={0}>
-                  <IoAnalyticsSharp size={24} />
-                </Button>
                 <Button
                   size="lg"
                   h={12}
