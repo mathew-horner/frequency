@@ -28,7 +28,11 @@ export const habitRouter = trpc
           const today = await prisma.habitDay.findFirst({
             where: { habitId: habit.id, date },
           });
-          return { ...habit, today: today || undefined, dueIn: 0 } as TodayHabit;
+          return {
+            ...habit,
+            today: today || undefined,
+            dueIn: 0,
+          } as TodayHabit;
         })
       );
     },
