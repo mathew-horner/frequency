@@ -8,9 +8,6 @@ import SettingsModal from "../components/SettingsModal";
 
 export default function Navbar() {
   const session = useSession();
-
-  console.log(session);
-
   return (
     <Flex as="header" alignItems="center" p={6} pb={0} gap={2}>
       {/* Site Brand */}

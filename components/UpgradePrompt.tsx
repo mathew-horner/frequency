@@ -1,8 +1,14 @@
 import { Button, Flex, List, ListItem, Text } from "@chakra-ui/react";
+import { IoClose } from "react-icons/io5";
 
-export default function UpgradePrompt() {
+interface Props {
+  onHidePrompt: () => void;
+}
+
+export default function UpgradePrompt({ onHidePrompt }: Props) {
   return (
     <Flex
+      position="relative"
       flexDirection="column"
       gap={2}
       p={4}
@@ -10,6 +16,23 @@ export default function UpgradePrompt() {
       backgroundColor="black"
       textColor="white"
     >
+      {/* Hide Prompt Button */}
+      <Button
+        position="absolute"
+        top={0}
+        right={0}
+        backgroundColor="black"
+        textColor="white"
+        _hover={{
+          backgroundColor: "gray.700",
+        }}
+        p={0}
+        onClick={() => onHidePrompt()}
+      >
+        <IoClose size={20} />
+      </Button>
+
+      {/* Content */}
       <Text as="h2" fontSize="xl" fontWeight="bold">
         10 days left in trial.
       </Text>
@@ -22,6 +45,8 @@ export default function UpgradePrompt() {
         <ListItem>- Analytics</ListItem>
         <ListItem>- Rewards</ListItem>
       </List>
+
+      {/* Upgrade Button */}
       <Button
         border="1px"
         borderColor="white"

@@ -26,6 +26,11 @@ import UpgradePrompt from "./UpgradePrompt";
 export default NiceModal.create(() => {
   const modal = useModal();
   const { settings, setSettings } = useContext(SettingsContext);
+
+  function setUpgradePromptHidden() {
+    setSettings({ ...settings, hideUpgradePrompt: true });
+  }
+
   return (
     <Modal isOpen={modal.visible} onClose={modal.remove} size="xl">
       <ModalHeader>
@@ -61,7 +66,11 @@ export default NiceModal.create(() => {
           return (
             <form onSubmit={handleSubmit}>
               <ModalBody display="flex" flexDirection="column" gap={4}>
-                <UpgradePrompt />
+                {!settings.hideUpgradePrompt && (
+                  <UpgradePrompt
+                    onHidePrompt={() => setUpgradePromptHidden()}
+                  />
+                )}
                 <FormControl as="fieldset">
                   <FormLabel as="legend" fontWeight="bold">
                     View Mode
