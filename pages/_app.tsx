@@ -21,7 +21,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   if (!settings.loaded) return null;
 
   return (
-    <GlobalContext session={session} settings={settings} theme={theme}>
+    <GlobalContext {...{ session, theme, settings }}>
       <Flex justifyContent="center">
         <Box width="full" maxWidth="1000px">
           <Navbar />
