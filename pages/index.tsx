@@ -73,6 +73,15 @@ const Home: NextPage = () => {
                     })
                     .then(() => habitList.refetch())
                 }
+                onSetPending={() =>
+                  habitSetStatus
+                    .mutateAsync({
+                      habitId: habit.id,
+                      dateTimestamp: todayTimestamp,
+                      status: HabitStatus.Pending,
+                    })
+                    .then(() => habitList.refetch())
+                }
               />
             ))}
           </>

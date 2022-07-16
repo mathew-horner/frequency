@@ -14,6 +14,7 @@ interface Props {
   compact?: boolean;
   onSetComplete: () => void;
   onSetIncomplete: () => void;
+  onSetPending: () => void;
 }
 
 export default function HabitCard({
@@ -21,16 +22,17 @@ export default function HabitCard({
   compact,
   onSetComplete,
   onSetIncomplete,
+  onSetPending,
 }: Props) {
   const habitStatus = habit.today?.status || HabitStatus.Pending;
   const isPending = habitStatus === HabitStatus.Pending;
 
   function renderCompletionIcon() {
     if (habitStatus === HabitStatus.Complete) {
-      return <IoCheckmarkCircleOutline size={30} />;
+      return <IoCheckmarkCircleOutline size={32} />;
     }
     if (habitStatus === HabitStatus.Incomplete) {
-      return <IoCloseCircleOutline size={30} />;
+      return <IoCloseCircleOutline size={32} />;
     }
     return null;
   }
@@ -85,9 +87,15 @@ export default function HabitCard({
             </Button>
           </>
         ) : (
-          <Flex alignItems="center" p={4}>
+          <Button
+            p={0}
+            h={16}
+            w={16}
+            backgroundColor="transparent"
+            onClick={() => onSetPending()}
+          >
             {renderCompletionIcon()}
-          </Flex>
+          </Button>
         )}
       </Card>
     );
