@@ -26,10 +26,11 @@ enum RewardType {
 }
 
 model Habit {
-  id      Int         @id @default(autoincrement())
-  userId  String
-  title   String
-  icon    Icon?
+  id        Int         @id @default(autoincrement())
+  userId    String
+  title     String
+  icon      Icon?
+  frequency Int       @default(1)
 
   habitDays HabitDay[]
 }

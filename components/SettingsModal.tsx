@@ -53,16 +53,7 @@ export default NiceModal.create(() => {
         validateOnBlur={false}
         validateOnChange={false}
       >
-        {({
-          values,
-          touched,
-          errors,
-          handleChange,
-          handleSubmit,
-          isSubmitting,
-          setFieldError,
-          setFieldValue,
-        }) => {
+        {({ values, handleSubmit, isSubmitting, setFieldValue }) => {
           return (
             <form onSubmit={handleSubmit}>
               <ModalBody display="flex" flexDirection="column" gap={4}>
