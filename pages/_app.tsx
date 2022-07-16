@@ -1,75 +1,42 @@
 import "@fontsource/andika/400.css";
 import "@fontsource/andika/700.css";
 
-import "../styles/globals.css";
-
+import React from "react";
 import type { AppProps } from "next/app";
-import { Box, Button, ChakraProvider, Flex, Text } from "@chakra-ui/react";
+import { SessionProvider } from "next-auth/react";
+
+import { Box, ChakraProvider, Flex } from "@chakra-ui/react";
 import { withTRPC } from "@trpc/next";
 import NiceModal from "@ebay/nice-modal-react";
-import {
-  IoAnalyticsSharp,
-  IoGiftSharp,
-  IoLogOut,
-  IoSettingsSharp,
-} from "react-icons/io5";
-import { TbWaveSawTool } from "react-icons/tb";
+
 import { AppRouter } from "./api/trpc/[trpc]";
 import theme from "../utils/theme";
-import SettingsModal from "../components/SettingsModal";
-import React from "react";
+import Navbar from "../components/Navbar";
 import useSettings from "../hooks/useSettings";
 import SettingsContext from "../contexts/SettingsContext";
 
-function MyApp({ Component, pageProps }: AppProps) {
+import "../styles/globals.css";
+
+function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const settings = useSettings();
 
   if (!settings.loaded) return null;
 
   return (
-    <SettingsContext.Provider value={settings}>
-      <ChakraProvider theme={theme}>
-        <NiceModal.Provider>
-          <Flex justifyContent="center">
-            <Box width="full" maxWidth="1000px">
-              <Flex as="header" alignItems="center" p={6} pb={0} gap={2}>
-                {/* Site Brand */}
-                <Flex alignItems="center" gap={2} flexGrow={1}>
-                  <Flex
-                    alignItems="center"
-                    justifyContent="center"
-                    backgroundColor="black"
-                    textColor="white"
-                    p={2}
-                    borderRadius="lg"
-                  >
-                    <TbWaveSawTool size={32} />
-                  </Flex>
-                  <Text as="h1" fontSize="3xl" fontWeight="bold">
-                    frequency
-                  </Text>
-                </Flex>
-
-                {/* Controls */}
-                <Button
-                  size="lg"
-                  h={12}
-                  w={12}
-                  p={0}
-                  onClick={() => NiceModal.show(SettingsModal)}
-                >
-                  <IoSettingsSharp size={24} />
-                </Button>
-                <Button size="lg" h={12} w={12} p={0}>
-                  <IoLogOut size={24} />
-                </Button>
-              </Flex>
-              <Component {...pageProps} />
-            </Box>
-          </Flex>
-        </NiceModal.Provider>
-      </ChakraProvider>
-    </SettingsContext.Provider>
+    <SessionProvider session={session}>
+      <SettingsContext.Provider value={settings}>
+        <ChakraProvider theme={theme}>
+          <NiceModal.Provider>
+            <Flex justifyContent="center">
+              <Box width="full" maxWidth="1000px">
+                <Navbar/>
+                <Component {...pageProps} />
+              </Box>
+            </Flex>
+          </NiceModal.Provider>
+        </ChakraProvider>
+      </SettingsContext.Provider>
+    </SessionProvider>
   );
 }
 
