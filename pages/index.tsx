@@ -43,6 +43,38 @@ const Home: NextPage = () => {
 
   if (habitList.isLoading) return null;
 
+  // Callback functions for updating the status of a habit.
+
+  function onSetComplete(habit: TodayHabit) {
+    habitSetStatus
+      .mutateAsync({
+        habitId: habit.id,
+        dateTimestamp: todayTimestamp,
+        status: HabitStatus.Complete,
+      })
+      .then(() => habitList.refetch());
+  }
+
+  function onSetIncomplete(habit: TodayHabit) {
+    habitSetStatus
+      .mutateAsync({
+        habitId: habit.id,
+        dateTimestamp: todayTimestamp,
+        status: HabitStatus.Incomplete,
+      })
+      .then(() => habitList.refetch());
+  }
+
+  function onSetPending(habit: TodayHabit) {
+    habitSetStatus
+      .mutateAsync({
+        habitId: habit.id,
+        dateTimestamp: todayTimestamp,
+        status: HabitStatus.Pending,
+      })
+      .then(() => habitList.refetch());
+  }
+
   return (
     <Box as="main" p={6}>
       <Flex flexDirection="column" gap={4}>
@@ -55,33 +87,9 @@ const Home: NextPage = () => {
                 key={habit.title}
                 habit={habit}
                 compact={settings.viewMode === "Compact"}
-                onSetComplete={() =>
-                  habitSetStatus
-                    .mutateAsync({
-                      habitId: habit.id,
-                      dateTimestamp: todayTimestamp,
-                      status: HabitStatus.Complete,
-                    })
-                    .then(() => habitList.refetch())
-                }
-                onSetIncomplete={() =>
-                  habitSetStatus
-                    .mutateAsync({
-                      habitId: habit.id,
-                      dateTimestamp: todayTimestamp,
-                      status: HabitStatus.Incomplete,
-                    })
-                    .then(() => habitList.refetch())
-                }
-                onSetPending={() =>
-                  habitSetStatus
-                    .mutateAsync({
-                      habitId: habit.id,
-                      dateTimestamp: todayTimestamp,
-                      status: HabitStatus.Pending,
-                    })
-                    .then(() => habitList.refetch())
-                }
+                onSetComplete={() => onSetComplete(habit)}
+                onSetIncomplete={() => onSetIncomplete(habit)}
+                onSetPending={() => onSetPending(habit)}
               />
             ))}
           </>

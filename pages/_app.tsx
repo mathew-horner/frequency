@@ -18,6 +18,7 @@ import "../styles/globals.css";
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const settings = useSettings();
 
+  // Rendering before settings are loaded can result in CLS (mainly due to the compact view).
   if (!settings.loaded) return null;
 
   return (
