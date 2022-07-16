@@ -11,7 +11,11 @@ import { HabitStatus } from "@prisma/client";
 
 interface Props {
   habit: TodayHabit;
+
+  /** Render the card in "compact" mode. */
   compact?: boolean;
+    
+  // Callbacks for setting the status of the habit for today.
   onSetComplete: () => void;
   onSetIncomplete: () => void;
   onSetPending: () => void;
@@ -27,6 +31,7 @@ export default function HabitCard({
   const habitStatus = habit.today?.status || HabitStatus.Pending;
   const isPending = habitStatus === HabitStatus.Pending;
 
+  /** Render an icon which represents the completion status of the habit for today */
   function renderCompletionIcon() {
     if (habitStatus === HabitStatus.Complete) {
       return <IoCheckmarkCircleOutline size={32} />;
@@ -36,6 +41,8 @@ export default function HabitCard({
     }
     return null;
   }
+
+  // Helper functions for rendering the text indicator for the habit's due date.
 
   function renderDueDateCompact() {
     switch (habit.dueIn) {
@@ -53,6 +60,8 @@ export default function HabitCard({
     }
   }
 
+  // Helper functions for the different rendering modes.
+
   function renderCompact() {
     return (
       <Card
@@ -64,6 +73,7 @@ export default function HabitCard({
         overflow="hidden"
         p={0}
       >
+        {/* Habit Title */}
         <Text
           as="h1"
           display="flex"
@@ -80,6 +90,8 @@ export default function HabitCard({
             </Text>
           </Flex>
         </Text>
+
+        {/* Controls */}
         {isPending ? (
           <>
             {/* Mark Incomplete Button */}
@@ -129,6 +141,7 @@ export default function HabitCard({
         position="relative"
         overflow="hidden"
       >
+        {/* Habit Title */}
         <Text
           as="h1"
           display="flex"
@@ -145,11 +158,8 @@ export default function HabitCard({
             </Text>
           </Box>
         </Text>
-        {/* TODO: Streaks */}
-        {/* <Flex alignItems="center" marginRight={4} textColor="gray.500">
-        <IoFlameSharp size={24} />
-        <Text>6</Text>
-      </Flex> */}
+        
+        {/* Controls */}
         {isPending ? (
           <>
             {/* Mark Incomplete Button */}
