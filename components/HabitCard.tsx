@@ -42,7 +42,7 @@ export default function HabitCard({
     return null;
   }
 
-  // Helper functions for rendering the text indicator for the habit's due date.
+  // Functions for rendering the text indicator for the habit's due date.
 
   function renderDueDateCompact() {
     switch (habit.dueIn) {
@@ -60,7 +60,7 @@ export default function HabitCard({
     }
   }
 
-  // Helper functions for the different rendering modes.
+  // Render functions for the different rendering modes (compact & standard).
 
   function renderCompact() {
     return (
