@@ -42,7 +42,7 @@ const Home: NextPage = () => {
         pending.push(habit);
       }
     });
-  
+
     // Sort by due date, then alphabetically by title.
     pending.sort((a, b) => {
       // TODO: There has to be a better way to sort like this.
@@ -53,8 +53,8 @@ const Home: NextPage = () => {
     });
 
     // Just sort alphabetically by title.
-    nonPending.sort((a, b) => a.title > b.title ? 1: -1);
-    
+    nonPending.sort((a, b) => (a.title > b.title ? 1 : -1));
+
     return pending.concat(nonPending);
   }, [habitList.data]);
 
@@ -106,7 +106,7 @@ const Home: NextPage = () => {
   }
 
   return (
-    <Box as="main" p={6}>
+    <Box as="main" p={6} px={{ base: 2, sm: 6 }}>
       <Flex flexDirection="column" gap={4}>
         {orderedHabits.length === 0 ? (
           <>

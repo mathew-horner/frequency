@@ -96,13 +96,25 @@ export default function HabitCard({
           as="h1"
           display="flex"
           alignItems="center"
-          fontSize="lg"
           fontWeight="bold"
           flexGrow={1}
           p={4}
+          w="calc(100% - 128px)"
+          overflow="hidden"
         >
-          <Flex gap={2} alignItems="center">
-            {habit.title}
+          <Flex
+            gap={{ base: 0, sm: 2 }}
+            flexDirection={{ base: "column", sm: "row" }}
+            alignItems={{ base: "flex-start", sm: "center" }}
+          >
+            {/* TODO: For some reason the ellipsis is not working here... Oh well, at least we get the overflow to hide. */}
+            <Text
+              fontSize={{ base: "sm", sm: "lg" }}
+              whiteSpace="nowrap"
+              textOverflow="ellipsis"
+            >
+              {habit.title}
+            </Text>
             <Text fontSize="xs" textColor={getDueDateTextColor()}>
               {renderDueDateCompact()}
             </Text>
