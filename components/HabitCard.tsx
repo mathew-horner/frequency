@@ -180,9 +180,17 @@ export default function HabitCard({
           fontWeight="bold"
           flexGrow={1}
           gap={0.5}
+          w="calc(100% - 128px - 32px)"
+          overflow="hidden"
         >
           <Box>
-            {habit.title}
+            {/* TODO: For some reason the ellipsis is not working here... Oh well, at least we get the overflow to hide. */}
+            <Text
+              whiteSpace="nowrap"
+              textOverflow="ellipsis"
+            >
+              {habit.title}
+            </Text>
             <Text fontSize="xs" textColor={getDueDateTextColor()}>
               {renderDueDateStandard()}
             </Text>

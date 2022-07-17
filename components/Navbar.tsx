@@ -9,7 +9,14 @@ import SettingsModal from "../components/SettingsModal";
 export default function Navbar() {
   const session = useSession();
   return (
-    <Flex as="header" alignItems="center" p={{ base: 3, sm: 6 }} pb={0} gap={2}>
+    <Flex
+      as="header"
+      alignItems="center"
+      pt={{ base: 3, sm: 6 }}
+      px={{ base: 3, sm: 6 }}
+      pb={0}
+      gap={2}
+    >
       {/* Site Brand */}
       <Flex alignItems="center" gap={2} flexGrow={1}>
         <Flex
