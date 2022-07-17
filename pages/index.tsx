@@ -42,7 +42,19 @@ const Home: NextPage = () => {
         pending.push(habit);
       }
     });
+  
+    // Sort by due date, then alphabetically by title.
+    pending.sort((a, b) => {
+      // TODO: There has to be a better way to sort like this.
+      if (a.dueIn === b.dueIn) {
+        return a.title > b.title ? 1 : -1;
+      }
+      return a.dueIn > b.dueIn ? 1 : -1;
+    });
 
+    // Just sort alphabetically by title.
+    nonPending.sort((a, b) => a.title > b.title ? 1: -1);
+    
     return pending.concat(nonPending);
   }, [habitList.data]);
 

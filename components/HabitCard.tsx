@@ -75,7 +75,7 @@ export default function HabitCard({
   }
 
   function getDueDateTextColor() {
-    return habit.dueIn >= 0 ? "gray.500" : "red.500";
+    return habit.dueIn > 0 ? "gray.500" : "red.500";
   }
 
   // Render functions for the different rendering modes (compact & standard).
