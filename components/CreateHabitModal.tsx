@@ -81,11 +81,13 @@ export default NiceModal.create(() => {
           handleSubmit,
           isSubmitting,
           setFieldError,
+          setFieldValue,
         }) => {
           return (
             <form onSubmit={handleSubmit}>
               <ModalBody>
                 <Flex flexDirection="column" gap={6}>
+                  {/* Habit Title */}
                   <Flex flexDirection="column" gap={1.5}>
                     <Text as="label" fontWeight="medium" fontSize="lg">
                       What habit do you want to form?
@@ -102,19 +104,22 @@ export default NiceModal.create(() => {
                       size="lg"
                     />
                   </Flex>
+
+                  {/* Habit Frequency */}
                   <Flex flexDirection="column" gap={1.5}>
                     <Text as="label" fontWeight="medium" fontSize="lg">
                       Once per how many days?
                     </Text>
                     <NumberInput
                       name="frequency"
-                      onChange={(e) => {
+                      onChange={(value) => {
                         setFieldError("frequency", "");
-                        handleChange(e);
+                        setFieldValue("frequency", value ? parseInt(value) : "");
                       }}
                       value={values.frequency}
                       isInvalid={touched.frequency && !!errors.frequency}
                       size="lg"
+                      min={1}
                     >
                       <NumberInputField />
                       <NumberInputStepper>
@@ -125,6 +130,8 @@ export default NiceModal.create(() => {
                   </Flex>
                 </Flex>
               </ModalBody>
+
+              {/* Submit Button */}
               <ModalFooter>
                 <Button
                   backgroundColor="primaryBlue.100"

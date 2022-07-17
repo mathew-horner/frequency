@@ -26,6 +26,7 @@ export const habitRouter = trpc
         data: {
           userId: session.user.id,
           title: input.title,
+          frequency: input.frequency,
           createdOn: new Date(input.dateTimestamp),
         },
       });
