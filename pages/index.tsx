@@ -24,7 +24,7 @@ const Home: NextPage = () => {
 
   const habitSetStatus = trpc.useMutation("habit.setStatus");
 
-  // It's a desirable UX for the "pending" habits to float to the top.
+  // It's a desirable UX for the pending habits to float to the top.
   const orderedHabits = useMemo(() => {
     const pending: TodayHabit[] = [];
     const nonPending: TodayHabit[] = [];

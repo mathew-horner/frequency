@@ -1,4 +1,3 @@
-
 import { SessionProvider } from "next-auth/react";
 import NiceModal from "@ebay/nice-modal-react";
 import { ChakraProvider } from "@chakra-ui/react";
@@ -8,7 +7,7 @@ import SettingsContext from "../contexts/SettingsContext";
 interface Props {
   children: React.ReactNode;
   session: any;
-  settings: any; 
+  settings: any;
   theme: any;
 }
 
