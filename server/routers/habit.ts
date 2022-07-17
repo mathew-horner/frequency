@@ -6,21 +6,42 @@ import { TodayHabit } from "../../utils/types";
 
 export const habitRouter = trpc
   .router()
+
+  // Create a new habit for the requesting user.
   .mutation("create", {
     input: z.object({
       title: z.string(),
       frequency: z.number().int(),
     }),
-    resolve({ input }) {
-      return prisma.habit.create({ data: { userId: "1", title: input.title } });
+    resolve({ input, ctx }) {
+      const { session } = ctx as any;
+
+      if (!session?.user?.id) {
+        return null;
+      }
+
+      return prisma.habit.create({
+        data: { userId: session.user.id, title: input.title },
+      });
     },
   })
+
+  // Get a list of all of the requesting user's habits.
   .query("list", {
     input: z.object({
       dateTimestamp: z.number().int(),
     }),
-    async resolve({ input: { dateTimestamp } }) {
-      const habits = await prisma.habit.findMany();
+    async resolve({ input: { dateTimestamp }, ctx }) {
+      const { session } = ctx as any;
+
+      if (!session?.user?.id) {
+        return [];
+      }
+
+      const habits = await prisma.habit.findMany({
+        where: { userId: session.user.id },
+      });
+
       const date = new Date(dateTimestamp);
 
       return Promise.all(
@@ -37,6 +58,8 @@ export const habitRouter = trpc
       );
     },
   })
+
+  // Set the status of a habit.
   .mutation("setStatus", {
     input: z.object({
       habitId: z.number().int(),
@@ -47,8 +70,24 @@ export const habitRouter = trpc
         HabitStatus.Pending,
       ]),
     }),
-    async resolve({ input: { habitId, dateTimestamp, status } }) {
+    async resolve({ input: { habitId, dateTimestamp, status }, ctx }) {
+      const { session } = ctx as any;
+      if (!session?.user?.id) {
+        return null;
+      }
+      
+      const habit = await prisma.habit.findUnique({ where: { id: habitId }});
+      if (!habit) {
+        return null;
+      }
+      
+      // Restrict users to only setting the status of their own habits.
+      if (habit.userId !== session.user.id) {
+        return null;
+      }
+
       const date = new Date(dateTimestamp);
+
       try {
         await prisma.habitDay.upsert({
           create: {
