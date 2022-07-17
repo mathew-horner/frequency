@@ -1,12 +1,14 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { HabitStatus } from "@prisma/client";
 import type { NextPage } from "next";
+import { useSession } from "next-auth/react";
 import { useContext, useMemo } from "react";
 import NiceModal from "@ebay/nice-modal-react";
 
 import { AddHabit } from "../components/AddHabit";
 import CreateHabitModal from "../components/CreateHabitModal";
 import HabitCard from "../components/HabitCard";
+import UnauthenticatedCard from "../components/UnauthenticatedCard";
 import { TodayHabit } from "../utils/types";
 import { trpc } from "../utils/trpc";
 import IntroCard from "../components/IntroCard";
@@ -15,7 +17,10 @@ import { getTodayTimestamp } from "../utils/date";
 
 const Home: NextPage = () => {
   const { settings } = useContext(SettingsContext);
+  const { status } = useSession();
   const todayTimestamp = getTodayTimestamp();
+
+  const isAuthenticated = status === "authenticated";
 
   const habitList = trpc.useQuery([
     "habit.list",
@@ -79,7 +84,7 @@ const Home: NextPage = () => {
     <Box as="main" p={6}>
       <Flex flexDirection="column" gap={4}>
         {orderedHabits.length === 0 ? (
-          <IntroCard />
+          <>{isAuthenticated ? <IntroCard /> : <UnauthenticatedCard />}</>
         ) : (
           <>
             {orderedHabits.map((habit) => (
@@ -94,11 +99,13 @@ const Home: NextPage = () => {
             ))}
           </>
         )}
-        <AddHabit
-          onClick={() =>
-            NiceModal.show(CreateHabitModal).then(() => habitList.refetch())
-          }
-        />
+        {isAuthenticated && (
+          <AddHabit
+            onClick={() =>
+              NiceModal.show(CreateHabitModal).then(() => habitList.refetch())
+            }
+          />
+        )}
       </Flex>
     </Box>
   );
