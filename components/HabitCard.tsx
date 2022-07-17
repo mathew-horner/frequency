@@ -46,24 +46,36 @@ export default function HabitCard({
 
   function renderDueDateCompact() {
     switch (habit.dueIn) {
+      case -1:
+        return "(yesterday)";
       case 0:
         return "(today)";
       case 1:
         return "(tomorrow)";
-      default:
-        return `(${habit.dueIn} days)`;
     }
+
+    return habit.dueIn > 0
+      ? `(${habit.dueIn} days)`
+      : `(${Math.abs(habit.dueIn)} days ago)`;
   }
 
   function renderDueDateStandard() {
     switch (habit.dueIn) {
+      case -1:
+        return "due yesterday";
       case 0:
         return "due today";
       case 1:
         return "due tomorrow";
-      default:
-        return `due in ${habit.dueIn} days`;
     }
+
+    return habit.dueIn > 0
+      ? `due in ${habit.dueIn} days`
+      : `due ${Math.abs(habit.dueIn)} days ago`;
+  }
+
+  function getDueDateTextColor() {
+    return habit.dueIn >= 0 ? "gray.500" : "red.500";
   }
 
   // Render functions for the different rendering modes (compact & standard).
@@ -91,7 +103,7 @@ export default function HabitCard({
         >
           <Flex gap={2} alignItems="center">
             {habit.title}
-            <Text fontSize="xs" textColor="gray.500">
+            <Text fontSize="xs" textColor={getDueDateTextColor()}>
               {renderDueDateCompact()}
             </Text>
           </Flex>
@@ -159,7 +171,7 @@ export default function HabitCard({
         >
           <Box>
             {habit.title}
-            <Text fontSize="xs" textColor="gray.500">
+            <Text fontSize="xs" textColor={getDueDateTextColor()}>
               {renderDueDateStandard()}
             </Text>
           </Box>

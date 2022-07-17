@@ -63,15 +63,18 @@ export const habitRouter = trpc
 
           const lastCompletionDate = !!lastComplete
             ? lastComplete.date
-            : habit.createdOn;
+            : (() => {
+                const { createdOn } = habit;
+                createdOn.setDate(createdOn.getDate() - 1);
+                return createdOn;
+              })();
 
           const dueDate = new Date();
           dueDate.setDate(lastCompletionDate.getDate() + habit.frequency);
 
-          const dueIn =
-            Math.floor(
-              (dueDate.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
-            ) - 1;
+          const dueIn = Math.floor(
+            (dueDate.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
+          );
 
           return {
             ...habit,
