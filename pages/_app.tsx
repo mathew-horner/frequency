@@ -3,6 +3,7 @@ import "@fontsource/andika/700.css";
 
 import React from "react";
 import type { AppProps } from "next/app";
+import Head from "next/head";
 
 import { Box, Flex } from "@chakra-ui/react";
 import { withTRPC } from "@trpc/next";
@@ -22,14 +23,19 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   if (!settings.loaded) return null;
 
   return (
-    <GlobalContext {...{ session, theme, settings }}>
-      <Flex justifyContent="center">
-        <Box width="full" maxWidth="1000px">
-          <Navbar />
-          <Component {...pageProps} />
-        </Box>
-      </Flex>
-    </GlobalContext>
+    <>
+      <Head>
+        <title>frequency</title>
+      </Head>
+      <GlobalContext {...{ session, theme, settings }}>
+        <Flex justifyContent="center">
+          <Box width="full" maxWidth="1000px">
+            <Navbar />
+            <Component {...pageProps} />
+          </Box>
+        </Flex>
+      </GlobalContext>
+    </>
   );
 }
 

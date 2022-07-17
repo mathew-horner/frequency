@@ -3,6 +3,7 @@ import * as trpc from "@trpc/server";
 import { z } from "zod";
 import { prisma } from "../../utils/db";
 import { TodayHabit } from "../../utils/types";
+import { calculateDueIn } from "../../utils/date";
 
 export const habitRouter = trpc
   .router()
@@ -60,21 +61,8 @@ export const habitRouter = trpc
             orderBy: { date: "desc" },
             select: { date: true },
           });
-
-          const lastCompletionDate = !!lastComplete
-            ? lastComplete.date
-            : (() => {
-                const { createdOn } = habit;
-                createdOn.setDate(createdOn.getDate() - 1);
-                return createdOn;
-              })();
-
-          const dueDate = new Date();
-          dueDate.setDate(lastCompletionDate.getDate() + habit.frequency);
-
-          const dueIn = Math.floor(
-            (dueDate.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
-          );
+          
+          const dueIn = calculateDueIn({ habit, today: date, lastCompleteDate: lastComplete?.date });
 
           return {
             ...habit,
