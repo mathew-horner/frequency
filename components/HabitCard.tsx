@@ -45,6 +45,8 @@ export default function HabitCard({
   // Functions for rendering the text indicator for the habit's due date.
 
   function renderDueDateCompact() {
+    if (!isPending) return null;
+
     switch (habit.dueIn) {
       case -1:
         return "(yesterday)";
@@ -60,6 +62,8 @@ export default function HabitCard({
   }
 
   function renderDueDateStandard() {
+    if (!isPending) return null;
+
     switch (habit.dueIn) {
       case -1:
         return "due yesterday";
