@@ -76,6 +76,7 @@ model Habit {
   title     String
   icon      Icon?
   frequency Int       @default(1)
+  createdOn DateTime
 
   habitDays HabitDay[]
 }

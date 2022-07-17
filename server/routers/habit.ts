@@ -12,6 +12,7 @@ export const habitRouter = trpc
     input: z.object({
       title: z.string(),
       frequency: z.number().int(),
+      dateTimestamp: z.number().int(),
     }),
     resolve({ input, ctx }) {
       const { session } = ctx as any;
@@ -21,7 +22,11 @@ export const habitRouter = trpc
       }
 
       return prisma.habit.create({
-        data: { userId: session.user.id, title: input.title },
+        data: {
+          userId: session.user.id,
+          title: input.title,
+          createdOn: new Date(input.dateTimestamp),
+        },
       });
     },
   })
@@ -49,10 +54,29 @@ export const habitRouter = trpc
           const today = await prisma.habitDay.findFirst({
             where: { habitId: habit.id, date },
           });
+
+          const lastComplete = await prisma.habitDay.findFirst({
+            where: { habitId: habit.id, status: HabitStatus.Complete },
+            orderBy: { date: "desc" },
+            select: { date: true },
+          });
+
+          const lastCompletionDate = !!lastComplete
+            ? lastComplete.date
+            : habit.createdOn;
+
+          const dueDate = new Date();
+          dueDate.setDate(lastCompletionDate.getDate() + habit.frequency);
+
+          const dueIn =
+            Math.floor(
+              (dueDate.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
+            ) - 1;
+
           return {
             ...habit,
             today: today || undefined,
-            dueIn: 0,
+            dueIn,
           } as TodayHabit;
         })
       );
@@ -75,12 +99,12 @@ export const habitRouter = trpc
       if (!session?.user?.id) {
         return null;
       }
-      
-      const habit = await prisma.habit.findUnique({ where: { id: habitId }});
+
+      const habit = await prisma.habit.findUnique({ where: { id: habitId } });
       if (!habit) {
         return null;
       }
-      
+
       // Restrict users to only setting the status of their own habits.
       if (habit.userId !== session.user.id) {
         return null;
