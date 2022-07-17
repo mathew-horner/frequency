@@ -7,6 +7,7 @@ type ViewMode = z.infer<typeof ViewModeSchema>;
 export interface Settings {
   viewMode: ViewMode;
   hideUpgradePrompt: boolean;
+  hideIntroCard: boolean;
 }
 
 export const SettingsSchema = z.object({
@@ -17,6 +18,7 @@ export const SettingsSchema = z.object({
 export const INITIAL_SETTINGS: Settings = {
   viewMode: "Standard",
   hideUpgradePrompt: false,
+  hideIntroCard: false,
 };
 
 const SettingsContext = React.createContext({

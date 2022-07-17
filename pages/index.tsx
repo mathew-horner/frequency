@@ -16,7 +16,7 @@ import SettingsContext from "../contexts/SettingsContext";
 import { getTodayTimestamp } from "../utils/date";
 
 const Home: NextPage = () => {
-  const { settings } = useContext(SettingsContext);
+  const { settings, setSettings } = useContext(SettingsContext);
   const { status } = useSession();
   const todayTimestamp = getTodayTimestamp();
 
@@ -80,11 +80,26 @@ const Home: NextPage = () => {
       .then(() => habitList.refetch());
   }
 
+  function hideIntroCard() {
+    setSettings({
+      ...settings,
+      hideIntroCard: true,
+    });
+  }
+
+  function tryRenderIntroCard() {
+    return !settings.hideIntroCard ? (
+      <IntroCard onClickYes={() => {}} onClickNo={hideIntroCard} />
+    ) : null;
+  }
+
   return (
     <Box as="main" p={6}>
       <Flex flexDirection="column" gap={4}>
         {orderedHabits.length === 0 ? (
-          <>{isAuthenticated ? <IntroCard /> : <UnauthenticatedCard />}</>
+          <>
+            {isAuthenticated ? tryRenderIntroCard() : <UnauthenticatedCard />}
+          </>
         ) : (
           <>
             {orderedHabits.map((habit) => (

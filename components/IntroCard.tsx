@@ -1,7 +1,12 @@
 import { Button, Flex, Text } from "@chakra-ui/react";
 import Card from "./Card";
 
-export default function IntroCard() {
+interface Props {
+  onClickYes: () => void;
+  onClickNo: () => void;
+}
+
+export default function IntroCard({ onClickYes, onClickNo }: Props) {
   return (
     <Card
       display="flex"
@@ -18,7 +23,12 @@ export default function IntroCard() {
         to use this wonderful little habit tracker?
       </Text>
       <Flex justifyContent="center" gap={4} mt={2}>
-        <Button backgroundColor="white" textColor="black" w={24}>
+        <Button
+          backgroundColor="white"
+          textColor="black"
+          w={24}
+          onClick={() => onClickYes()}
+        >
           Yes
         </Button>
         <Button
@@ -27,6 +37,7 @@ export default function IntroCard() {
           backgroundColor="transparent"
           textColor="white"
           w={24}
+          onClick={() => onClickNo()}
         >
           No
         </Button>
