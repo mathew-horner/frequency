@@ -21,6 +21,12 @@ interface Props {
   onSetPending: () => void;
 }
 
+enum WhenIsDueDisplay {
+  Today,
+  Tomorrow,
+  MultipleDays,
+}
+
 export default function HabitCard({
   habit,
   compact,
@@ -43,39 +49,37 @@ export default function HabitCard({
   }
 
   // Functions for rendering the text indicator for the habit's due date.
+  
+  function whenIsDueDisplay(): WhenIsDueDisplay {
+    if (habit.dueIn <= 0) return WhenIsDueDisplay.Today;
+    if (habit.dueIn == 1) return WhenIsDueDisplay.Tomorrow;
+    return WhenIsDueDisplay.MultipleDays;
+  }
 
   function renderDueDateCompact() {
     if (!isPending) return null;
-
-    switch (habit.dueIn) {
-      case -1:
-        return "(yesterday)";
-      case 0:
+    
+    switch (whenIsDueDisplay()) {
+      case WhenIsDueDisplay.Today:
         return "(today)";
-      case 1:
+      case WhenIsDueDisplay.Tomorrow:
         return "(tomorrow)";
     }
 
-    return habit.dueIn > 0
-      ? `(${habit.dueIn} days)`
-      : `(${Math.abs(habit.dueIn)} days ago)`;
+    return `(${habit.dueIn} days)`;
   }
 
   function renderDueDateStandard() {
     if (!isPending) return null;
 
-    switch (habit.dueIn) {
-      case -1:
-        return "due yesterday";
-      case 0:
+    switch (whenIsDueDisplay()) {
+      case WhenIsDueDisplay.Today:
         return "due today";
-      case 1:
+      case WhenIsDueDisplay.Tomorrow:
         return "due tomorrow";
     }
 
-    return habit.dueIn > 0
-      ? `due in ${habit.dueIn} days`
-      : `due ${Math.abs(habit.dueIn)} days ago`;
+    return `due in ${habit.dueIn} days`;
   }
 
   function getDueDateTextColor() {
