@@ -3,11 +3,14 @@ import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import {
   IoCheckmarkCircleOutline,
   IoCloseCircleOutline,
+  IoFlame,
 } from "react-icons/io5";
 
 import Card from "./Card";
 import { TodayHabit } from "../utils/types";
 import { HabitStatus } from "@prisma/client";
+
+const STREAK_THRESHOLD = 3;
 
 interface Props {
   habit: TodayHabit;
@@ -49,7 +52,7 @@ export default function HabitCard({
   }
 
   // Functions for rendering the text indicator for the habit's due date.
-  
+
   function whenIsDueDisplay(): WhenIsDueDisplay {
     if (habit.dueIn <= 0) return WhenIsDueDisplay.Today;
     if (habit.dueIn == 1) return WhenIsDueDisplay.Tomorrow;
@@ -58,7 +61,7 @@ export default function HabitCard({
 
   function renderDueDateCompact() {
     if (!isPending) return null;
-    
+
     switch (whenIsDueDisplay()) {
       case WhenIsDueDisplay.Today:
         return "(today)";
@@ -84,6 +87,18 @@ export default function HabitCard({
 
   function getDueDateTextColor() {
     return habit.dueIn > 0 ? "gray.500" : "red.500";
+  }
+
+  // Misc. rendering functions.
+
+  function renderStreak() {
+    if (habit.streak < STREAK_THRESHOLD) return null;
+    return (
+      <Flex textColor="black" opacity={0.35} pr={4}>
+        <IoFlame size={24} />
+        <Text>{habit.streak}</Text>
+      </Flex>
+    );
   }
 
   // Render functions for the different rendering modes (compact & standard).
@@ -132,8 +147,11 @@ export default function HabitCard({
         {/* Controls */}
         {isPending ? (
           <>
+            {/* Streak */}
+            <Box>{renderStreak()}</Box>
+
             {/* Mark Incomplete Button */}
-            <Button h={16} w={16} p={0} onClick={() => onSetIncomplete()}>
+            <Button h={16} w={16} minW={16} p={0} onClick={() => onSetIncomplete()}>
               <IoCloseCircleOutline size={32} />
             </Button>
 
@@ -145,6 +163,7 @@ export default function HabitCard({
                 backgroundColor: "gray.700",
               }}
               h={16}
+              minW={16}
               w={16}
               p={0}
               onClick={() => onSetComplete()}
@@ -193,10 +212,7 @@ export default function HabitCard({
         >
           <Box>
             {/* TODO: For some reason the ellipsis is not working here... Oh well, at least we get the overflow to hide. */}
-            <Text
-              whiteSpace="nowrap"
-              textOverflow="ellipsis"
-            >
+            <Text whiteSpace="nowrap" textOverflow="ellipsis">
               {habit.title}
             </Text>
             <Text fontSize="xs" textColor={getDueDateTextColor()}>
@@ -208,6 +224,9 @@ export default function HabitCard({
         {/* Controls */}
         {isPending ? (
           <>
+            {/* Streak */}
+            {renderStreak()}
+
             {/* Mark Incomplete Button */}
             <Button h={16} w={16} p={0} onClick={() => onSetIncomplete()}>
               <IoCloseCircleOutline size={32} />

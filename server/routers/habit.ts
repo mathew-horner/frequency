@@ -1,7 +1,7 @@
 import { HabitStatus } from "@prisma/client";
 import * as trpc from "@trpc/server";
 import { z } from "zod";
-import { prisma } from "../../utils/db";
+import { prisma, getHabitStreak } from "../../utils/db";
 import { TodayHabit } from "../../utils/types";
 import { calculateDueIn } from "../../utils/date";
 
@@ -63,11 +63,13 @@ export const habitRouter = trpc
           });
           
           const dueIn = calculateDueIn({ habit, today: date, lastCompleteDate: lastComplete?.date });
+          const streak = await getHabitStreak(habit, date);
 
           return {
             ...habit,
             today: today || undefined,
             dueIn,
+            streak,
           } as TodayHabit;
         })
       );
