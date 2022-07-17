@@ -14,7 +14,7 @@ interface Props {
 
   /** Render the card in "compact" mode. */
   compact?: boolean;
-    
+
   // Callbacks for setting the status of the habit for today.
   onSetComplete: () => void;
   onSetIncomplete: () => void;
@@ -46,17 +46,23 @@ export default function HabitCard({
 
   function renderDueDateCompact() {
     switch (habit.dueIn) {
-      case 0: return "(today)";
-      case 1: return "(tomorrow)";
-      default: return `(${habit.dueIn} days)`;
+      case 0:
+        return "(today)";
+      case 1:
+        return "(tomorrow)";
+      default:
+        return `(${habit.dueIn} days)`;
     }
   }
 
   function renderDueDateStandard() {
     switch (habit.dueIn) {
-      case 0: return "due today";
-      case 1: return "due tomorrow";
-      default: return `due in ${habit.dueIn} days`;
+      case 0:
+        return "due today";
+      case 1:
+        return "due tomorrow";
+      default:
+        return `due in ${habit.dueIn} days`;
     }
   }
 
@@ -158,12 +164,12 @@ export default function HabitCard({
             </Text>
           </Box>
         </Text>
-        
+
         {/* Controls */}
         {isPending ? (
           <>
             {/* Mark Incomplete Button */}
-            <Button h={16} w={16} p={0}>
+            <Button h={16} w={16} p={0} onClick={() => onSetIncomplete()}>
               <IoCloseCircleOutline size={32} />
             </Button>
 
@@ -177,14 +183,21 @@ export default function HabitCard({
               h={16}
               w={16}
               p={0}
+              onClick={() => onSetComplete()}
             >
               <IoCheckmarkCircleOutline size={32} />
             </Button>
           </>
         ) : (
-          <Flex alignItems="center" p={6}>
+          <Button
+            p={0}
+            h={16}
+            w={16}
+            backgroundColor="transparent"
+            onClick={() => onSetPending()}
+          >
             {renderCompletionIcon()}
-          </Flex>
+          </Button>
         )}
       </Card>
     );
