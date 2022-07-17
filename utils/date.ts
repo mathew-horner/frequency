@@ -3,13 +3,18 @@ import { Habit } from "@prisma/client";
 const MILLIS_IN_DAY = (1000 * 60 * 60 * 24);
 
 export function getTodayTimestamp(): number {
-  const date = new Date();
-  date.setHours(0);
-  date.setMinutes(0);
-  date.setSeconds(0);
-  date.setMilliseconds(0);
+  return normalizeDate(new Date()).getTime();
+}
 
-  return date.getTime();
+function normalizeDate(date: Date): Date {
+  const newDate = new Date();
+  newDate.setUTCDate(date.getDate());
+  newDate.setUTCHours(0);
+  newDate.setUTCMinutes(0);
+  newDate.setUTCSeconds(0);
+  newDate.setUTCMilliseconds(0);
+
+  return newDate;
 }
 
 interface CalculateDueInParams {
@@ -35,13 +40,14 @@ export function calculateDueIn({
   lastCompleteDate =
     lastCompleteDate ||
     (() => {
-      const { createdOn } = habit;
-      createdOn.setDate(createdOn.getDate() - 1);
-      return createdOn;
+      const due = new Date();
+      due.setDate(habit.createdOn.getUTCDate() - 1);
+      return normalizeDate(due);
     })();
-
-  const dueDate = new Date();
-  dueDate.setDate(lastCompleteDate.getDate() + habit.frequency);
+  
+  // TODO: Probably want to upgrade to using a more mature date library at some point...
+  const dueDate = normalizeDate(new Date());
+  dueDate.setUTCDate(lastCompleteDate.getUTCDate() + habit.frequency);
 
   const dueIn = Math.floor(
     (dueDate.getTime() - today.getTime()) / MILLIS_IN_DAY
