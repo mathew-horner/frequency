@@ -26,16 +26,22 @@ import {
 import { trpc } from "../../utils/trpc";
 import { getTodayTimestamp } from "../../utils/date";
 
+/** The shape of the form state. */
 interface FormValues {
+  /** The title of the habit. */
   title: string;
+
+  /** The cycle length (in days) of the habit's due date. */
   frequency: number;
 }
 
+/** Schema used to validate the form input. */
 const FormSchema = z.object({
   title: z.string(),
   frequency: z.number().int(),
 });
 
+/** Modal to create a new habit. */
 export default NiceModal.create(() => {
   const modal = useModal();
   const createHabit = trpc.useMutation("habit.create");

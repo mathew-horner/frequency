@@ -2,9 +2,11 @@ import { Button, Flex, List, ListItem, Text } from "@chakra-ui/react";
 import { IoClose } from "react-icons/io5";
 
 interface Props {
+  /** Called when the user clicks the close button on the prompt. */
   onHidePrompt: () => void;
 }
 
+/** Prompts the user to upgrade to a paid account. */
 export default function UpgradePrompt({ onHidePrompt }: Props) {
   return (
     <Flex

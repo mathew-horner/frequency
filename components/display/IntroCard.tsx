@@ -2,10 +2,14 @@ import { Button, Flex, Text } from "@chakra-ui/react";
 import Card from "../Card";
 
 interface Props {
+  /** Called when the user clicks on the "Yes" button. */
   onClickYes: () => void;
+
+  /** Called when the user clicks on the "No" button. */
   onClickNo: () => void;
 }
 
+/** Prompts the user to begin the on-boarding experience. */
 export default function IntroCard({ onClickYes, onClickNo }: Props) {
   return (
     <Card
