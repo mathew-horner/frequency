@@ -17,11 +17,12 @@ import { Formik } from "formik";
 import { useContext } from "react";
 import { IoSettingsSharp } from "react-icons/io5";
 
+import Modal from "../Modal";
+import UpgradePrompt from "../display/UpgradePrompt";
+
 import SettingsContext, {
   SettingsSchema,
 } from "../../contexts/SettingsContext";
-import Modal from "../Modal";
-import UpgradePrompt from "../display/UpgradePrompt";
 
 import {
   formikOnSubmitHandler,
@@ -31,7 +32,7 @@ import {
 export default NiceModal.create(() => {
   const modal = useModal();
   const { settings, setSettings } = useContext(SettingsContext);
-
+  
   function setUpgradePromptHidden() {
     setSettings({ ...settings, hideUpgradePrompt: true });
   }
