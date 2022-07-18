@@ -11,17 +11,22 @@ import {
   RadioGroup,
   Text,
 } from "@chakra-ui/react";
+
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import { Formik } from "formik";
 import { useContext } from "react";
 import { IoSettingsSharp } from "react-icons/io5";
-import SettingsContext, { SettingsSchema } from "../../contexts/SettingsContext";
+
+import SettingsContext, {
+  SettingsSchema,
+} from "../../contexts/SettingsContext";
+import Modal from "../Modal";
+import UpgradePrompt from "../display/UpgradePrompt";
+
 import {
   formikOnSubmitHandler,
   toFormikValidationSchema,
 } from "../../utils/forms";
-import Modal from "../Modal";
-import UpgradePrompt from "../display/UpgradePrompt";
 
 export default NiceModal.create(() => {
   const modal = useModal();
@@ -34,6 +39,7 @@ export default NiceModal.create(() => {
   return (
     <Modal isOpen={modal.visible} onClose={modal.remove} size="xl">
       <ModalHeader>
+        {/* Modal Title */}
         <Flex alignItems="center" gap={1.5}>
           <IoSettingsSharp size={40} />
           <Text fontSize="3xl" fontWeight="bold">
@@ -41,6 +47,7 @@ export default NiceModal.create(() => {
           </Text>
         </Flex>
       </ModalHeader>
+
       <Formik
         initialValues={settings}
         validationSchema={toFormikValidationSchema(SettingsSchema)}
@@ -57,11 +64,14 @@ export default NiceModal.create(() => {
           return (
             <form onSubmit={handleSubmit}>
               <ModalBody display="flex" flexDirection="column" gap={4}>
+                {/* Upgrade from Trial Prompt */}
                 {!settings.hideUpgradePrompt && (
                   <UpgradePrompt
                     onHidePrompt={() => setUpgradePromptHidden()}
                   />
                 )}
+
+                {/* View Mode */}
                 <FormControl as="fieldset">
                   <FormLabel as="legend" fontWeight="bold">
                     View Mode
@@ -77,6 +87,8 @@ export default NiceModal.create(() => {
                   </RadioGroup>
                 </FormControl>
               </ModalBody>
+              
+              {/* Submit Button */}
               <ModalFooter>
                 <Button type="submit" disabled={isSubmitting} size="lg" mt={4}>
                   Submit

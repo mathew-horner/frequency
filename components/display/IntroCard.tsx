@@ -15,13 +15,18 @@ export default function IntroCard({ onClickYes, onClickNo }: Props) {
       backgroundColor="black"
       textColor="white"
     >
+      {/* Title */}
       <Text as="h2" fontSize="xl" fontWeight="bold">
         Welcome to frequency!
       </Text>
+
+      {/* Prompt Text */}
       <Text>
         It looks like you may be new here! Would you like a crash course on how
         to use this wonderful little habit tracker?
       </Text>
+
+      {/* Buttons */}
       <Flex justifyContent="center" gap={4} mt={2}>
         <Button
           backgroundColor="white"

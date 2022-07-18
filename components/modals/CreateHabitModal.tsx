@@ -45,18 +45,22 @@ export default NiceModal.create(() => {
     <Modal isOpen={modal.visible} onClose={modal.remove} size="xl">
       <ModalHeader>
         <Flex flexDirection="column" gap={3}>
+          {/* Modal Title */}
           <Flex alignItems="center" gap={1.5}>
             <IoCheckmarkCircleSharp size={40} />
             <Text fontSize="3xl" fontWeight="bold">
               Create Habit
             </Text>
           </Flex>
+
+          {/* Modal Title Subtext */}
           <Text color="gray" fontSize="sm" fontWeight="normal">
             This is the start of something great! Remember that doing a little
             bit every day is the key to long term success.
           </Text>
         </Flex>
       </ModalHeader>
+
       <Formik
         initialValues={{ title: "", frequency: 1 } as FormValues}
         validationSchema={toFormikValidationSchema(FormSchema)}
@@ -114,7 +118,10 @@ export default NiceModal.create(() => {
                       name="frequency"
                       onChange={(value) => {
                         setFieldError("frequency", "");
-                        setFieldValue("frequency", value ? parseInt(value) : "");
+                        setFieldValue(
+                          "frequency",
+                          value ? parseInt(value) : ""
+                        );
                       }}
                       value={values.frequency}
                       isInvalid={touched.frequency && !!errors.frequency}
@@ -134,11 +141,6 @@ export default NiceModal.create(() => {
               {/* Submit Button */}
               <ModalFooter>
                 <Button
-                  backgroundColor="primaryBlue.100"
-                  textColor="primaryBlue.500"
-                  _hover={{
-                    backgroundColor: "primaryBlue.300",
-                  }}
                   type="submit"
                   disabled={isSubmitting}
                   size="lg"

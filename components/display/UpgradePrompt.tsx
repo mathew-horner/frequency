@@ -32,15 +32,19 @@ export default function UpgradePrompt({ onHidePrompt }: Props) {
         <IoClose size={20} />
       </Button>
 
-      {/* Content */}
+      {/* Title */}
       <Text as="h2" fontSize="xl" fontWeight="bold">
         10 days left in trial.
       </Text>
+
+      {/* Trial Explanation */}
       <Text fontSize="sm" textColor="gray.300">
         You are currently using the trial version of <b>frequency</b>. You have
         some time left before your trial expires, but you are missing out on
         several features that are provided in <b>frequency pro</b>:
       </Text>
+
+      {/* Pro Features */}
       <List fontSize="sm" textColor="gray.300">
         <ListItem>- Analytics</ListItem>
         <ListItem>- Rewards</ListItem>
