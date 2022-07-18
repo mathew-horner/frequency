@@ -9,6 +9,50 @@ import SettingsModal from "../components/modals/SettingsModal";
 
 export default function Navbar() {
   const session = useSession();
+
+  function renderControls() {
+    if (session.status === "loading") return null;
+    return (
+      <>
+        {!!session.data ? (
+          <>
+            <Button
+              type_="gray"
+              size="lg"
+              h={12}
+              w={12}
+              p={0}
+              onClick={() => NiceModal.show(SettingsModal)}
+            >
+              <IoSettingsSharp size={24} />
+            </Button>
+            <Button
+              type_="gray"
+              size="lg"
+              h={12}
+              w={12}
+              p={0}
+              onClick={() => signOut()}
+            >
+              <IoLogOut size={24} />
+            </Button>
+          </>
+        ) : (
+          <Button
+            type_="gray"
+            size="lg"
+            h={12}
+            w={12}
+            p={0}
+            onClick={() => signIn()}
+          >
+            <IoLogIn size={24} />
+          </Button>
+        )}
+      </>
+    );
+  }
+
   return (
     <Flex
       as="header"
@@ -41,27 +85,7 @@ export default function Navbar() {
       </Flex>
 
       {/* Controls */}
-      {!!session.data ? (
-        <>
-          <Button
-            type_="gray"
-            size="lg"
-            h={12}
-            w={12}
-            p={0}
-            onClick={() => NiceModal.show(SettingsModal)}
-          >
-            <IoSettingsSharp size={24} />
-          </Button>
-          <Button type_="gray" size="lg" h={12} w={12} p={0} onClick={() => signOut()}>
-            <IoLogOut size={24} />
-          </Button>
-        </>
-      ) : (
-        <Button type_="gray" size="lg" h={12} w={12} p={0} onClick={() => signIn()}>
-          <IoLogIn size={24} />
-        </Button>
-      )}
+      {renderControls()}
     </Flex>
   );
 }
