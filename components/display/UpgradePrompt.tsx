@@ -1,5 +1,6 @@
-import { Button, Flex, List, ListItem, Text } from "@chakra-ui/react";
+import { Flex, List, ListItem, Text } from "@chakra-ui/react";
 import { IoClose } from "react-icons/io5";
+import Button from "../Button";
 
 interface Props {
   /** Called when the user clicks the close button on the prompt. */
@@ -20,14 +21,10 @@ export default function UpgradePrompt({ onHidePrompt }: Props) {
     >
       {/* Hide Prompt Button */}
       <Button
+        type_="black"
         position="absolute"
         top={0}
         right={0}
-        backgroundColor="black"
-        textColor="white"
-        _hover={{
-          backgroundColor: "gray.700",
-        }}
         p={0}
         onClick={() => onHidePrompt()}
       >
@@ -54,9 +51,7 @@ export default function UpgradePrompt({ onHidePrompt }: Props) {
 
       {/* Upgrade Button */}
       <Button
-        border="1px"
-        borderColor="white"
-        backgroundColor="transparent"
+        type_="white-outline"
         alignSelf="flex-end"
       >
         Upgrade Now
