@@ -6,13 +6,14 @@ type ViewMode = z.infer<typeof ViewModeSchema>;
 
 export interface Settings {
   viewMode: ViewMode;
+  hiddenHabitDueInThreshold?: number;
   hideUpgradePrompt: boolean;
   hideIntroCard: boolean;
 }
 
 export const SettingsSchema = z.object({
   viewMode: ViewModeSchema,
-  hideUpgradePrompt: z.boolean(),
+  hiddenHabitDueInThreshold: z.number().nullish(),
 });
 
 export const INITIAL_SETTINGS: Settings = {

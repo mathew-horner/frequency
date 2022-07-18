@@ -67,6 +67,18 @@ const Home: NextPage = () => {
     [habitList.data]
   );
 
+  const filteredHabits = useMemo(() => {
+    const { hiddenHabitDueInThreshold } = settings;
+
+    if (hiddenHabitDueInThreshold === undefined) {
+      return orderedHabits;
+    } else {
+      return orderedHabits.filter(
+        (habit) => habit.dueIn <= hiddenHabitDueInThreshold
+      );
+    }
+  }, [orderedHabits]);
+
   // If the auth status of the user hasn't been determined, bail so we don't cause CLS.
   if (status === "loading") return null;
 
@@ -139,11 +151,11 @@ const Home: NextPage = () => {
 
   return render(
     <>
-      {orderedHabits.length === 0 ? (
+      {filteredHabits.length === 0 ? (
         <>{tryRenderIntroCard()}</>
       ) : (
         <>
-          {orderedHabits.map((habit) => (
+          {filteredHabits.map((habit) => (
             <HabitCard
               key={habit.title}
               habit={habit}
