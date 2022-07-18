@@ -15,16 +15,22 @@ export const habitRouter = trpc
       title: z.string(),
       frequency: z.number().int(),
       dateTimestamp: z.number().int(),
+      start: z.enum(["Today", "Tomorrow"]),
     }),
     resolve({ input, ctx }) {
       const { session } = ctx as any;
+      const createdOn = new Date(input.dateTimestamp);
+
+      if (input.start === "Tomorrow") {
+        createdOn.setDate(createdOn.getDate() + 1);
+      }
 
       return prisma.habit.create({
         data: {
           userId: session.user.id,
           title: input.title,
           frequency: input.frequency,
-          createdOn: new Date(input.dateTimestamp),
+          createdOn,
         },
       });
     },

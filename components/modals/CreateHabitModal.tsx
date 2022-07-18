@@ -1,6 +1,9 @@
 import {
   Button,
   Flex,
+  FormControl,
+  FormLabel,
+  HStack,
   Input,
   ModalBody,
   ModalFooter,
@@ -10,6 +13,8 @@ import {
   NumberInput,
   NumberInputField,
   NumberInputStepper,
+  Radio,
+  RadioGroup,
   Text,
 } from "@chakra-ui/react";
 
@@ -26,16 +31,20 @@ import {
 import { trpc } from "../../utils/trpc";
 import { getTodayTimestamp } from "../../utils/date";
 
+type HabitStart = "Today" | "Tomorrow";
+
 /** The shape of the form state. */
 interface FormValues {
   title: string;
   frequency: number;
+  start: HabitStart;
 }
 
 /** Schema used to validate the form input. */
 const FormSchema = z.object({
   title: z.string(),
   frequency: z.number().int(),
+  start: z.enum(["Today", "Tomorrow"]),
 });
 
 export default NiceModal.create(() => {
@@ -64,14 +73,15 @@ export default NiceModal.create(() => {
       </ModalHeader>
 
       <Formik
-        initialValues={{ title: "", frequency: 1 } as FormValues}
+        initialValues={{ title: "", frequency: 1, start: "Today" } as FormValues}
         validationSchema={toFormikValidationSchema(FormSchema)}
-        onSubmit={formikOnSubmitHandler(({ title, frequency }) =>
+        onSubmit={formikOnSubmitHandler(({ title, frequency, start }) =>
           createHabit
             .mutateAsync({
               title,
               frequency,
               dateTimestamp: todayTimestamp,
+              start,
             })
             .then(() => modal.resolve())
             .then(() => modal.remove())
@@ -138,17 +148,29 @@ export default NiceModal.create(() => {
                       </NumberInputStepper>
                     </NumberInput>
                   </Flex>
+
+                  {/* View Mode */}
+                  <FormControl as="fieldset">
+                    <FormLabel as="legend" fontWeight="medium" fontSize="lg">
+                      When do you want to start?
+                    </FormLabel>
+                    <RadioGroup
+                      value={values.start}
+                      onChange={(v) => setFieldValue("start", v)}
+                      size="lg"
+                    >
+                      <HStack spacing="24px">
+                        <Radio value="Today">Today</Radio>
+                        <Radio value="Tomorrow">Tomorrow</Radio>
+                      </HStack>
+                    </RadioGroup>
+                  </FormControl>
                 </Flex>
               </ModalBody>
 
               {/* Submit Button */}
               <ModalFooter>
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  size="lg"
-                  mt={4}
-                >
+                <Button type="submit" disabled={isSubmitting} size="lg" mt={4}>
                   Submit
                 </Button>
               </ModalFooter>
