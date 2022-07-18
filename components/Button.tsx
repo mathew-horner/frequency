@@ -32,7 +32,7 @@ export default function Button({ type_, children, ...rest }: Props) {
     props.textColor = "white";
     props._hover = {
       backgroundColor: "gray.700",
-    }
+    };
   }
 
   return (
