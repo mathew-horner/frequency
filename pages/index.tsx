@@ -1,4 +1,4 @@
-import { Button, Box, Flex } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { HabitStatus } from "@prisma/client";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
@@ -6,6 +6,7 @@ import { useContext, useMemo } from "react";
 import NiceModal from "@ebay/nice-modal-react";
 import { IoAddCircleOutline } from "react-icons/io5";
 
+import Button from "../components/Button";
 import CreateHabitModal from "../components/modals/CreateHabitModal";
 import HabitCard from "../components/HabitCard";
 import UnauthenticatedCard from "../components/display/UnauthenticatedCard";
@@ -157,6 +158,7 @@ const Home: NextPage = () => {
 
       {/* Add Habit Button */}
       <Button
+        type_="gray"
         h={12}
         onClick={() => {
           NiceModal.show(CreateHabitModal).then(() => habitList.refetch());

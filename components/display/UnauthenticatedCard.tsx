@@ -1,5 +1,6 @@
-import { Button, Flex, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import { signIn } from "next-auth/react";
+import Button from "../Button";
 import Card from "../Card";
 
 /** Prompts the user to sign in / register. */
@@ -25,14 +26,11 @@ export default function UnauthenticatedCard() {
 
       {/* Buttons */}
       <Flex justifyContent="center" gap={4} mt={2}>
-        <Button backgroundColor="white" textColor="black" w={32}>
+        <Button type_="white" w={32}>
           Learn More
         </Button>
         <Button
-          border="1px"
-          borderColor="white"
-          backgroundColor="transparent"
-          textColor="white"
+          type_="white-outline"
           w={32}
           onClick={() => signIn()}
         >

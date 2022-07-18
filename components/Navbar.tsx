@@ -1,9 +1,10 @@
 import { useSession, signIn, signOut } from "next-auth/react";
 import NiceModal from "@ebay/nice-modal-react";
-import { Flex, Text, Button } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import { IoLogIn, IoLogOut, IoSettingsSharp } from "react-icons/io5";
 import { TbWaveSawTool } from "react-icons/tb";
 
+import Button from "../components/Button";
 import SettingsModal from "../components/modals/SettingsModal";
 
 export default function Navbar() {
@@ -43,6 +44,7 @@ export default function Navbar() {
       {!!session.data ? (
         <>
           <Button
+            type_="gray"
             size="lg"
             h={12}
             w={12}
@@ -51,12 +53,12 @@ export default function Navbar() {
           >
             <IoSettingsSharp size={24} />
           </Button>
-          <Button size="lg" h={12} w={12} p={0} onClick={() => signOut()}>
+          <Button type_="gray" size="lg" h={12} w={12} p={0} onClick={() => signOut()}>
             <IoLogOut size={24} />
           </Button>
         </>
       ) : (
-        <Button size="lg" h={12} w={12} p={0} onClick={() => signIn()}>
+        <Button type_="gray" size="lg" h={12} w={12} p={0} onClick={() => signIn()}>
           <IoLogIn size={24} />
         </Button>
       )}

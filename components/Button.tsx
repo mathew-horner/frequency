@@ -3,7 +3,7 @@ import {
   ButtonProps as ChakraButtonProps,
 } from "@chakra-ui/react";
 
-type ButtonType = "black" | "gray" | "white-outline";
+type ButtonType = "black" | "gray" | "white" | "white-outline";
 
 interface Props extends ChakraButtonProps {
   type_?: ButtonType;
@@ -20,11 +20,19 @@ export default function Button({ type_, children, ...rest }: Props) {
     };
   }
 
+  if (type_ === "white") {
+    props.backgroundColor = "white";
+    props.textColor = "black";
+  }
+
   if (type_ === "white-outline") {
-    props.border="1px"
-    props.borderColor="white"
-    props.backgroundColor="transparent"
+    props.border = "1px";
+    props.borderColor = "white";
+    props.backgroundColor = "transparent";
     props.textColor = "white";
+    props._hover = {
+      backgroundColor: "gray.700",
+    }
   }
 
   return (

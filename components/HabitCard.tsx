@@ -1,11 +1,12 @@
 import React from "react";
-import { Box, Button, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import {
   IoCheckmarkCircleOutline,
   IoCloseCircleOutline,
   IoFlame,
 } from "react-icons/io5";
 
+import Button from "./Button";
 import Card from "./Card";
 import { TodayHabit } from "../utils/types";
 import { HabitStatus } from "@prisma/client";
@@ -151,17 +152,13 @@ export default function HabitCard({
             <Box>{renderStreak()}</Box>
 
             {/* Mark Incomplete Button */}
-            <Button h={16} w={16} minW={16} p={0} onClick={() => onSetIncomplete()}>
+            <Button type_="gray" h={16} w={16} minW={16} p={0} onClick={() => onSetIncomplete()}>
               <IoCloseCircleOutline size={32} />
             </Button>
 
             {/* Mark Completed Button */}
             <Button
-              backgroundColor="black"
-              textColor="white"
-              _hover={{
-                backgroundColor: "gray.700",
-              }}
+              type_="black"
               h={16}
               minW={16}
               w={16}
@@ -228,17 +225,13 @@ export default function HabitCard({
             {renderStreak()}
 
             {/* Mark Incomplete Button */}
-            <Button h={16} w={16} p={0} onClick={() => onSetIncomplete()}>
+            <Button type_="gray" h={16} w={16} p={0} onClick={() => onSetIncomplete()}>
               <IoCloseCircleOutline size={32} />
             </Button>
 
             {/* Mark Completed Button */}
             <Button
-              backgroundColor="black"
-              textColor="white"
-              _hover={{
-                backgroundColor: "gray.700",
-              }}
+              type_="black"
               h={16}
               w={16}
               p={0}

@@ -1,4 +1,5 @@
-import { Button, Flex, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
+import Button from "../Button";
 import Card from "../Card";
 
 interface Props {
@@ -33,18 +34,14 @@ export default function IntroCard({ onClickYes, onClickNo }: Props) {
       {/* Buttons */}
       <Flex justifyContent="center" gap={4} mt={2}>
         <Button
-          backgroundColor="white"
-          textColor="black"
+          type_="white"
           w={24}
           onClick={() => onClickYes()}
         >
           Yes
         </Button>
         <Button
-          border="1px"
-          borderColor="white"
-          backgroundColor="transparent"
-          textColor="white"
+          type_="white-outline"
           w={24}
           onClick={() => onClickNo()}
         >
