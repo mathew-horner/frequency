@@ -1,20 +1,11 @@
-import { PrismaClient, Habit, HabitStatus } from "@prisma/client";
+import { Habit, HabitStatus } from "@prisma/client";
 import { MILLIS_IN_DAY } from "./date";
+import prisma from "./prisma";
 
-declare global {
-  // allow global `var` declarations
-  // eslint-disable-next-line no-var
-  var prisma: PrismaClient | undefined;
-}
-
-export const prisma =
-  global.prisma ||
-  new PrismaClient({
-    log: ["query"],
-  });
-
-if (process.env.NODE_ENV !== "production") global.prisma = prisma;
-
+/**
+ * Queries the database to get how many completions have been made on time
+ * in a row for the given habit.
+ */
 export async function getHabitStreak(
   habit: Habit,
   today: Date

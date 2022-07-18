@@ -1,7 +1,8 @@
 import { HabitStatus } from "@prisma/client";
 import * as trpc from "@trpc/server";
 import { z } from "zod";
-import { prisma, getHabitStreak } from "../../utils/db";
+import { getHabitStreak } from "../../utils/db";
+import prisma from "../../utils/prisma";
 import { TodayHabit } from "../../utils/types";
 import { calculateDueIn } from "../../utils/date";
 
