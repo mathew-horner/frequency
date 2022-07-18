@@ -57,8 +57,24 @@ const Home: NextPage = () => {
 
     return pending.concat(nonPending);
   }, [habitList.data]);
+  
+  if (status === "loading") return null;
 
-  if (habitList.isLoading) return null;
+  if (isAuthenticated && habitList.isLoading) return null;
+
+  function render(node: React.ReactNode) {
+    return (
+      <Box as="main" p={6} px={{ base: 2, sm: 6 }}>
+        <Flex flexDirection="column" gap={4}>
+          {node}
+        </Flex>
+      </Box>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return render(<UnauthenticatedCard />);
+  }
 
   // Callback functions for updating the status of a habit.
 
@@ -105,36 +121,30 @@ const Home: NextPage = () => {
     ) : null;
   }
 
-  return (
-    <Box as="main" p={6} px={{ base: 2, sm: 6 }}>
-      <Flex flexDirection="column" gap={4}>
-        {orderedHabits.length === 0 ? (
-          <>
-            {isAuthenticated ? tryRenderIntroCard() : <UnauthenticatedCard />}
-          </>
-        ) : (
-          <>
-            {orderedHabits.map((habit) => (
-              <HabitCard
-                key={habit.title}
-                habit={habit}
-                compact={settings.viewMode === "Compact"}
-                onSetComplete={() => onSetComplete(habit)}
-                onSetIncomplete={() => onSetIncomplete(habit)}
-                onSetPending={() => onSetPending(habit)}
-              />
-            ))}
-          </>
-        )}
-        {isAuthenticated && (
-          <AddHabit
-            onClick={() =>
-              NiceModal.show(CreateHabitModal).then(() => habitList.refetch())
-            }
-          />
-        )}
-      </Flex>
-    </Box>
+  return render(
+    <>
+      {orderedHabits.length === 0 ? (
+        <>{tryRenderIntroCard()}</>
+      ) : (
+        <>
+          {orderedHabits.map((habit) => (
+            <HabitCard
+              key={habit.title}
+              habit={habit}
+              compact={settings.viewMode === "Compact"}
+              onSetComplete={() => onSetComplete(habit)}
+              onSetIncomplete={() => onSetIncomplete(habit)}
+              onSetPending={() => onSetPending(habit)}
+            />
+          ))}
+        </>
+      )}
+      <AddHabit
+        onClick={() =>
+          NiceModal.show(CreateHabitModal).then(() => habitList.refetch())
+        }
+      />
+    </>
   );
 };
 
