@@ -108,6 +108,7 @@ export default NiceModal.create(() => {
                       // TODO: Add error message
                       isInvalid={touched.title && !!errors.title}
                       size="lg"
+                      autoFocus
                     />
                   </Flex>
 
