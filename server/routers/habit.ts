@@ -18,10 +18,6 @@ export const habitRouter = trpc
     resolve({ input, ctx }) {
       const { session } = ctx as any;
 
-      if (!session?.user?.id) {
-        return null;
-      }
-
       return prisma.habit.create({
         data: {
           userId: session.user.id,
@@ -40,10 +36,6 @@ export const habitRouter = trpc
     }),
     async resolve({ input: { dateTimestamp }, ctx }) {
       const { session } = ctx as any;
-
-      if (!session?.user?.id) {
-        return [];
-      }
 
       const habits = await prisma.habit.findMany({
         where: { userId: session.user.id },
@@ -90,9 +82,6 @@ export const habitRouter = trpc
     }),
     async resolve({ input: { habitId, dateTimestamp, status }, ctx }) {
       const { session } = ctx as any;
-      if (!session?.user?.id) {
-        return null;
-      }
 
       const habit = await prisma.habit.findUnique({ where: { id: habitId } });
       if (!habit) {
