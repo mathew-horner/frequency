@@ -6,12 +6,12 @@ import { useContext, useMemo } from "react";
 import NiceModal from "@ebay/nice-modal-react";
 
 import { AddHabit } from "../components/AddHabit";
-import CreateHabitModal from "../components/CreateHabitModal";
+import CreateHabitModal from "../components/modals/CreateHabitModal";
 import HabitCard from "../components/HabitCard";
-import UnauthenticatedCard from "../components/UnauthenticatedCard";
+import UnauthenticatedCard from "../components/display/UnauthenticatedCard";
 import { TodayHabit } from "../utils/types";
 import { trpc } from "../utils/trpc";
-import IntroCard from "../components/IntroCard";
+import IntroCard from "../components/display/IntroCard";
 import SettingsContext from "../contexts/SettingsContext";
 import { getTodayTimestamp } from "../utils/date";
 
@@ -65,7 +65,7 @@ const Home: NextPage = () => {
     () => (habitList.data ? orderHabits(habitList.data) : []),
     [habitList.data]
   );
-    
+
   // If the auth status of the user hasn't been determined, bail so we don't cause CLS.
   if (status === "loading") return null;
 

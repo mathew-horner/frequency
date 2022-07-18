@@ -1,6 +1,6 @@
 import { Button, Flex, Text } from "@chakra-ui/react";
 import { signIn } from "next-auth/react";
-import Card from "./Card";
+import Card from "../Card";
 
 export default function UnauthenticatedCard() {
   return (

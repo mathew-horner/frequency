@@ -18,13 +18,13 @@ import { Formik } from "formik";
 import { z } from "zod";
 import { IoCheckmarkCircleSharp } from "react-icons/io5";
 
-import Modal from "./Modal";
+import Modal from "../Modal";
 import {
   formikOnSubmitHandler,
   toFormikValidationSchema,
-} from "../utils/forms";
-import { trpc } from "../utils/trpc";
-import { getTodayTimestamp } from "../utils/date";
+} from "../../utils/forms";
+import { trpc } from "../../utils/trpc";
+import { getTodayTimestamp } from "../../utils/date";
 
 interface FormValues {
   title: string;

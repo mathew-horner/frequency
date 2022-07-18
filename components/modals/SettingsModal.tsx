@@ -15,13 +15,13 @@ import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import { Formik } from "formik";
 import { useContext } from "react";
 import { IoSettingsSharp } from "react-icons/io5";
-import SettingsContext, { SettingsSchema } from "../contexts/SettingsContext";
+import SettingsContext, { SettingsSchema } from "../../contexts/SettingsContext";
 import {
   formikOnSubmitHandler,
   toFormikValidationSchema,
-} from "../utils/forms";
-import Modal from "./Modal";
-import UpgradePrompt from "./UpgradePrompt";
+} from "../../utils/forms";
+import Modal from "../Modal";
+import UpgradePrompt from "../display/UpgradePrompt";
 
 export default NiceModal.create(() => {
   const modal = useModal();

@@ -4,7 +4,7 @@ import { Flex, Text, Button } from "@chakra-ui/react";
 import { IoLogIn, IoLogOut, IoSettingsSharp } from "react-icons/io5";
 import { TbWaveSawTool } from "react-icons/tb";
 
-import SettingsModal from "../components/SettingsModal";
+import SettingsModal from "../components/modals/SettingsModal";
 
 export default function Navbar() {
   const session = useSession();
