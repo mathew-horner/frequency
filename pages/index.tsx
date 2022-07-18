@@ -22,10 +22,10 @@ const Home: NextPage = () => {
 
   const isAuthenticated = status === "authenticated";
 
-  const habitList = trpc.useQuery([
-    "habit.list",
-    { dateTimestamp: todayTimestamp },
-  ]);
+  const habitList = trpc.useQuery(
+    ["habit.list", { dateTimestamp: todayTimestamp }],
+    { enabled: isAuthenticated }
+  );
 
   const habitSetStatus = trpc.useMutation("habit.setStatus");
 
