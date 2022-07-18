@@ -15,12 +15,42 @@ import IntroCard from "../components/IntroCard";
 import SettingsContext from "../contexts/SettingsContext";
 import { getTodayTimestamp } from "../utils/date";
 
+/** Order the habit list for display. */
+function orderHabits(habits: TodayHabit[]): TodayHabit[] {
+  const pending: TodayHabit[] = [];
+  const nonPending: TodayHabit[] = [];
+
+  habits.forEach((habit) => {
+    if (habit.today?.status && habit.today.status !== HabitStatus.Pending) {
+      nonPending.push(habit);
+    } else {
+      pending.push(habit);
+    }
+  });
+
+  // Sort by due date, then alphabetically by title.
+  pending.sort((a, b) => {
+    // TODO: There has to be a better way to sort like this.
+    if (a.dueIn === b.dueIn) {
+      return a.title > b.title ? 1 : -1;
+    }
+    return a.dueIn > b.dueIn ? 1 : -1;
+  });
+
+  // Just sort alphabetically by title.
+  nonPending.sort((a, b) => (a.title > b.title ? 1 : -1));
+
+  return pending.concat(nonPending);
+}
+
 const Home: NextPage = () => {
   const { settings, setSettings } = useContext(SettingsContext);
   const { status } = useSession();
   const todayTimestamp = getTodayTimestamp();
 
   const isAuthenticated = status === "authenticated";
+
+  // tRPC hooks.
 
   const habitList = trpc.useQuery(
     ["habit.list", { dateTimestamp: todayTimestamp }],
@@ -29,39 +59,24 @@ const Home: NextPage = () => {
 
   const habitSetStatus = trpc.useMutation("habit.setStatus");
 
-  // It's a desirable UX for the pending habits to float to the top.
-  const orderedHabits = useMemo(() => {
-    const pending: TodayHabit[] = [];
-    const nonPending: TodayHabit[] = [];
+  // Other hooks. Effects, memos, etc.
 
-    // NOTE: Idk why I have to do `|| []` here, but I'm getting an undefined error on first render...
-    (habitList.data || []).forEach((habit) => {
-      if (habit.today?.status && habit.today.status !== HabitStatus.Pending) {
-        nonPending.push(habit);
-      } else {
-        pending.push(habit);
-      }
-    });
-
-    // Sort by due date, then alphabetically by title.
-    pending.sort((a, b) => {
-      // TODO: There has to be a better way to sort like this.
-      if (a.dueIn === b.dueIn) {
-        return a.title > b.title ? 1 : -1;
-      }
-      return a.dueIn > b.dueIn ? 1 : -1;
-    });
-
-    // Just sort alphabetically by title.
-    nonPending.sort((a, b) => (a.title > b.title ? 1 : -1));
-
-    return pending.concat(nonPending);
-  }, [habitList.data]);
-  
+  const orderedHabits = useMemo(
+    () => (habitList.data ? orderHabits(habitList.data) : []),
+    [habitList.data]
+  );
+    
+  // If the auth status of the user hasn't been determined, bail so we don't cause CLS.
   if (status === "loading") return null;
 
+  // If the user's habit list hasn't loaded yet, we might mistakenly render content that should only
+  // show when the user's habit list is actually empty. This will cause an undesirable CLS effect.
   if (isAuthenticated && habitList.isLoading) return null;
 
+  /**
+   * Just a helper function to render this component. Makes it easy for us to bail out early
+   * and just render the UnauthenticatedCard if the user is unauthenticated.
+   */
   function render(node: React.ReactNode) {
     return (
       <Box as="main" p={6} px={{ base: 2, sm: 6 }}>
