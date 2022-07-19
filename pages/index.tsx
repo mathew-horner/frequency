@@ -106,34 +106,37 @@ const Home: NextPage = () => {
 
   // Callback functions for updating the status of a habit.
 
-  function onSetComplete(habit: TodayHabit) {
-    habitSetStatus
+  async function onSetComplete(habit: TodayHabit) {
+    return habitSetStatus
       .mutateAsync({
         habitId: habit.id,
         dateTimestamp: todayTimestamp,
         status: HabitStatus.Complete,
       })
-      .then(() => habitList.refetch());
+      .then(() => habitList.refetch())
+      .then(() => Promise.resolve());
   }
 
-  function onSetIncomplete(habit: TodayHabit) {
-    habitSetStatus
+  async function onSetIncomplete(habit: TodayHabit) {
+    return habitSetStatus
       .mutateAsync({
         habitId: habit.id,
         dateTimestamp: todayTimestamp,
         status: HabitStatus.Incomplete,
       })
-      .then(() => habitList.refetch());
+      .then(() => habitList.refetch())
+      .then(() => Promise.resolve());
   }
 
-  function onSetPending(habit: TodayHabit) {
-    habitSetStatus
+  async function onSetPending(habit: TodayHabit) {
+    return habitSetStatus
       .mutateAsync({
         habitId: habit.id,
         dateTimestamp: todayTimestamp,
         status: HabitStatus.Pending,
       })
-      .then(() => habitList.refetch());
+      .then(() => habitList.refetch())
+      .then(() => Promise.resolve());
   }
 
   function hideIntroCard() {
@@ -157,7 +160,7 @@ const Home: NextPage = () => {
         <>
           {filteredHabits.map((habit) => (
             <HabitCard
-              key={habit.title}
+              key={habit.id}
               habit={habit}
               compact={settings.viewMode === "Compact"}
               onSetComplete={() => onSetComplete(habit)}

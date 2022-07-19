@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Flex, Text } from "@chakra-ui/react";
 import {
   IoCheckmarkCircleOutline,
   IoCloseCircleOutline,
   IoFlame,
 } from "react-icons/io5";
+import { Bars, TailSpin, MutatingDots } from "react-loader-spinner";
 
 import Button from "./Button";
 import Card from "./Card";
@@ -20,9 +21,9 @@ interface Props {
   compact?: boolean;
 
   // Callbacks for setting the status of the habit for today.
-  onSetComplete: () => void;
-  onSetIncomplete: () => void;
-  onSetPending: () => void;
+  onSetComplete: () => Promise<void>;
+  onSetIncomplete: () => Promise<void>;
+  onSetPending: () => Promise<void>;
 }
 
 enum WhenIsDueDisplay {
@@ -38,6 +39,8 @@ export default function HabitCard({
   onSetIncomplete,
   onSetPending,
 }: Props) {
+  const [saving, setSaving] = useState(false);
+
   const habitStatus = habit.today?.status || HabitStatus.Pending;
   const isPending = habitStatus === HabitStatus.Pending;
 
@@ -50,6 +53,14 @@ export default function HabitCard({
       return <IoCloseCircleOutline size={32} />;
     }
     return null;
+  }
+
+  /**
+   * Call the given callback function (onSetComplete and co.) and handle the saving
+   * state of the card. */
+  function saveWith(callback: () => Promise<void>) {
+    setSaving(true);
+    setTimeout(() => callback().then(() => setSaving(false)), 200);
   }
 
   // Functions for rendering the text indicator for the habit's due date.
@@ -102,6 +113,108 @@ export default function HabitCard({
     );
   }
 
+  function renderSpinner() {
+    return (
+      <Box pr={4}>
+        <TailSpin color="#000" height={28} width={28} />
+      </Box>
+    );
+  }
+
+  function renderControlsCompact() {
+    return (
+      <>
+        {isPending ? (
+          <>
+            {/* Streak */}
+            <Box>{renderStreak()}</Box>
+
+            {/* Mark Incomplete Button */}
+            <Button
+              type_="gray"
+              h={16}
+              w={16}
+              minW={16}
+              p={0}
+              onClick={() => saveWith(onSetIncomplete)}
+            >
+              <IoCloseCircleOutline size={32} />
+            </Button>
+
+            {/* Mark Completed Button */}
+            <Button
+              type_="black"
+              h={16}
+              minW={16}
+              w={16}
+              p={0}
+              onClick={() => saveWith(onSetComplete)}
+            >
+              <IoCheckmarkCircleOutline size={32} />
+            </Button>
+          </>
+        ) : (
+          <Button
+            p={0}
+            h={16}
+            w={16}
+            backgroundColor="transparent"
+            onClick={() => saveWith(onSetPending)}
+          >
+            {renderCompletionIcon()}
+          </Button>
+        )}
+      </>
+    );
+  }
+
+  function renderControlsStandard() {
+    return (
+      <>
+        {isPending ? (
+          <>
+            {/* Streak */}
+            <Box>{renderStreak()}</Box>
+
+            {/* Mark Incomplete Button */}
+            <Button
+              type_="gray"
+              h={16}
+              w={16}
+              minW={16}
+              p={0}
+              onClick={() => saveWith(onSetIncomplete)}
+            >
+              <IoCloseCircleOutline size={32} />
+            </Button>
+
+            {/* Mark Completed Button */}
+            <Button
+              type_="black"
+              h={16}
+              minW={16}
+              w={16}
+              p={0}
+              onClick={() => saveWith(onSetComplete)}
+            >
+              <IoCheckmarkCircleOutline size={32} />
+            </Button>
+          </>
+        ) : (
+          <Button
+            p={0}
+            h={16}
+            w={16}
+            backgroundColor="transparent"
+            onClick={() => saveWith(onSetPending)}
+          >
+            {renderCompletionIcon()}
+          </Button>
+        )}
+      </>
+    );
+  }
+
   // Render functions for the different rendering modes (compact & standard).
 
   function renderCompact() {
@@ -146,39 +259,7 @@ export default function HabitCard({
         </Text>
 
         {/* Controls */}
-        {isPending ? (
-          <>
-            {/* Streak */}
-            <Box>{renderStreak()}</Box>
-
-            {/* Mark Incomplete Button */}
-            <Button type_="gray" h={16} w={16} minW={16} p={0} onClick={() => onSetIncomplete()}>
-              <IoCloseCircleOutline size={32} />
-            </Button>
-
-            {/* Mark Completed Button */}
-            <Button
-              type_="black"
-              h={16}
-              minW={16}
-              w={16}
-              p={0}
-              onClick={() => onSetComplete()}
-            >
-              <IoCheckmarkCircleOutline size={32} />
-            </Button>
-          </>
-        ) : (
-          <Button
-            p={0}
-            h={16}
-            w={16}
-            backgroundColor="transparent"
-            onClick={() => onSetPending()}
-          >
-            {renderCompletionIcon()}
-          </Button>
-        )}
+        {!saving ? renderControlsCompact() : renderSpinner()}
       </Card>
     );
   }
@@ -219,38 +300,7 @@ export default function HabitCard({
         </Text>
 
         {/* Controls */}
-        {isPending ? (
-          <>
-            {/* Streak */}
-            {renderStreak()}
-
-            {/* Mark Incomplete Button */}
-            <Button type_="gray" h={16} w={16} p={0} onClick={() => onSetIncomplete()}>
-              <IoCloseCircleOutline size={32} />
-            </Button>
-
-            {/* Mark Completed Button */}
-            <Button
-              type_="black"
-              h={16}
-              w={16}
-              p={0}
-              onClick={() => onSetComplete()}
-            >
-              <IoCheckmarkCircleOutline size={32} />
-            </Button>
-          </>
-        ) : (
-          <Button
-            p={0}
-            h={16}
-            w={16}
-            backgroundColor="transparent"
-            onClick={() => onSetPending()}
-          >
-            {renderCompletionIcon()}
-          </Button>
-        )}
+        {!saving ? renderControlsStandard() : renderSpinner()}
       </Card>
     );
   }
