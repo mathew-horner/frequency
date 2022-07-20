@@ -70,7 +70,9 @@ export const habitRouter = trpc
 
       return results.map((result: any) => {
         const dueIn = calculateDueIn({
-          habit: result,
+          lastCompleteDate: result.lastCompleteDate,
+          createdOn: result.createdOn,
+          frequency: result.frequency,
           today: date,
         });
 

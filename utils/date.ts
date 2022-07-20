@@ -15,10 +15,13 @@ export function normalizeDate(date: Date): Date {
   return newDate;
 }
 
+type DateLike = Date | string;
+
 interface CalculateDueInParams {
-  // TODO: This is actually a new type that is returned by a hyper specific SQL query...
-  habit: any;
-  today: Date;
+  lastCompleteDate: DateLike;
+  createdOn: DateLike;
+  today: DateLike;
+  frequency: number;
 }
 
 /**
@@ -28,22 +31,24 @@ interface CalculateDueInParams {
  * If the habit is new (has had no completions yet), we base the due date off the creation
  * date of the habit itself.
  */
-export function calculateDueIn({ habit, today }: CalculateDueInParams): number {
-  const lastCompleteDate = habit.lastCompleteDate
-    ? normalizeDate(new Date(habit.lastCompleteDate))
-    : (() => {
-        const due = new Date();
-        due.setDate(habit.createdOn.getUTCDate() - 1);
-        return normalizeDate(due);
-      })();
+export function calculateDueIn({
+  lastCompleteDate,
+  createdOn,
+  frequency,
+  today,
+}: CalculateDueInParams): number {
+  // TODO: A lot of these `normalizeDate` calls are defensive... could probably be cleaned up.
+  today = normalizeDate(new Date(today));
 
-  // TODO: Probably want to upgrade to using a more mature date library at some point...
   const dueDate = normalizeDate(new Date());
-  dueDate.setUTCDate(lastCompleteDate.getUTCDate() + habit.frequency);
 
-  const dueIn = Math.floor(
-    (dueDate.getTime() - today.getTime()) / MILLIS_IN_DAY
-  );
+  if (lastCompleteDate) {
+    dueDate.setUTCDate(
+      normalizeDate(new Date(lastCompleteDate)).getUTCDate() + frequency
+    );
+  } else {
+    dueDate.setUTCDate(normalizeDate(new Date(createdOn)).getUTCDate() - 1);
+  }
 
-  return dueIn;
+  return Math.floor((dueDate.getTime() - today.getTime()) / MILLIS_IN_DAY);
 }

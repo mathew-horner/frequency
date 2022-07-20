@@ -154,7 +154,7 @@ const Home: NextPage = () => {
       <IntroCard onClickYes={() => {}} onClickNo={hideIntroCard} />
     ) : null;
   }
-  console.log(orderedHabits);
+
   return render(
     <>
       {orderedHabits.length === 0 ? (
