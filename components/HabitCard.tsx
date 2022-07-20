@@ -5,7 +5,7 @@ import {
   IoCloseCircleOutline,
   IoFlame,
 } from "react-icons/io5";
-import { Bars, TailSpin, MutatingDots } from "react-loader-spinner";
+import { TailSpin } from "react-loader-spinner";
 
 import Button from "./Button";
 import Card from "./Card";
