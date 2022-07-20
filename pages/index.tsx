@@ -10,20 +10,18 @@ import Button from "../components/Button";
 import CreateHabitModal from "../components/modals/CreateHabitModal";
 import HabitCard from "../components/HabitCard";
 import UnauthenticatedCard from "../components/display/UnauthenticatedCard";
-import { TodayHabit } from "../utils/types";
 import { trpc } from "../utils/trpc";
 import IntroCard from "../components/display/IntroCard";
 import SettingsContext from "../contexts/SettingsContext";
 import { getTodayTimestamp } from "../utils/date";
-
-// TODO: Need to type habits that get returned from tRPC habit list endpoint.
+import { TrpcHabitList, TrpcHabitListItem } from "../utils/types";
 
 /** Order the habit list for display. */
-function orderHabits(habits: any): any {
-  const pending: TodayHabit[] = [];
-  const nonPending: TodayHabit[] = [];
+function orderHabits(habits: TrpcHabitList) {
+  const pending: TrpcHabitList = [];
+  const nonPending: TrpcHabitList = [];
 
-  habits.forEach((habit: any) => {
+  habits.forEach((habit) => {
     if (habit.todayStatus !== HabitStatus.Pending) {
       nonPending.push(habit);
     } else {
@@ -109,7 +107,7 @@ const Home: NextPage = () => {
 
   // Callback functions for updating the status of a habit.
 
-  async function onSetComplete(habit: TodayHabit) {
+  async function onSetComplete(habit: TrpcHabitListItem) {
     return habitSetStatus
       .mutateAsync({
         habitId: habit.id,
@@ -120,7 +118,7 @@ const Home: NextPage = () => {
       .then(() => Promise.resolve());
   }
 
-  async function onSetIncomplete(habit: TodayHabit) {
+  async function onSetIncomplete(habit: TrpcHabitListItem) {
     return habitSetStatus
       .mutateAsync({
         habitId: habit.id,
@@ -131,7 +129,7 @@ const Home: NextPage = () => {
       .then(() => Promise.resolve());
   }
 
-  async function onSetPending(habit: TodayHabit) {
+  async function onSetPending(habit: TrpcHabitListItem) {
     return habitSetStatus
       .mutateAsync({
         habitId: habit.id,

@@ -3,6 +3,7 @@ import * as trpc from "@trpc/server";
 import { z } from "zod";
 import prisma from "../../utils/prisma";
 import { calculateDueIn, normalizeDate } from "../../utils/date";
+import { DbHabitListResult } from "../../utils/types";
 
 export const habitRouter = trpc
   .router()
@@ -42,8 +43,7 @@ export const habitRouter = trpc
       const { session } = ctx as any;
       const date = normalizeDate(new Date(dateTimestamp));
 
-      // TODO: Need to create a type for this.
-      const results: any = await prisma.$queryRaw`
+      const results: DbHabitListResult[] = await prisma.$queryRaw`
         WITH
         habit_days AS (
           SELECT * FROM "HabitDay" ORDER BY "date" DESC
@@ -68,7 +68,7 @@ export const habitRouter = trpc
         WHERE "userId" = ${session.user.id}
       `;
 
-      return results.map((result: any) => {
+      return results.map((result) => {
         const dueIn = calculateDueIn({
           lastCompleteDate: result.lastCompleteDate,
           createdOn: result.createdOn,

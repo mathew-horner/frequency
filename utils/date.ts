@@ -18,7 +18,7 @@ export function normalizeDate(date: Date): Date {
 type DateLike = Date | string;
 
 interface CalculateDueInParams {
-  lastCompleteDate: DateLike;
+  lastCompleteDate: DateLike | null;
   createdOn: DateLike;
   today: DateLike;
   frequency: number;
