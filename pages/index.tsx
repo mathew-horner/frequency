@@ -16,6 +16,8 @@ import SettingsContext from "../contexts/SettingsContext";
 import { getTodayTimestamp } from "../utils/date";
 import { TrpcHabitList, TrpcHabitListItem } from "../utils/types";
 
+// TODO: Should probably make it so that habits that have a `createdOn` > today don't show up.
+
 /** Order the habit list for display. */
 function orderHabits(habits: TrpcHabitList) {
   const pending: TrpcHabitList = [];

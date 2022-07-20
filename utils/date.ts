@@ -47,7 +47,9 @@ export function calculateDueIn({
       normalizeDate(new Date(lastCompleteDate)).getUTCDate() + frequency
     );
   } else {
-    dueDate.setUTCDate(normalizeDate(new Date(createdOn)).getUTCDate() - 1);
+    dueDate.setUTCDate(
+      normalizeDate(new Date(createdOn)).getUTCDate() + frequency - 2
+    );
   }
 
   return Math.floor((dueDate.getTime() - today.getTime()) / MILLIS_IN_DAY);
