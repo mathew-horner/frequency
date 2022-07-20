@@ -1,12 +1,10 @@
-import { Habit } from "@prisma/client";
-
-export const MILLIS_IN_DAY = (1000 * 60 * 60 * 24);
+export const MILLIS_IN_DAY = 1000 * 60 * 60 * 24;
 
 export function getTodayTimestamp(): number {
   return normalizeDate(new Date()).getTime();
 }
 
-function normalizeDate(date: Date): Date {
+export function normalizeDate(date: Date): Date {
   const newDate = new Date();
   newDate.setUTCDate(date.getDate());
   newDate.setUTCHours(0);
@@ -18,11 +16,9 @@ function normalizeDate(date: Date): Date {
 }
 
 interface CalculateDueInParams {
-  habit: Habit;
+  // TODO: This is actually a new type that is returned by a hyper specific SQL query...
+  habit: any;
   today: Date;
-  
-  /** The last date that the habit was marked as Complete. */
-  lastCompleteDate?: Date;
 }
 
 /**
@@ -32,19 +28,15 @@ interface CalculateDueInParams {
  * If the habit is new (has had no completions yet), we base the due date off the creation
  * date of the habit itself.
  */
-export function calculateDueIn({
-  habit,
-  today,
-  lastCompleteDate,
-}: CalculateDueInParams): number {
-  lastCompleteDate =
-    lastCompleteDate ||
-    (() => {
-      const due = new Date();
-      due.setDate(habit.createdOn.getUTCDate() - 1);
-      return normalizeDate(due);
-    })();
-  
+export function calculateDueIn({ habit, today }: CalculateDueInParams): number {
+  const lastCompleteDate = habit.lastCompleteDate
+    ? normalizeDate(new Date(habit.lastCompleteDate))
+    : (() => {
+        const due = new Date();
+        due.setDate(habit.createdOn.getUTCDate() - 1);
+        return normalizeDate(due);
+      })();
+
   // TODO: Probably want to upgrade to using a more mature date library at some point...
   const dueDate = normalizeDate(new Date());
   dueDate.setUTCDate(lastCompleteDate.getUTCDate() + habit.frequency);

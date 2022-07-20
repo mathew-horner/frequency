@@ -16,13 +16,15 @@ import IntroCard from "../components/display/IntroCard";
 import SettingsContext from "../contexts/SettingsContext";
 import { getTodayTimestamp } from "../utils/date";
 
+// TODO: Need to type habits that get returned from tRPC habit list endpoint.
+
 /** Order the habit list for display. */
-function orderHabits(habits: TodayHabit[]): TodayHabit[] {
+function orderHabits(habits: any): any {
   const pending: TodayHabit[] = [];
   const nonPending: TodayHabit[] = [];
 
-  habits.forEach((habit) => {
-    if (habit.today?.status && habit.today.status !== HabitStatus.Pending) {
+  habits.forEach((habit: any) => {
+    if (habit.todayStatus !== HabitStatus.Pending) {
       nonPending.push(habit);
     } else {
       pending.push(habit);
@@ -67,17 +69,18 @@ const Home: NextPage = () => {
     [habitList.data]
   );
 
-  const filteredHabits = useMemo(() => {
-    const { hiddenHabitDueInThreshold } = settings;
+  // TODO: Get this working again...
+  // const filteredHabits = useMemo(() => {
+  //   const { hiddenHabitDueInThreshold } = settings;
 
-    if (hiddenHabitDueInThreshold === undefined) {
-      return orderedHabits;
-    } else {
-      return orderedHabits.filter(
-        (habit) => habit.dueIn <= hiddenHabitDueInThreshold
-      );
-    }
-  }, [orderedHabits]);
+  //   if (hiddenHabitDueInThreshold === undefined) {
+  //     return orderedHabits;
+  //   } else {
+  //     return orderedHabits.filter(
+  //       (habit) => habit.dueIn <= hiddenHabitDueInThreshold
+  //     );
+  //   }
+  // }, [orderedHabits]);
 
   // If the auth status of the user hasn't been determined, bail so we don't cause CLS.
   if (status === "loading") return null;
@@ -151,14 +154,14 @@ const Home: NextPage = () => {
       <IntroCard onClickYes={() => {}} onClickNo={hideIntroCard} />
     ) : null;
   }
-
+  console.log(orderedHabits);
   return render(
     <>
-      {filteredHabits.length === 0 ? (
+      {orderedHabits.length === 0 ? (
         <>{tryRenderIntroCard()}</>
       ) : (
         <>
-          {filteredHabits.map((habit) => (
+          {orderedHabits.map((habit: any) => (
             <HabitCard
               key={habit.id}
               habit={habit}

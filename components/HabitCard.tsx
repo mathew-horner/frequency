@@ -9,13 +9,14 @@ import { TailSpin } from "react-loader-spinner";
 
 import Button from "./Button";
 import Card from "./Card";
-import { TodayHabit } from "../utils/types";
 import { HabitStatus } from "@prisma/client";
 
 const STREAK_THRESHOLD = 3;
 
+// TODO: Figure out any for habit.
+
 interface Props {
-  habit: TodayHabit;
+  habit: any;
 
   /** Render the card in "compact" mode. */
   compact?: boolean;
@@ -41,7 +42,7 @@ export default function HabitCard({
 }: Props) {
   const [saving, setSaving] = useState(false);
 
-  const habitStatus = habit.today?.status || HabitStatus.Pending;
+  const habitStatus = habit.todayStatus || HabitStatus.Pending;
   const isPending = habitStatus === HabitStatus.Pending;
 
   /** Render an icon which represents the completion status of the habit for today */

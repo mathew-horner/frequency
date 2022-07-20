@@ -1,10 +1,8 @@
 import { HabitStatus } from "@prisma/client";
 import * as trpc from "@trpc/server";
 import { z } from "zod";
-import { getHabitStreak } from "../../utils/db";
 import prisma from "../../utils/prisma";
-import { TodayHabit } from "../../utils/types";
-import { calculateDueIn } from "../../utils/date";
+import { calculateDueIn, normalizeDate } from "../../utils/date";
 
 export const habitRouter = trpc
   .router()
@@ -36,43 +34,52 @@ export const habitRouter = trpc
     },
   })
 
-  // Get a list of all of the requesting user's habits.
   .query("list", {
     input: z.object({
       dateTimestamp: z.number().int(),
     }),
     async resolve({ input: { dateTimestamp }, ctx }) {
       const { session } = ctx as any;
+      const date = normalizeDate(new Date(dateTimestamp));
 
-      const habits = await prisma.habit.findMany({
-        where: { userId: session.user.id },
+      // TODO: Need to create a type for this.
+      const results: any = await prisma.$queryRaw`
+        WITH
+        habit_days AS (
+          SELECT * FROM "HabitDay" ORDER BY "date" DESC
+        ),
+        last_completion_days AS (
+          SELECT DISTINCT ON ("habitId")
+            "habitId",
+            FIRST_VALUE("date") OVER (PARTITION BY "habitId") AS "date"
+          FROM habit_days 
+          WHERE "status" = 'Complete'
+        )
+        SELECT
+          "Habit".*,
+          COALESCE("today"."status", 'Pending') as "todayStatus",
+          last_completion_days."date" as "lastCompleteDate"
+        FROM "Habit"
+        LEFT JOIN habit_days AS "today"
+          ON "Habit"."id" = "today"."habitId"
+          AND "today"."date" = '2022-07-19 00:00:00' 
+        LEFT JOIN last_completion_days
+          ON "Habit"."id" = last_completion_days."habitId"
+        WHERE "userId" = ${session.user.id}
+      `;
+
+      return results.map((result: any) => {
+        const dueIn = calculateDueIn({
+          habit: result,
+          today: date,
+        });
+
+        return {
+          ...result,
+          dueIn,
+          streak: 0,
+        };
       });
-
-      const date = new Date(dateTimestamp);
-
-      return Promise.all(
-        habits.map(async (habit) => {
-          const today = await prisma.habitDay.findFirst({
-            where: { habitId: habit.id, date },
-          });
-
-          const lastComplete = await prisma.habitDay.findFirst({
-            where: { habitId: habit.id, status: HabitStatus.Complete },
-            orderBy: { date: "desc" },
-            select: { date: true },
-          });
-          
-          const dueIn = calculateDueIn({ habit, today: date, lastCompleteDate: lastComplete?.date });
-          const streak = await getHabitStreak(habit, date);
-
-          return {
-            ...habit,
-            today: today || undefined,
-            dueIn,
-            streak,
-          } as TodayHabit;
-        })
-      );
     },
   })
 
