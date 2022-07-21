@@ -40,7 +40,7 @@ export default function HabitCard({
   onSetPending,
 }: Props) {
   const [saving, setSaving] = useState(false);
-
+  
   const isPending = habit.todayStatus === HabitStatus.Pending;
 
   /** Render an icon which represents the completion status of the habit for today */

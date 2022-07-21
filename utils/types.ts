@@ -12,4 +12,4 @@ export type TrpcHabitList = inferProcedureOutput<
   AppRouter["_def"]["queries"]["habit.list"]
 >;
 
-export type TrpcHabitListItem = keyof TrpcHabitList;
+export type TrpcHabitListItem = TrpcHabitList[number];

@@ -1,26 +1,51 @@
 export const MILLIS_IN_DAY = 1000 * 60 * 60 * 24;
 
-export function getTodayTimestamp(): number {
-  return normalizeDate(new Date()).getTime();
+export class Day {
+  year: number;
+  month: number;
+  day: number;
+
+  constructor(year: number, month: number, day: number) {
+    this.year = year;
+    this.month = month;
+    this.day = day;
+  }
+
+  static today(): Day {
+    const today = new Date();
+    return new Day(today.getFullYear(), today.getMonth() + 1, today.getDate());
+  }
+
+  static from(date: Date): Day {
+    return new Day(date.getFullYear(), date.getMonth() + 1, date.getDate());
+  }
+
+  dateNormalized(): Date {
+    const date = new Date(this.year, this.month, this.day, 0, 0, 0, 0);
+    date.setUTCDate(date.getDate());
+    date.setUTCMonth(date.getMonth());
+    date.setUTCFullYear(date.getFullYear());
+    date.setUTCHours(0);
+    date.setUTCMinutes(0);
+    date.setUTCSeconds(0);
+    date.setUTCMilliseconds(0);
+
+    return date;
+  }
+
+  toString(): string {
+    return `${this.year}-${this.month}-${this.day} 00:00:00`;
+  }
+
+  addDays(days: number) {
+    // NOCHECKIN: Add days here...
+  }
 }
-
-export function normalizeDate(date: Date): Date {
-  const newDate = new Date();
-  newDate.setUTCDate(date.getDate());
-  newDate.setUTCHours(0);
-  newDate.setUTCMinutes(0);
-  newDate.setUTCSeconds(0);
-  newDate.setUTCMilliseconds(0);
-
-  return newDate;
-}
-
-type DateLike = Date | string;
 
 interface CalculateDueInParams {
-  lastCompleteDate: DateLike | null;
-  createdOn: DateLike;
-  today: DateLike;
+  lastCompleteDate: string | null;
+  createdOn: Date;
+  today: Day;
   frequency: number;
 }
 
@@ -37,20 +62,13 @@ export function calculateDueIn({
   frequency,
   today,
 }: CalculateDueInParams): number {
-  // TODO: A lot of these `normalizeDate` calls are defensive... could probably be cleaned up.
-  today = normalizeDate(new Date(today));
+  const dueDate = lastCompleteDate ? new Date(lastCompleteDate) : new Date(createdOn);
+  dueDate.setDate(dueDate.getDate() + frequency); 
 
-  const dueDate = normalizeDate(new Date());
+  const due = Day.from(dueDate);
 
-  if (lastCompleteDate) {
-    dueDate.setUTCDate(
-      normalizeDate(new Date(lastCompleteDate)).getUTCDate() + frequency
-    );
-  } else {
-    dueDate.setUTCDate(
-      normalizeDate(new Date(createdOn)).getUTCDate() + frequency - 2
-    );
-  }
-
-  return Math.floor((dueDate.getTime() - today.getTime()) / MILLIS_IN_DAY);
+  return Math.floor(
+    (due.dateNormalized().getTime() - today.dateNormalized().getTime()) /
+      MILLIS_IN_DAY
+  );
 }

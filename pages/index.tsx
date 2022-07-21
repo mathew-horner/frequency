@@ -13,7 +13,7 @@ import UnauthenticatedCard from "../components/display/UnauthenticatedCard";
 import { trpc } from "../utils/trpc";
 import IntroCard from "../components/display/IntroCard";
 import SettingsContext from "../contexts/SettingsContext";
-import { getTodayTimestamp } from "../utils/date";
+import { Day } from "../utils/date";
 import { TrpcHabitList, TrpcHabitListItem } from "../utils/types";
 
 // TODO: Should probably make it so that habits that have a `createdOn` > today don't show up.
@@ -49,14 +49,14 @@ function orderHabits(habits: TrpcHabitList) {
 const Home: NextPage = () => {
   const { settings, setSettings } = useContext(SettingsContext);
   const { status } = useSession();
-  const todayTimestamp = getTodayTimestamp();
+  const today = Day.today();
 
   const isAuthenticated = status === "authenticated";
 
   // tRPC hooks.
 
   const habitList = trpc.useQuery(
-    ["habit.list", { dateTimestamp: todayTimestamp }],
+    ["habit.list", { date: today }],
     { enabled: isAuthenticated }
   );
 
@@ -113,7 +113,7 @@ const Home: NextPage = () => {
     return habitSetStatus
       .mutateAsync({
         habitId: habit.id,
-        dateTimestamp: todayTimestamp,
+        date: today,
         status: HabitStatus.Complete,
       })
       .then(() => habitList.refetch())
@@ -124,7 +124,7 @@ const Home: NextPage = () => {
     return habitSetStatus
       .mutateAsync({
         habitId: habit.id,
-        dateTimestamp: todayTimestamp,
+        date: today,
         status: HabitStatus.Incomplete,
       })
       .then(() => habitList.refetch())
@@ -135,7 +135,7 @@ const Home: NextPage = () => {
     return habitSetStatus
       .mutateAsync({
         habitId: habit.id,
-        dateTimestamp: todayTimestamp,
+        date: today,
         status: HabitStatus.Pending,
       })
       .then(() => habitList.refetch())
