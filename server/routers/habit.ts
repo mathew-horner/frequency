@@ -67,8 +67,10 @@ export const habitRouter = trpc
 
           const dueIn = calculateDueIn({
             habit,
-            today: date.jsDateUtc(),
-            lastCompleteDate: lastComplete?.date,
+            today: date,
+            lastCompleteDate: !!lastComplete?.date
+              ? JustDate.fromJsDateUtc(lastComplete.date)
+              : undefined,
           });
 
           const streak = await getHabitStreak(habit, date.jsDateUtc());

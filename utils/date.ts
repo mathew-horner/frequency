@@ -1,26 +1,14 @@
 import { Habit } from "@prisma/client";
+import JustDate from "../utils/justDate";
 
-// TODO: Try to kibash normalizeDate. 
-
-export const MILLIS_IN_DAY = (1000 * 60 * 60 * 24);
-
-function normalizeDate(date: Date): Date {
-  const newDate = new Date();
-  newDate.setUTCDate(date.getDate());
-  newDate.setUTCHours(0);
-  newDate.setUTCMinutes(0);
-  newDate.setUTCSeconds(0);
-  newDate.setUTCMilliseconds(0);
-
-  return newDate;
-}
+export const MILLIS_IN_DAY = 1000 * 60 * 60 * 24;
 
 interface CalculateDueInParams {
   habit: Habit;
-  today: Date;
-  
+  today: JustDate;
+
   /** The last date that the habit was marked as Complete. */
-  lastCompleteDate?: Date;
+  lastCompleteDate?: JustDate;
 }
 
 /**
@@ -35,21 +23,18 @@ export function calculateDueIn({
   today,
   lastCompleteDate,
 }: CalculateDueInParams): number {
-  lastCompleteDate =
-    lastCompleteDate ||
-    (() => {
-      const due = new Date();
-      due.setDate(habit.createdOn.getUTCDate() - 1);
-      return normalizeDate(due);
-    })();
-  
-  // TODO: Probably want to upgrade to using a more mature date library at some point...
-  const dueDate = normalizeDate(new Date());
-  dueDate.setUTCDate(lastCompleteDate.getUTCDate() + habit.frequency);
+  let dueDate;
 
-  const dueIn = Math.floor(
-    (dueDate.getTime() - today.getTime()) / MILLIS_IN_DAY
+  if (lastCompleteDate) {
+    dueDate = lastCompleteDate;
+    dueDate.addDays(habit.frequency);
+  } else {
+    dueDate = JustDate.fromJsDateUtc(habit.createdOn);
+    dueDate.addDays(habit.frequency - 1);
+  }
+
+  return Math.floor(
+    (dueDate.jsDateUtc().getTime() - today.jsDateUtc().getTime()) /
+      MILLIS_IN_DAY
   );
-
-  return dueIn;
 }
