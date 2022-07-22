@@ -93,54 +93,6 @@ export const habitRouter = trpc
     },
   })
 
-  // Get a list of all of the requesting user's habits.
-  // .query("list", {
-  //   input: z.object({
-  //     date: JustDateSchema,
-  //   }),
-  //   async resolve({ input, ctx }) {
-  //     const { session } = ctx as any;
-  //     const { year, month, day } = input.date;
-
-  //     const habits = await prisma.habit.findMany({
-  //       where: { userId: session.user.id },
-  //     });
-
-  //     const date = new JustDate(year, month, day);
-
-  //     return Promise.all(
-  //       habits.map(async (habit) => {
-  //         const today = await prisma.habitDay.findFirst({
-  //           where: { habitId: habit.id, date: date.jsDateUtc() },
-  //         });
-
-  //         const lastComplete = await prisma.habitDay.findFirst({
-  //           where: { habitId: habit.id, status: HabitStatus.Complete },
-  //           orderBy: { date: "desc" },
-  //           select: { date: true },
-  //         });
-
-  //         const dueIn = calculateDueIn({
-  //           habit,
-  //           today: date,
-  //           lastCompleteDate: !!lastComplete?.date
-  //             ? JustDate.fromJsDateUtc(lastComplete.date)
-  //             : undefined,
-  //         });
-
-  //         const streak = await getHabitStreak(habit, date.jsDateUtc());
-
-  //         return {
-  //           ...habit,
-  //           today: today || undefined,
-  //           dueIn,
-  //           streak,
-  //         } as TodayHabit;
-  //       })
-  //     );
-  //   },
-  // })
-
   // Set the status of a habit.
   .mutation("setStatus", {
     input: z.object({
