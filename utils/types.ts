@@ -5,7 +5,7 @@ import { AppRouter } from "../pages/api/trpc/[trpc]";
 
 export type DbHabitListResult = Habit & {
   todayStatus: HabitStatus;
-  lastCompleteDate: string | null;
+  lastCompleteDate: Date | null;
 };
 
 export type TrpcHabitList = inferProcedureOutput<
