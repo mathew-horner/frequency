@@ -10,19 +10,19 @@ import Button from "../components/Button";
 import CreateHabitModal from "../components/modals/CreateHabitModal";
 import HabitCard from "../components/HabitCard";
 import UnauthenticatedCard from "../components/display/UnauthenticatedCard";
-import { TodayHabit } from "../utils/types";
+import { TrpcHabitListItem } from "../utils/types";
 import { trpc } from "../utils/trpc";
 import IntroCard from "../components/display/IntroCard";
 import SettingsContext from "../contexts/SettingsContext";
 import JustDate from "../utils/justDate";
 
 /** Order the habit list for display. */
-function orderHabits(habits: TodayHabit[]): TodayHabit[] {
-  const pending: TodayHabit[] = [];
-  const nonPending: TodayHabit[] = [];
+function orderHabits(habits: TrpcHabitListItem[]): TrpcHabitListItem[] {
+  const pending: TrpcHabitListItem[] = [];
+  const nonPending: TrpcHabitListItem[] = [];
 
   habits.forEach((habit) => {
-    if (habit.today?.status && habit.today.status !== HabitStatus.Pending) {
+    if (habit.todayStatus && habit.todayStatus !== HabitStatus.Pending) {
       nonPending.push(habit);
     } else {
       pending.push(habit);
@@ -106,7 +106,7 @@ const Home: NextPage = () => {
 
   // Callback functions for updating the status of a habit.
 
-  async function onSetComplete(habit: TodayHabit) {
+  async function onSetComplete(habit: TrpcHabitListItem) {
     return habitSetStatus
       .mutateAsync({
         habitId: habit.id,
@@ -117,7 +117,7 @@ const Home: NextPage = () => {
       .then(() => Promise.resolve());
   }
 
-  async function onSetIncomplete(habit: TodayHabit) {
+  async function onSetIncomplete(habit: TrpcHabitListItem) {
     return habitSetStatus
       .mutateAsync({
         habitId: habit.id,
@@ -128,7 +128,7 @@ const Home: NextPage = () => {
       .then(() => Promise.resolve());
   }
 
-  async function onSetPending(habit: TodayHabit) {
+  async function onSetPending(habit: TrpcHabitListItem) {
     return habitSetStatus
       .mutateAsync({
         habitId: habit.id,

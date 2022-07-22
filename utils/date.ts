@@ -1,11 +1,11 @@
-import { Habit } from "@prisma/client";
 import JustDate from "../utils/justDate";
 
 export const MILLIS_IN_DAY = 1000 * 60 * 60 * 24;
 
 interface CalculateDueInParams {
-  habit: Habit;
+  createdOn: JustDate;
   today: JustDate;
+  frequency: number;
 
   /** The last date that the habit was marked as Complete. */
   lastCompleteDate?: JustDate;
@@ -19,7 +19,8 @@ interface CalculateDueInParams {
  * date of the habit itself.
  */
 export function calculateDueIn({
-  habit,
+  createdOn,
+  frequency,
   today,
   lastCompleteDate,
 }: CalculateDueInParams): number {
@@ -27,10 +28,10 @@ export function calculateDueIn({
 
   if (lastCompleteDate) {
     dueDate = lastCompleteDate;
-    dueDate.addDays(habit.frequency);
+    dueDate.addDays(frequency);
   } else {
-    dueDate = JustDate.fromJsDateUtc(habit.createdOn);
-    dueDate.addDays(habit.frequency - 1);
+    dueDate = createdOn;
+    dueDate.addDays(frequency - 1);
   }
 
   return Math.floor(
