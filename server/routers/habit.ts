@@ -38,7 +38,7 @@ export const habitRouter = trpc
           userId: session.user.id,
           title: input.title,
           frequency: input.frequency,
-          createdOn: createdOn.dateNormalized(),
+          createdOn: createdOn.date(),
         },
       });
     },
@@ -139,7 +139,7 @@ export const habitRouter = trpc
           create: {
             habitId,
             status,
-            date: date.dateNormalized(),
+            date: date.date(),
           },
           update: {
             status,
@@ -147,7 +147,7 @@ export const habitRouter = trpc
           where: {
             habitId_date: {
               habitId,
-              date: date.dateNormalized(),
+              date: date.date(),
             },
           },
         });

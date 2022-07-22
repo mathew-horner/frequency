@@ -20,8 +20,8 @@ export class Day {
     return new Day(date.getFullYear(), date.getMonth() + 1, date.getDate());
   }
 
-  dateNormalized(): Date {
-    const date = new Date(this.year, this.month, this.day, 0, 0, 0, 0);
+  date(): Date {
+    const date = new Date(this.year, this.month - 1, this.day, 0, 0, 0, 0);
     date.setUTCDate(date.getDate());
     date.setUTCMonth(date.getMonth());
     date.setUTCFullYear(date.getFullYear());
@@ -34,7 +34,11 @@ export class Day {
   }
 
   toString(): string {
-    return `${this.year}-${this.month}-${this.day} 00:00:00`;
+    const year = this.year.toString().padStart(2, "0");
+    const month = this.month.toString().padStart(2, "0");
+    const day = this.day.toString().padStart(2, "0");
+
+    return `${year}-${month}-${day} 00:00:00`;
   }
 
   addDays(days: number) {
@@ -68,7 +72,7 @@ export function calculateDueIn({
   const due = Day.from(dueDate);
 
   return Math.floor(
-    (due.dateNormalized().getTime() - today.dateNormalized().getTime()) /
+    (due.date().getTime() - today.date().getTime()) /
       MILLIS_IN_DAY
   );
 }
