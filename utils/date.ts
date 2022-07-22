@@ -42,7 +42,14 @@ export class Day {
   }
 
   addDays(days: number) {
-    // NOCHECKIN: Add days here...
+    const date = this.date();
+    date.setDate(date.getUTCDate() + days);
+
+    const next = Day.from(date);
+
+    this.year = next.year;
+    this.month = next.month;
+    this.day = next.day;
   }
 }
 
