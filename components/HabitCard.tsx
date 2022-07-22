@@ -16,6 +16,7 @@ const STREAK_THRESHOLD = 3;
 
 interface Props {
   habit: TrpcHabitListItem;
+  onClick: () => void;
 
   /** Render the card in "compact" mode. */
   compact?: boolean;
@@ -34,6 +35,7 @@ enum WhenIsDueDisplay {
 
 export default function HabitCard({
   habit,
+  onClick,
   compact,
   onSetComplete,
   onSetIncomplete,
@@ -136,7 +138,10 @@ export default function HabitCard({
               w={16}
               minW={16}
               p={0}
-              onClick={() => saveWith(onSetIncomplete)}
+              onClick={(e) => {
+                e.stopPropagation();
+                saveWith(onSetIncomplete);
+              }}
             >
               <IoCloseCircleOutline size={32} />
             </Button>
@@ -148,7 +153,10 @@ export default function HabitCard({
               minW={16}
               w={16}
               p={0}
-              onClick={() => saveWith(onSetComplete)}
+              onClick={(e) => {
+                e.stopPropagation();
+                saveWith(onSetComplete);
+              }}
             >
               <IoCheckmarkCircleOutline size={32} />
             </Button>
@@ -159,7 +167,10 @@ export default function HabitCard({
             h={16}
             w={16}
             backgroundColor="transparent"
-            onClick={() => saveWith(onSetPending)}
+            onClick={(e) => {
+              e.stopPropagation();
+              saveWith(onSetPending);
+            }}
           >
             {renderCompletionIcon()}
           </Button>
@@ -183,7 +194,10 @@ export default function HabitCard({
               w={16}
               minW={16}
               p={0}
-              onClick={() => saveWith(onSetIncomplete)}
+              onClick={(e) => {
+                e.stopPropagation();
+                saveWith(onSetIncomplete);
+              }}
             >
               <IoCloseCircleOutline size={32} />
             </Button>
@@ -195,7 +209,10 @@ export default function HabitCard({
               minW={16}
               w={16}
               p={0}
-              onClick={() => saveWith(onSetComplete)}
+              onClick={(e) => {
+                e.stopPropagation();
+                saveWith(onSetComplete);
+              }}
             >
               <IoCheckmarkCircleOutline size={32} />
             </Button>
@@ -206,7 +223,10 @@ export default function HabitCard({
             h={16}
             w={16}
             backgroundColor="transparent"
-            onClick={() => saveWith(onSetPending)}
+            onClick={(e) => {
+              e.stopPropagation();
+              saveWith(onSetPending);
+            }}
           >
             {renderCompletionIcon()}
           </Button>
@@ -305,5 +325,9 @@ export default function HabitCard({
     );
   }
 
-  return compact ? renderCompact() : renderStandard();
+  return (
+    <button onClick={() => onClick()}>
+      {compact ? renderCompact() : renderStandard()}
+    </button>
+  );
 }

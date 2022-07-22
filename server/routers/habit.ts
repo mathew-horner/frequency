@@ -38,6 +38,88 @@ export const habitRouter = trpc
     },
   })
 
+  // Edit a habit.
+  .mutation("edit", {
+    input: z.object({
+      habitId: z.number().int(),
+      title: z.string(),
+      frequency: z.number().int(),
+    }),
+    async resolve({ input, ctx }) {
+      const { session } = ctx as any;
+      const { habitId, title, frequency } = input;
+
+      const habitOwner = (
+        await prisma.habit.findUnique({
+          where: { id: habitId },
+          select: { userId: true },
+        })
+      )?.userId;
+
+      if (habitOwner === undefined) {
+        throw new trpc.TRPCError({
+          code: "NOT_FOUND",
+          message: "Could not find a Habit with that ID!",
+        });
+      }
+
+      if (session.user.id !== habitOwner) {
+        throw new trpc.TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You can only edit your own Habits!",
+        });
+      }
+
+      return prisma.habit.update({
+        where: { id: habitId },
+        data: {
+          title,
+          frequency,
+        },
+      });
+    },
+  })
+
+  // Delete a habit.
+  .mutation("delete", {
+    input: z.object({
+      habitId: z.number().int(),
+    }),
+    async resolve({ input, ctx }) {
+      const { session } = ctx as any;
+      const { habitId } = input;
+
+      const habitOwner = (
+        await prisma.habit.findUnique({
+          where: { id: habitId },
+          select: { userId: true },
+        })
+      )?.userId;
+
+      if (habitOwner === undefined) {
+        throw new trpc.TRPCError({
+          code: "NOT_FOUND",
+          message: "Could not find a Habit with that ID!",
+        });
+      }
+
+      if (session.user.id !== habitOwner) {
+        throw new trpc.TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You can only delete your own Habits!",
+        });
+      }
+      
+      await prisma.habitDay.deleteMany({
+        where: { habitId }
+      })
+
+      return prisma.habit.delete({
+        where: { id: habitId },
+      });
+    },
+  })
+
   // Get a list of the requesting user's habits.
   .query("list", {
     input: z.object({

@@ -8,6 +8,7 @@ import { IoAddCircleOutline } from "react-icons/io5";
 
 import Button from "../components/Button";
 import CreateHabitModal from "../components/modals/CreateHabitModal";
+import EditHabitModal from "../components/modals/EditHabitModal";
 import HabitCard from "../components/HabitCard";
 import UnauthenticatedCard from "../components/display/UnauthenticatedCard";
 import { TrpcHabitListItem } from "../utils/types";
@@ -53,10 +54,9 @@ const Home: NextPage = () => {
 
   // tRPC hooks.
 
-  const habitList = trpc.useQuery(
-    ["habit.list", { date: today }],
-    { enabled: isAuthenticated }
-  );
+  const habitList = trpc.useQuery(["habit.list", { date: today }], {
+    enabled: isAuthenticated,
+  });
 
   const habitSetStatus = trpc.useMutation("habit.setStatus");
 
@@ -166,6 +166,11 @@ const Home: NextPage = () => {
               onSetComplete={() => onSetComplete(habit)}
               onSetIncomplete={() => onSetIncomplete(habit)}
               onSetPending={() => onSetPending(habit)}
+              onClick={() =>
+                NiceModal.show(EditHabitModal, {
+                  habit
+                }).then(() => habitList.refetch())
+              }
             />
           ))}
         </>
