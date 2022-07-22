@@ -14,7 +14,7 @@ import { TodayHabit } from "../utils/types";
 import { trpc } from "../utils/trpc";
 import IntroCard from "../components/display/IntroCard";
 import SettingsContext from "../contexts/SettingsContext";
-import { getTodayTimestamp } from "../utils/date";
+import JustDate from "../utils/justDate";
 
 /** Order the habit list for display. */
 function orderHabits(habits: TodayHabit[]): TodayHabit[] {
@@ -47,14 +47,14 @@ function orderHabits(habits: TodayHabit[]): TodayHabit[] {
 const Home: NextPage = () => {
   const { settings, setSettings } = useContext(SettingsContext);
   const { status } = useSession();
-  const todayTimestamp = getTodayTimestamp();
+  const today = JustDate.today();
 
   const isAuthenticated = status === "authenticated";
 
   // tRPC hooks.
 
   const habitList = trpc.useQuery(
-    ["habit.list", { dateTimestamp: todayTimestamp }],
+    ["habit.list", { date: today }],
     { enabled: isAuthenticated }
   );
 
@@ -110,7 +110,7 @@ const Home: NextPage = () => {
     return habitSetStatus
       .mutateAsync({
         habitId: habit.id,
-        dateTimestamp: todayTimestamp,
+        date: today,
         status: HabitStatus.Complete,
       })
       .then(() => habitList.refetch())
@@ -121,7 +121,7 @@ const Home: NextPage = () => {
     return habitSetStatus
       .mutateAsync({
         habitId: habit.id,
-        dateTimestamp: todayTimestamp,
+        date: today,
         status: HabitStatus.Incomplete,
       })
       .then(() => habitList.refetch())
@@ -132,7 +132,7 @@ const Home: NextPage = () => {
     return habitSetStatus
       .mutateAsync({
         habitId: habit.id,
-        dateTimestamp: todayTimestamp,
+        date: today,
         status: HabitStatus.Pending,
       })
       .then(() => habitList.refetch())

@@ -5,6 +5,7 @@ import { getHabitStreak } from "../../utils/db";
 import prisma from "../../utils/prisma";
 import { TodayHabit } from "../../utils/types";
 import { calculateDueIn } from "../../utils/date";
+import JustDate, { JustDateSchema } from "../../utils/justDate";
 
 export const habitRouter = trpc
   .router()
@@ -14,15 +15,16 @@ export const habitRouter = trpc
     input: z.object({
       title: z.string(),
       frequency: z.number().int(),
-      dateTimestamp: z.number().int(),
       start: z.enum(["Today", "Tomorrow"]),
+      date: JustDateSchema,
     }),
     resolve({ input, ctx }) {
       const { session } = ctx as any;
-      const createdOn = new Date(input.dateTimestamp);
+      const { year, month, day } = input.date;
+      const createdOn = new JustDate(year, month, day);
 
       if (input.start === "Tomorrow") {
-        createdOn.setDate(createdOn.getDate() + 1);
+        createdOn.addDays(1);
       }
 
       return prisma.habit.create({
@@ -30,7 +32,7 @@ export const habitRouter = trpc
           userId: session.user.id,
           title: input.title,
           frequency: input.frequency,
-          createdOn,
+          createdOn: createdOn.jsDateUtc(),
         },
       });
     },
@@ -39,21 +41,22 @@ export const habitRouter = trpc
   // Get a list of all of the requesting user's habits.
   .query("list", {
     input: z.object({
-      dateTimestamp: z.number().int(),
+      date: JustDateSchema,
     }),
-    async resolve({ input: { dateTimestamp }, ctx }) {
+    async resolve({ input, ctx }) {
       const { session } = ctx as any;
+      const { year, month, day } = input.date;
 
       const habits = await prisma.habit.findMany({
         where: { userId: session.user.id },
       });
 
-      const date = new Date(dateTimestamp);
+      const date = new JustDate(year, month, day);
 
       return Promise.all(
         habits.map(async (habit) => {
           const today = await prisma.habitDay.findFirst({
-            where: { habitId: habit.id, date },
+            where: { habitId: habit.id, date: date.jsDateUtc() },
           });
 
           const lastComplete = await prisma.habitDay.findFirst({
@@ -61,9 +64,14 @@ export const habitRouter = trpc
             orderBy: { date: "desc" },
             select: { date: true },
           });
-          
-          const dueIn = calculateDueIn({ habit, today: date, lastCompleteDate: lastComplete?.date });
-          const streak = await getHabitStreak(habit, date);
+
+          const dueIn = calculateDueIn({
+            habit,
+            today: date.jsDateUtc(),
+            lastCompleteDate: lastComplete?.date,
+          });
+
+          const streak = await getHabitStreak(habit, date.jsDateUtc());
 
           return {
             ...habit,
@@ -80,15 +88,17 @@ export const habitRouter = trpc
   .mutation("setStatus", {
     input: z.object({
       habitId: z.number().int(),
-      dateTimestamp: z.number().int(),
       status: z.enum([
         HabitStatus.Incomplete,
         HabitStatus.Complete,
         HabitStatus.Pending,
       ]),
+      date: JustDateSchema,
     }),
-    async resolve({ input: { habitId, dateTimestamp, status }, ctx }) {
+    async resolve({ input, ctx }) {
       const { session } = ctx as any;
+      const { habitId, status } = input;
+      const { year, month, day } = input.date;
 
       const habit = await prisma.habit.findUnique({ where: { id: habitId } });
       if (!habit) {
@@ -100,14 +110,14 @@ export const habitRouter = trpc
         return null;
       }
 
-      const date = new Date(dateTimestamp);
+      const date = new JustDate(year, month, day);
 
       try {
         await prisma.habitDay.upsert({
           create: {
             habitId,
             status,
-            date,
+            date: date.jsDateUtc(),
           },
           update: {
             status,
@@ -115,7 +125,7 @@ export const habitRouter = trpc
           where: {
             habitId_date: {
               habitId,
-              date,
+              date: date.jsDateUtc(),
             },
           },
         });

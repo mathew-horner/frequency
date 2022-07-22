@@ -1,10 +1,8 @@
 import { Habit } from "@prisma/client";
 
-export const MILLIS_IN_DAY = (1000 * 60 * 60 * 24);
+// TODO: Try to kibash normalizeDate. 
 
-export function getTodayTimestamp(): number {
-  return normalizeDate(new Date()).getTime();
-}
+export const MILLIS_IN_DAY = (1000 * 60 * 60 * 24);
 
 function normalizeDate(date: Date): Date {
   const newDate = new Date();
