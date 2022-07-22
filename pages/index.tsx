@@ -10,19 +10,21 @@ import Button from "../components/Button";
 import CreateHabitModal from "../components/modals/CreateHabitModal";
 import HabitCard from "../components/HabitCard";
 import UnauthenticatedCard from "../components/display/UnauthenticatedCard";
-import { TodayHabit } from "../utils/types";
 import { trpc } from "../utils/trpc";
 import IntroCard from "../components/display/IntroCard";
 import SettingsContext from "../contexts/SettingsContext";
-import { getTodayTimestamp } from "../utils/date";
+import { Day } from "../utils/date";
+import { TrpcHabitList, TrpcHabitListItem } from "../utils/types";
+
+// TODO: Should probably make it so that habits that have a `createdOn` > today don't show up.
 
 /** Order the habit list for display. */
-function orderHabits(habits: TodayHabit[]): TodayHabit[] {
-  const pending: TodayHabit[] = [];
-  const nonPending: TodayHabit[] = [];
+function orderHabits(habits: TrpcHabitList) {
+  const pending: TrpcHabitList = [];
+  const nonPending: TrpcHabitList = [];
 
   habits.forEach((habit) => {
-    if (habit.today?.status && habit.today.status !== HabitStatus.Pending) {
+    if (habit.todayStatus !== HabitStatus.Pending) {
       nonPending.push(habit);
     } else {
       pending.push(habit);
@@ -47,14 +49,14 @@ function orderHabits(habits: TodayHabit[]): TodayHabit[] {
 const Home: NextPage = () => {
   const { settings, setSettings } = useContext(SettingsContext);
   const { status } = useSession();
-  const todayTimestamp = getTodayTimestamp();
+  const today = Day.today();
 
   const isAuthenticated = status === "authenticated";
 
   // tRPC hooks.
 
   const habitList = trpc.useQuery(
-    ["habit.list", { dateTimestamp: todayTimestamp }],
+    ["habit.list", { date: today }],
     { enabled: isAuthenticated }
   );
 
@@ -67,17 +69,18 @@ const Home: NextPage = () => {
     [habitList.data]
   );
 
-  const filteredHabits = useMemo(() => {
-    const { hiddenHabitDueInThreshold } = settings;
+  // TODO: Get this working again...
+  // const filteredHabits = useMemo(() => {
+  //   const { hiddenHabitDueInThreshold } = settings;
 
-    if (hiddenHabitDueInThreshold === undefined) {
-      return orderedHabits;
-    } else {
-      return orderedHabits.filter(
-        (habit) => habit.dueIn <= hiddenHabitDueInThreshold
-      );
-    }
-  }, [orderedHabits]);
+  //   if (hiddenHabitDueInThreshold === undefined) {
+  //     return orderedHabits;
+  //   } else {
+  //     return orderedHabits.filter(
+  //       (habit) => habit.dueIn <= hiddenHabitDueInThreshold
+  //     );
+  //   }
+  // }, [orderedHabits]);
 
   // If the auth status of the user hasn't been determined, bail so we don't cause CLS.
   if (status === "loading") return null;
@@ -106,33 +109,33 @@ const Home: NextPage = () => {
 
   // Callback functions for updating the status of a habit.
 
-  async function onSetComplete(habit: TodayHabit) {
+  async function onSetComplete(habit: TrpcHabitListItem) {
     return habitSetStatus
       .mutateAsync({
         habitId: habit.id,
-        dateTimestamp: todayTimestamp,
+        date: today,
         status: HabitStatus.Complete,
       })
       .then(() => habitList.refetch())
       .then(() => Promise.resolve());
   }
 
-  async function onSetIncomplete(habit: TodayHabit) {
+  async function onSetIncomplete(habit: TrpcHabitListItem) {
     return habitSetStatus
       .mutateAsync({
         habitId: habit.id,
-        dateTimestamp: todayTimestamp,
+        date: today,
         status: HabitStatus.Incomplete,
       })
       .then(() => habitList.refetch())
       .then(() => Promise.resolve());
   }
 
-  async function onSetPending(habit: TodayHabit) {
+  async function onSetPending(habit: TrpcHabitListItem) {
     return habitSetStatus
       .mutateAsync({
         habitId: habit.id,
-        dateTimestamp: todayTimestamp,
+        date: today,
         status: HabitStatus.Pending,
       })
       .then(() => habitList.refetch())
@@ -154,11 +157,11 @@ const Home: NextPage = () => {
 
   return render(
     <>
-      {filteredHabits.length === 0 ? (
+      {orderedHabits.length === 0 ? (
         <>{tryRenderIntroCard()}</>
       ) : (
         <>
-          {filteredHabits.map((habit) => (
+          {orderedHabits.map((habit: any) => (
             <HabitCard
               key={habit.id}
               habit={habit}

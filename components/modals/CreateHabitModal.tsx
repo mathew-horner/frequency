@@ -29,7 +29,7 @@ import {
   toFormikValidationSchema,
 } from "../../utils/forms";
 import { trpc } from "../../utils/trpc";
-import { getTodayTimestamp } from "../../utils/date";
+import { Day } from "../../utils/date";
 
 type HabitStart = "Today" | "Tomorrow";
 
@@ -50,7 +50,7 @@ const FormSchema = z.object({
 export default NiceModal.create(() => {
   const modal = useModal();
   const createHabit = trpc.useMutation("habit.create");
-  const todayTimestamp = getTodayTimestamp();
+  const today = Day.today();
 
   return (
     <Modal isOpen={modal.visible} onClose={modal.remove} size="xl">
@@ -80,7 +80,7 @@ export default NiceModal.create(() => {
             .mutateAsync({
               title,
               frequency,
-              dateTimestamp: todayTimestamp,
+              date: today,
               start,
             })
             .then(() => modal.resolve())
