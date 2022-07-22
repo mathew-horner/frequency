@@ -1,63 +1,28 @@
-export const MILLIS_IN_DAY = 1000 * 60 * 60 * 24;
+import { Habit } from "@prisma/client";
 
-export class Day {
-  year: number;
-  month: number;
-  day: number;
+export const MILLIS_IN_DAY = (1000 * 60 * 60 * 24);
 
-  constructor(year: number, month: number, day: number) {
-    this.year = year;
-    this.month = month;
-    this.day = day;
-  }
+export function getTodayTimestamp(): number {
+  return normalizeDate(new Date()).getTime();
+}
 
-  static today(): Day {
-    const today = new Date();
-    return new Day(today.getFullYear(), today.getMonth() + 1, today.getDate());
-  }
+function normalizeDate(date: Date): Date {
+  const newDate = new Date();
+  newDate.setUTCDate(date.getDate());
+  newDate.setUTCHours(0);
+  newDate.setUTCMinutes(0);
+  newDate.setUTCSeconds(0);
+  newDate.setUTCMilliseconds(0);
 
-  static from(date: Date): Day {
-    return new Day(date.getFullYear(), date.getMonth() + 1, date.getDate());
-  }
-
-  date(): Date {
-    const date = new Date(this.year, this.month - 1, this.day, 0, 0, 0, 0);
-    date.setUTCDate(date.getDate());
-    date.setUTCMonth(date.getMonth());
-    date.setUTCFullYear(date.getFullYear());
-    date.setUTCHours(0);
-    date.setUTCMinutes(0);
-    date.setUTCSeconds(0);
-    date.setUTCMilliseconds(0);
-
-    return date;
-  }
-
-  toString(): string {
-    const year = this.year.toString().padStart(2, "0");
-    const month = this.month.toString().padStart(2, "0");
-    const day = this.day.toString().padStart(2, "0");
-
-    return `${year}-${month}-${day} 00:00:00`;
-  }
-
-  addDays(days: number) {
-    const date = this.date();
-    date.setDate(date.getUTCDate() + days);
-
-    const next = Day.from(date);
-
-    this.year = next.year;
-    this.month = next.month;
-    this.day = next.day;
-  }
+  return newDate;
 }
 
 interface CalculateDueInParams {
-  lastCompleteDate: string | null;
-  createdOn: Date;
-  today: Day;
-  frequency: number;
+  habit: Habit;
+  today: Date;
+  
+  /** The last date that the habit was marked as Complete. */
+  lastCompleteDate?: Date;
 }
 
 /**
@@ -68,18 +33,25 @@ interface CalculateDueInParams {
  * date of the habit itself.
  */
 export function calculateDueIn({
-  lastCompleteDate,
-  createdOn,
-  frequency,
+  habit,
   today,
+  lastCompleteDate,
 }: CalculateDueInParams): number {
-  const dueDate = lastCompleteDate ? new Date(lastCompleteDate) : new Date(createdOn);
-  dueDate.setDate(dueDate.getDate() + frequency); 
+  lastCompleteDate =
+    lastCompleteDate ||
+    (() => {
+      const due = new Date();
+      due.setDate(habit.createdOn.getUTCDate() - 1);
+      return normalizeDate(due);
+    })();
+  
+  // TODO: Probably want to upgrade to using a more mature date library at some point...
+  const dueDate = normalizeDate(new Date());
+  dueDate.setUTCDate(lastCompleteDate.getUTCDate() + habit.frequency);
 
-  const due = Day.from(dueDate);
-
-  return Math.floor(
-    (due.date().getTime() - today.date().getTime()) /
-      MILLIS_IN_DAY
+  const dueIn = Math.floor(
+    (dueDate.getTime() - today.getTime()) / MILLIS_IN_DAY
   );
+
+  return dueIn;
 }

@@ -1,15 +1,7 @@
-import { Habit, HabitStatus } from "@prisma/client";
-import { inferProcedureOutput } from "@trpc/server";
+import { Habit, HabitDay } from "@prisma/client";
 
-import { AppRouter } from "../pages/api/trpc/[trpc]";
-
-export type DbHabitListResult = Habit & {
-  todayStatus: HabitStatus;
-  lastCompleteDate: string | null;
+export type TodayHabit = Habit & {
+  today?: HabitDay;
+  dueIn: number;
+  streak: number;
 };
-
-export type TrpcHabitList = inferProcedureOutput<
-  AppRouter["_def"]["queries"]["habit.list"]
->;
-
-export type TrpcHabitListItem = TrpcHabitList[number];

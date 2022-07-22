@@ -6,16 +6,16 @@ import {
   IoFlame,
 } from "react-icons/io5";
 import { TailSpin } from "react-loader-spinner";
-import { HabitStatus } from "@prisma/client";
 
 import Button from "./Button";
 import Card from "./Card";
-import { TrpcHabitListItem } from "../utils/types";
+import { TodayHabit } from "../utils/types";
+import { HabitStatus } from "@prisma/client";
 
 const STREAK_THRESHOLD = 3;
 
 interface Props {
-  habit: TrpcHabitListItem;
+  habit: TodayHabit;
 
   /** Render the card in "compact" mode. */
   compact?: boolean;
@@ -40,15 +40,16 @@ export default function HabitCard({
   onSetPending,
 }: Props) {
   const [saving, setSaving] = useState(false);
-  
-  const isPending = habit.todayStatus === HabitStatus.Pending;
+
+  const habitStatus = habit.today?.status || HabitStatus.Pending;
+  const isPending = habitStatus === HabitStatus.Pending;
 
   /** Render an icon which represents the completion status of the habit for today */
   function renderCompletionIcon() {
-    if (habit.todayStatus === HabitStatus.Complete) {
+    if (habitStatus === HabitStatus.Complete) {
       return <IoCheckmarkCircleOutline size={32} />;
     }
-    if (habit.todayStatus === HabitStatus.Incomplete) {
+    if (habitStatus === HabitStatus.Incomplete) {
       return <IoCloseCircleOutline size={32} />;
     }
     return null;
