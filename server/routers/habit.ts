@@ -154,6 +154,7 @@ export const habitRouter = trpc
         LEFT JOIN last_completion_days
           ON "Habit"."id" = last_completion_days."habitId"
         WHERE "userId" = '${session.user.id}'
+          AND "Habit"."createdOn" <= '${date.toString()}'
       `);
 
       return results.map((result) => {
