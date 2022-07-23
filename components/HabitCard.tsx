@@ -313,7 +313,7 @@ export default function HabitCard({
             <Text whiteSpace="nowrap" textOverflow="ellipsis">
               {habit.title}
             </Text>
-            <Text fontSize="xs" textColor={getDueDateTextColor()}>
+            <Text fontSize="xs" textColor={getDueDateTextColor()} textAlign="left">
               {renderDueDateStandard()}
             </Text>
           </Box>
