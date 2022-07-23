@@ -46,13 +46,18 @@ export default function HabitCard({
   const habitStatus = habit.todayStatus;
   const isPending = habitStatus === HabitStatus.Pending;
 
-  /** Render an icon which represents the completion status of the habit for today */
+  /** Render an icon which represents the completion status of the habit for today. */
   function renderCompletionIcon() {
     if (habitStatus === HabitStatus.Complete) {
       return <IoCheckmarkCircleOutline size={32} />;
     }
     if (habitStatus === HabitStatus.Incomplete) {
-      return <IoCloseCircleOutline size={32} />;
+      const color = habit.dueIn <= 0 ? "red.400" : "inherit";
+      return (
+        <Box color={color}>
+          <IoCloseCircleOutline size={32} />
+        </Box>
+      );
     }
     return null;
   }
@@ -313,7 +318,11 @@ export default function HabitCard({
             <Text whiteSpace="nowrap" textOverflow="ellipsis">
               {habit.title}
             </Text>
-            <Text fontSize="xs" textColor={getDueDateTextColor()} textAlign="left">
+            <Text
+              fontSize="xs"
+              textColor={getDueDateTextColor()}
+              textAlign="left"
+            >
               {renderDueDateStandard()}
             </Text>
           </Box>
