@@ -32,11 +32,15 @@ function orderHabits(habits: TrpcHabitListItem[]): TrpcHabitListItem[] {
 
   // Sort by due date, then alphabetically by title.
   pending.sort((a, b) => {
-    // TODO: There has to be a better way to sort like this.
-    if (a.dueIn === b.dueIn) {
+    // We want to sort habits that are overdue as if they were due today. So we clamp
+    // dueIn to 0 when sorting.
+    const aDueIn = Math.max(0, a.dueIn);
+    const bDueIn = Math.max(0, b.dueIn);
+
+    if (aDueIn === bDueIn) {
       return a.title > b.title ? 1 : -1;
     }
-    return a.dueIn > b.dueIn ? 1 : -1;
+    return aDueIn > bDueIn ? 1 : -1;
   });
 
   // Just sort alphabetically by title.
