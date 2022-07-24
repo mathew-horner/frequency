@@ -6,6 +6,7 @@ import {
   IoFlame,
 } from "react-icons/io5";
 import { TailSpin } from "react-loader-spinner";
+import { useMediaQuery } from "react-responsive";
 
 import Button from "./Button";
 import Card from "./Card";
@@ -45,6 +46,10 @@ export default function HabitCard({
 
   const habitStatus = habit.todayStatus;
   const isPending = habitStatus === HabitStatus.Pending;
+
+  const forceCompact = useMediaQuery({
+    query: "(max-width: 600px)",
+  });
 
   /** Render an icon which represents the completion status of the habit for today. */
   function renderCompletionIcon() {
@@ -336,7 +341,7 @@ export default function HabitCard({
 
   return (
     <button onClick={() => onClick()}>
-      {compact ? renderCompact() : renderStandard()}
+      {compact || forceCompact ? renderCompact() : renderStandard()}
     </button>
   );
 }
