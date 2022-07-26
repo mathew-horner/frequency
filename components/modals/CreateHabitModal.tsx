@@ -16,6 +16,7 @@ import {
   Radio,
   RadioGroup,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
@@ -51,6 +52,7 @@ export default NiceModal.create(() => {
   const modal = useModal();
   const createHabit = trpc.useMutation("habit.create");
   const today = JustDate.today();
+  const toast = useToast();
 
   return (
     <Modal isOpen={modal.visible} onClose={modal.remove} size="xl">
@@ -83,7 +85,19 @@ export default NiceModal.create(() => {
               date: today,
               start,
             })
-            .then(() => modal.resolve())
+            .then(() => {
+              if (start === "Tomorrow") {
+                toast({
+                  position: "top-right",
+                  title: "Success",
+                  description: "Your new habit will show up on your board starting tomorrow!",
+                  status: "success",
+                  isClosable: true,
+                  duration: 6000,
+                }) 
+              }
+              modal.resolve();
+            })
             .then(() => modal.remove())
         )}
         validateOnBlur={false}
