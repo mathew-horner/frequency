@@ -2,9 +2,13 @@ import { Box, Flex } from "@chakra-ui/react";
 import { HabitStatus } from "@prisma/client";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
-import { useContext, useMemo } from "react";
+import { useContext, useMemo, useState } from "react";
 import NiceModal from "@ebay/nice-modal-react";
-import { IoAddCircleOutline } from "react-icons/io5";
+import {
+  IoAddCircleOutline,
+  IoArrowBackSharp,
+  IoArrowForwardSharp,
+} from "react-icons/io5";
 
 import Button from "../components/Button";
 import CreateHabitModal from "../components/modals/CreateHabitModal";
@@ -51,10 +55,21 @@ function orderHabits(habits: TrpcHabitListItem[]): TrpcHabitListItem[] {
 
 const Home: NextPage = () => {
   const { settings, setSettings } = useContext(SettingsContext);
+
+  // Auth state.
   const { status } = useSession();
+  const isAuthenticated = status === "authenticated";
+
+  // Date state.
+
   const today = JustDate.today();
 
-  const isAuthenticated = status === "authenticated";
+  // This should only have a value of either 0, or -1...
+  // 0 meaning we are viewing today's habit list.
+  // -1 meaning we are viewing yesterday's habit list.
+  const [dateOffset, setDateOffset] = useState(0);
+
+  today.addDays(dateOffset);
 
   // tRPC hooks.
 
@@ -103,14 +118,17 @@ const Home: NextPage = () => {
       </Box>
     );
   }
-  
+
   /**
    * Helper function for rendering the Habit List (just tacks the Add Habit Button on to
    * the end of the provided content).
    */
   function renderHabitList(node: React.ReactNode) {
-    return render( 
+    return render(
       <>
+        {/* Controls */}
+        <Flex justifyContent="space-between">{renderDateControl()}</Flex>
+
         {node}
 
         {/* Add Habit Button */}
@@ -124,6 +142,40 @@ const Home: NextPage = () => {
           <IoAddCircleOutline size={32} />
         </Button>
       </>
+    );
+  }
+
+  function renderDateControl() {
+    if (dateOffset !== 0 && dateOffset !== -1) {
+      // TODO: Add email link.
+      throw new Error(
+        "Date offset was not equal to 0 or -1, please email me a bug report."
+      );
+    }
+
+    // TODO: Don't use any here, use actual types.
+    const buttonProps: any = {
+      type_: "transparent",
+      display: "flex",
+      alignItems: "center",
+      gap: 1,
+    };
+
+    const iconStyle: any = {
+      position: "relative",
+      top: "1px",
+    };
+
+    return dateOffset === 0 ? (
+      <Button {...buttonProps} onClick={() => setDateOffset(-1)}>
+        <IoArrowBackSharp style={iconStyle} />
+        Yesterday
+      </Button>
+    ) : (
+      <Button {...buttonProps} onClick={() => setDateOffset(0)}>
+        Today
+        <IoArrowForwardSharp style={iconStyle} />
+      </Button>
     );
   }
 
