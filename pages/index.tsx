@@ -91,7 +91,7 @@ const Home: NextPage = () => {
   if (isAuthenticated && habitList.isLoading) return null;
 
   /**
-   * Just a helper function to render this component. Makes it easy for us to bail out early
+   * Helper function to render this component. Makes it easy for us to bail out early
    * and just render the UnauthenticatedCard if the user is unauthenticated.
    */
   function render(node: React.ReactNode) {
@@ -101,6 +101,29 @@ const Home: NextPage = () => {
           {node}
         </Flex>
       </Box>
+    );
+  }
+  
+  /**
+   * Helper function for rendering the Habit List (just tacks the Add Habit Button on to
+   * the end of the provided content).
+   */
+  function renderHabitList(node: React.ReactNode) {
+    return render( 
+      <>
+        {node}
+
+        {/* Add Habit Button */}
+        <Button
+          type_="gray"
+          h={12}
+          onClick={() => {
+            NiceModal.show(CreateHabitModal).then(() => habitList.refetch());
+          }}
+        >
+          <IoAddCircleOutline size={32} />
+        </Button>
+      </>
     );
   }
 
@@ -156,40 +179,30 @@ const Home: NextPage = () => {
     ) : null;
   }
 
-  return render(
-    <>
-      {filteredHabits.length === 0 ? (
-        <>{tryRenderIntroCard()}</>
-      ) : (
-        <>
-          {filteredHabits.map((habit) => (
-            <HabitCard
-              key={habit.id}
-              habit={habit}
-              compact={settings.viewMode === "Compact"}
-              onSetComplete={() => onSetComplete(habit)}
-              onSetIncomplete={() => onSetIncomplete(habit)}
-              onSetPending={() => onSetPending(habit)}
-              onClick={() =>
-                NiceModal.show(EditHabitModal, {
-                  habit
-                }).then(() => habitList.refetch())
-              }
-            />
-          ))}
-        </>
-      )}
+  if (filteredHabits.length === 0) {
+    return renderHabitList(null);
 
-      {/* Add Habit Button */}
-      <Button
-        type_="gray"
-        h={12}
-        onClick={() => {
-          NiceModal.show(CreateHabitModal).then(() => habitList.refetch());
-        }}
-      >
-        <IoAddCircleOutline size={32} />
-      </Button>
+    // TODO: We should render this when we have an onboarding process.
+    // return renderHabitList(tryRenderIntroCard());
+  }
+
+  return renderHabitList(
+    <>
+      {filteredHabits.map((habit) => (
+        <HabitCard
+          key={habit.id}
+          habit={habit}
+          compact={settings.viewMode === "Compact"}
+          onSetComplete={() => onSetComplete(habit)}
+          onSetIncomplete={() => onSetIncomplete(habit)}
+          onSetPending={() => onSetPending(habit)}
+          onClick={() =>
+            NiceModal.show(EditHabitModal, {
+              habit,
+            }).then(() => habitList.refetch())
+          }
+        />
+      ))}
     </>
   );
 };

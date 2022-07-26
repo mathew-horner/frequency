@@ -81,11 +81,12 @@ export default NiceModal.create(() => {
             <form onSubmit={handleSubmit}>
               <ModalBody display="flex" flexDirection="column" gap={6}>
                 {/* Upgrade from Trial Prompt */}
-                {!settings.hideUpgradePrompt && (
+                {/* TODO: This should be rendered when we have subscriptions */}
+                {/*{!settings.hideUpgradePrompt && (
                   <UpgradePrompt
                     onHidePrompt={() => setUpgradePromptHidden()}
                   />
-                )}
+                )}*/}
 
                 {/* View Mode */}
                 <FormControl as="fieldset">
