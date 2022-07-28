@@ -12,7 +12,7 @@ export default function Footer() {
       borderTopColor="gray.100"
       w="100vw"
     >
-      <Flex gap={8}>
+      <Flex gap={8} flexDir={{ base: "column", sm: "row" }}>
         <Button type_="transparent" textColor="gray.600">
           Terms
         </Button>
@@ -24,6 +24,9 @@ export default function Footer() {
         </Button>
         <Button type_="transparent" textColor="gray.600">
           Discord
+        </Button>
+        <Button type_="transparent" textColor="gray.600">
+          Blog
         </Button>
       </Flex>
       <Text fontSize="sm" textColor="gray.500">
