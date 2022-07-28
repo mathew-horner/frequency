@@ -62,7 +62,7 @@ const Home: NextPage = () => {
   const isAuthenticated = status === "authenticated";
 
   // NOCHECIN: This needs to be inferred / pulled from the DB.
-  const needsToSubscribe = false;
+  const needsToSubscribe = true;
 
   // Date state.
 
