@@ -65,7 +65,7 @@ export default function Button({ type_, children, ...rest }: Props) {
   }
 
   return (
-    <ChakraButton {...rest} {...props}>
+    <ChakraButton {...props} {...rest} >
       {children}
     </ChakraButton>
   );

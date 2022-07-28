@@ -10,6 +10,7 @@ import { withTRPC } from "@trpc/next";
 
 import { AppRouter } from "./api/trpc/[trpc]";
 import theme from "../utils/theme";
+import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import GlobalContext from "../contexts/GlobalContext";
 import useSettings from "../hooks/useSettings";
@@ -28,11 +29,14 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
         <title>frequency</title>
       </Head>
       <GlobalContext {...{ session, theme, settings }}>
-        <Flex justifyContent="center">
-          <Box width="full" maxWidth="1000px">
+        <Flex flexDir="column" alignItems="center" minH="100vh">
+          <Box width="full" maxWidth="1000px" flexGrow={1}>
             <Navbar />
             <Component {...pageProps} />
           </Box>
+          <footer>
+            <Footer />
+          </footer>
         </Flex>
       </GlobalContext>
     </>
