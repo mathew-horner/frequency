@@ -14,6 +14,7 @@ import Button from "../components/Button";
 import CreateHabitModal from "../components/modals/CreateHabitModal";
 import EditHabitModal from "../components/modals/EditHabitModal";
 import HabitCard from "../components/HabitCard";
+import SubscribePrompt from "../components/SubscribePrompt";
 import UnauthenticatedCard from "../components/display/UnauthenticatedCard";
 import { TrpcHabitListItem } from "../utils/types";
 import { trpc } from "../utils/trpc";
@@ -59,6 +60,9 @@ const Home: NextPage = () => {
   // Auth state.
   const { status } = useSession();
   const isAuthenticated = status === "authenticated";
+
+  // NOCHECIN: This needs to be inferred / pulled from the DB.
+  const needsToSubscribe = false;
 
   // Date state.
 
@@ -112,7 +116,7 @@ const Home: NextPage = () => {
   function render(node: React.ReactNode) {
     return (
       <Box as="main" p={6} px={{ base: 2, sm: 6 }}>
-        <Flex flexDirection="column" gap={4}>
+        <Flex flexDirection="column" gap={4} position="relative">
           {node}
         </Flex>
       </Box>
@@ -126,21 +130,40 @@ const Home: NextPage = () => {
   function renderHabitList(node: React.ReactNode) {
     return render(
       <>
-        {/* Controls */}
-        <Flex justifyContent="space-between">{renderDateControl()}</Flex>
+        {needsToSubscribe && (
+          <>
+            <Box
+              position="absolute"
+              zIndex={999}
+              w="full"
+              h="full"
+              boxSizing="border-box"
+              top={0}
+              left={0}
+              backgroundColor="white"
+              opacity={0.4}
+            />
+            <SubscribePrompt />
+          </>
+        )}
 
-        {node}
+        <Flex flexDirection="column" gap={4} position="relative">
+          {/* Controls */}
+          <Flex justifyContent="space-between">{renderDateControl()}</Flex>
 
-        {/* Add Habit Button */}
-        <Button
-          type_="gray"
-          h={12}
-          onClick={() => {
-            NiceModal.show(CreateHabitModal).then(() => habitList.refetch());
-          }}
-        >
-          <IoAddCircleOutline size={32} />
-        </Button>
+          {node}
+
+          {/* Add Habit Button */}
+          <Button
+            type_="gray"
+            h={12}
+            onClick={() => {
+              NiceModal.show(CreateHabitModal).then(() => habitList.refetch());
+            }}
+          >
+            <IoAddCircleOutline size={32} />
+          </Button>
+        </Flex>
       </>
     );
   }
