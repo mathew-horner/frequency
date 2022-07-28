@@ -5,7 +5,7 @@ export default function Card({ children, ...rest }: BoxProps) {
     <Box
       p={4}
       boxShadow="md"
-      borderRadius="xl"
+      borderRadius="lg"
       border="1px"
       borderColor="gray.100"
       {...rest}
