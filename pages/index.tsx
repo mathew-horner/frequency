@@ -22,6 +22,9 @@ import IntroCard from "../components/display/IntroCard";
 import SettingsContext from "../contexts/SettingsContext";
 import JustDate from "../utils/justDate";
 
+/** The number of days that a user can have a free trial for. */
+const TRIAL_LENGTH = 14;
+
 /** Order the habit list for display. */
 function orderHabits(habits: TrpcHabitListItem[]): TrpcHabitListItem[] {
   const pending: TrpcHabitListItem[] = [];
@@ -58,11 +61,8 @@ const Home: NextPage = () => {
   const { settings, setSettings } = useContext(SettingsContext);
 
   // Auth state.
-  const { status } = useSession();
+  const { status, data } = useSession();
   const isAuthenticated = status === "authenticated";
-
-  // NOCHECIN: This needs to be inferred / pulled from the DB.
-  const needsToSubscribe = true;
 
   // Date state.
 
@@ -128,6 +128,19 @@ const Home: NextPage = () => {
    * the end of the provided content).
    */
   function renderHabitList(node: React.ReactNode) {
+    const user = data?.user as any;
+
+    if (user?.isSubscribed === undefined || user?.createdOn === undefined) {
+      return null;
+    }
+
+    const createdOn = JustDate.fromJsDateUtc(
+      new Date(Date.parse(user.createdOn))
+    );
+
+    const needsToSubscribe =
+      !user.isSubscribed && today.daysSince(createdOn) > TRIAL_LENGTH;
+
     return render(
       <>
         {needsToSubscribe && (

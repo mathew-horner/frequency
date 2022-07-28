@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { MILLIS_IN_DAY } from "./date";
 
 export default class JustDate {
   year: number;
@@ -98,6 +99,12 @@ export default class JustDate {
 
   subtractYears(years: number) {
     this.addYears(-years);
+  }
+
+  daysSince(other: JustDate) {
+    return Math.floor(
+      (this.jsDateUtc().getTime() - other.jsDateUtc().getTime()) / MILLIS_IN_DAY
+    );
   }
 }
 
