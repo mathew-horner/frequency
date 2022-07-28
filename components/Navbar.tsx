@@ -2,7 +2,6 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import NiceModal from "@ebay/nice-modal-react";
 import { Flex, Text } from "@chakra-ui/react";
 import { IoLogIn, IoLogOut, IoSettingsSharp } from "react-icons/io5";
-import { TbWaveSawTool } from "react-icons/tb";
 
 import Button from "../components/Button";
 import SettingsModal from "../components/modals/SettingsModal";
@@ -64,16 +63,12 @@ export default function Navbar() {
     >
       {/* Site Brand */}
       <Flex alignItems="center" gap={2} flexGrow={1}>
-        <Flex
-          alignItems="center"
-          justifyContent="center"
-          backgroundColor="black"
-          textColor="white"
-          p={2}
-          borderRadius="lg"
-        >
-          <TbWaveSawTool size={32} />
-        </Flex>
+        <img
+          src="/frequency-logo.png"
+          height={48}
+          width={48}
+          style={{ borderRadius: "8px" }}
+        />
         <Text
           as="h1"
           fontSize="3xl"
