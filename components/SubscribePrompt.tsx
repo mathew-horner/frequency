@@ -4,7 +4,7 @@ import Button from "./Button";
 
 export default function SubscribePrompt() {
   const router = useRouter();
-  const link = "https://buy.stripe.com/test_6oEbKA3Fxe0Z6AwbII";
+  const link = process.env.NEXT_PUBLIC_STRIPE_SUBSCRIPTION_LINK;
 
   return (
     <Flex
