@@ -22,10 +22,14 @@ export default function Footer() {
         <Button type_="transparent" textColor="gray.600">
           Privacy
         </Button>
-        <Button type_="transparent" textColor="gray.600">
+        <Button
+          type_="transparent"
+          textColor="gray.600"
+          onClick={() => router.push("mailto:mathewhorner456@gmail.com")}
+        >
           Contact
         </Button>
-        <Button type_="transparent" textColor="gray.600">
+        <Button type_="transparent" textColor="gray.600" onClick={() => router.push("https://discord.gg/GcSSX7t2Nf")}>
           Discord
         </Button>
         <Button
