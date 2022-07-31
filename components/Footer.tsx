@@ -1,7 +1,10 @@
 import { Flex, Text } from "@chakra-ui/react";
+import { useRouter } from "next/router";
+
 import Button from "./Button";
 
 export default function Footer() {
+  const router = useRouter();
   return (
     <Flex
       p={8}
@@ -25,7 +28,11 @@ export default function Footer() {
         <Button type_="transparent" textColor="gray.600">
           Discord
         </Button>
-        <Button type_="transparent" textColor="gray.600">
+        <Button
+          type_="transparent"
+          textColor="gray.600"
+          onClick={() => router.push("/blog")}
+        >
           Blog
         </Button>
       </Flex>

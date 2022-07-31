@@ -1,4 +1,5 @@
 import { useSession, signIn, signOut } from "next-auth/react";
+import Link from "next/link";
 import NiceModal from "@ebay/nice-modal-react";
 import { Flex, Text } from "@chakra-ui/react";
 import { IoLogIn, IoLogOut, IoSettingsSharp } from "react-icons/io5";
@@ -62,22 +63,24 @@ export default function Navbar() {
       gap={2}
     >
       {/* Site Brand */}
-      <Flex alignItems="center" gap={2} flexGrow={1}>
-        <img
-          src="/frequency-logo.png"
-          height={48}
-          width={48}
-          style={{ borderRadius: "8px" }}
-        />
-        <Text
-          as="h1"
-          fontSize="3xl"
-          fontWeight="bold"
-          display={{ base: "none", sm: "block" }}
-        >
-          frequency
-        </Text>
-      </Flex>
+      <Link href="/">
+        <Flex alignItems="center" gap={2} flexGrow={1} cursor="pointer">
+          <img
+            src="/frequency-logo.png"
+            height={48}
+            width={48}
+            style={{ borderRadius: "8px" }}
+          />
+          <Text
+            as="h1"
+            fontSize="3xl"
+            fontWeight="bold"
+            display={{ base: "none", sm: "block" }}
+          >
+            frequency
+          </Text>
+        </Flex>
+      </Link>
 
       {/* Controls */}
       {renderControls()}

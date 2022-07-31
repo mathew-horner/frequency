@@ -3,16 +3,14 @@ import path from "path";
 
 import { GetStaticProps } from "next";
 import Link from "next/link";
-import { Flex, Text } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 
 import Card from "../../components/Card";
-import JustDate from "../../utils/justDate";
+import Markdown from "../../components/Markdown";
 
 interface BlogPost {
   title: string;
-  subtext: string;
   slug: string;
-  ageInDays: number;
 }
 
 interface Props {
@@ -25,22 +23,9 @@ export default function BlogIndex({ posts }: Props) {
       {posts.map((post) => (
         <Link href={`/blog/${post.slug}`}>
           <Card key={post.slug} display="flex" cursor="pointer" gap={4}>
-            <Flex flexDir="column" flexGrow={1}>
-              <Text as="h2" fontSize="xl" fontWeight="bold">
-                {post.title}
-              </Text>
-              <Text
-                as="p"
-                fontSize="md"
-                fontStyle="italic"
-                textColor="gray.500"
-              >
-                {post.subtext}
-              </Text>
-            </Flex>
-            <Text fontSize="md" textColor="gray.500">
-              {post.ageInDays}d
-            </Text>
+            <Box flexGrow={1}>
+              <Markdown>{post.title}</Markdown>
+            </Box>
           </Card>
         </Link>
       ))}
@@ -63,19 +48,13 @@ function createBlogPost(slug: string): BlogPost {
     );
   }
 
-  const stats = fs.statSync(postPath);
-  const today = JustDate.today();
-  const lastModified = JustDate.fromJsDate(new Date(stats.mtime));
-
   return {
-    title: lines[0],
-    subtext: lines[1],
+    title: [lines[0], lines[1]].join("\n"),
     slug,
-    ageInDays: 10,
   };
 }
 
-export const getStaticProps: GetStaticProps<Props> = (context) => {
+export const getStaticProps: GetStaticProps<Props> = (_context) => {
   const postsPath = path.join(process.cwd(), "blog");
   const posts = fs.readdirSync(postsPath);
   const slugs = posts.map((post) => post.split(".")[0]);
