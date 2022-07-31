@@ -34,7 +34,7 @@ export function calculateDueIn({
     dueDate.addDays(frequency - 1);
   }
 
-  return Math.floor(
+  return Math.round(
     (dueDate.jsDateUtc().getTime() - today.jsDateUtc().getTime()) /
       MILLIS_IN_DAY
   );
