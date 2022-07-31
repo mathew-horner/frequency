@@ -7,6 +7,7 @@ import { Box, Flex } from "@chakra-ui/react";
 
 import Card from "../../components/Card";
 import Markdown from "../../components/Markdown";
+import AppLayout from "../../layouts/app";
 
 interface BlogPost {
   title: string;
@@ -32,6 +33,10 @@ export default function BlogIndex({ posts }: Props) {
     </Flex>
   );
 }
+
+(BlogIndex as any).getLayout = function getLayout(page: React.ReactNode) {
+  return <AppLayout>{page}</AppLayout>;
+};
 
 /**
  * Takes a blog post slug and gets the title and subtext from the post file to

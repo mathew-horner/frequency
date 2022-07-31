@@ -23,21 +23,15 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   // Rendering before settings are loaded can result in CLS (mainly due to the compact view).
   if (!settings.loaded) return null;
 
+  const getLayout = (Component as any).getLayout || ((page: any) => page);
+
   return (
     <>
       <Head>
         <title>frequency</title>
       </Head>
       <GlobalContext {...{ session, theme, settings }}>
-        <Flex flexDir="column" alignItems="center" minH="100vh">
-          <Box width="full" maxWidth="1000px" flexGrow={1}>
-            <Navbar />
-            <Component {...pageProps} />
-          </Box>
-          <footer>
-            <Footer />
-          </footer>
-        </Flex>
+        {getLayout(<Component {...pageProps} />)}
       </GlobalContext>
     </>
   );
