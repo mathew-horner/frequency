@@ -8,7 +8,7 @@ interface Props {
 /**
  * Returns a function that can be used as a renderer for links in the ReactMarkdown
  * components props. */
-function linkRenderer(props: TextProps) {
+function LinkRenderer(props: TextProps) {
   const text = textRenderer(props);
   return ({ children, href }: any) =>
     text({ children: <a href={href}>{children}</a> });
@@ -17,7 +17,7 @@ function linkRenderer(props: TextProps) {
 /**
  * Returns a function that can be used as a renderer for text in the ReactMarkdown
  * components props. */
-function textRenderer(props: TextProps) {
+function TextRenderer(props: TextProps) {
   return ({ children }: any) => <Text {...props}>{children}</Text>;
 }
 
@@ -25,19 +25,19 @@ function Markdown({ children }: Props) {
   return (
     <ReactMarkdown
       components={{
-        h1: textRenderer({
+        h1: TextRenderer({
           fontSize: "3xl",
           fontWeight: "bold",
         }),
-        h2: textRenderer({
+        h2: TextRenderer({
           fontSize: "2xl",
           fontWeight: "bold",
         }),
-        h3: textRenderer({
+        h3: TextRenderer({
           fontSize: "xl",
           fontWeight: "bold",
         }),
-        a: linkRenderer({
+        a: LinkRenderer({
           cursor: "pointer",
           textColor: "blue.500",
           textDecoration: "underline",
@@ -61,4 +61,3 @@ function Markdown({ children }: Props) {
 }
 
 export default Markdown;
-
