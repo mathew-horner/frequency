@@ -57,7 +57,6 @@ export default function Navbar() {
     <Flex
       as="header"
       alignItems="center"
-      justifyContent="space-between"
       pt={{ base: 3, sm: 6 }}
       px={{ base: 3, sm: 6 }}
       pb={0}
@@ -65,7 +64,7 @@ export default function Navbar() {
     >
       {/* Site Brand */}
       <Link href="/app">
-        <Flex alignItems="center" gap={2} cursor="pointer">
+        <Flex alignItems="center" flexGrow={1} gap={2} cursor="pointer">
           <img
             src="/frequency-logo.png"
             height={48}
