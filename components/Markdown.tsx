@@ -9,7 +9,7 @@ interface Props {
  * Returns a function that can be used as a renderer for links in the ReactMarkdown
  * components props. */
 function LinkRenderer(props: TextProps) {
-  const text = textRenderer(props);
+  const text = TextRenderer(props);
   return ({ children, href }: any) =>
     text({ children: <a href={href}>{children}</a> });
 }
