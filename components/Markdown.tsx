@@ -21,7 +21,7 @@ function textRenderer(props: TextProps) {
   return ({ children }: any) => <Text {...props}>{children}</Text>;
 }
 
-export default function Markdown({ children }: Props) {
+function Markdown({ children }: Props) {
   return (
     <ReactMarkdown
       components={{
@@ -59,3 +59,6 @@ export default function Markdown({ children }: Props) {
     </ReactMarkdown>
   );
 }
+
+export default Markdown;
+
