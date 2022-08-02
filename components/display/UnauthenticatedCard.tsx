@@ -20,21 +20,15 @@ export default function UnauthenticatedCard() {
 
       {/* Prompt Text */}
       <Text>
-        Building good habits is important. But, it is hard. Frequency is here to
-        simplify the process and make sure you are achieving your goals!
+        Building good habits is important. But, it is hard. frequency is here to
+        simplify the process and make sure you are achieving your goals. Please
+        click the button to get started!
       </Text>
 
       {/* Buttons */}
-      <Flex justifyContent="center" gap={4} mt={2}>
-        <Button type_="white" w={32}>
-          Learn More
-        </Button>
-        <Button
-          type_="white-outline"
-          w={32}
-          onClick={() => signIn()}
-        >
-          Get Started
+      <Flex justifyContent="flex-end" gap={4} mt={2}>
+        <Button type_="white-outline" onClick={() => signIn()}>
+          Sign In / Register
         </Button>
       </Flex>
     </Card>

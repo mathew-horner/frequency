@@ -1,262 +1,182 @@
-import { Box, Flex } from "@chakra-ui/react";
-import { HabitStatus } from "@prisma/client";
-import type { NextPage } from "next";
-import { useSession } from "next-auth/react";
-import { useContext, useMemo, useState } from "react";
-import NiceModal from "@ebay/nice-modal-react";
-import {
-  IoAddCircleOutline,
-  IoArrowBackSharp,
-  IoArrowForwardSharp,
-} from "react-icons/io5";
+import Link from "next/link";
+import { Box, Flex, Text } from "@chakra-ui/react";
+import { useRef } from "react";
 
 import Button from "../components/Button";
-import CreateHabitModal from "../components/modals/CreateHabitModal";
-import EditHabitModal from "../components/modals/EditHabitModal";
-import HabitCard from "../components/HabitCard";
-import UnauthenticatedCard from "../components/display/UnauthenticatedCard";
-import { TrpcHabitListItem } from "../utils/types";
-import { trpc } from "../utils/trpc";
-import IntroCard from "../components/display/IntroCard";
-import SettingsContext from "../contexts/SettingsContext";
-import JustDate from "../utils/justDate";
+import Footer from "../components/Footer";
+// import TestimonialCard from "../components/TestimonialCard";
 
-/** Order the habit list for display. */
-function orderHabits(habits: TrpcHabitListItem[]): TrpcHabitListItem[] {
-  const pending: TrpcHabitListItem[] = [];
-  const nonPending: TrpcHabitListItem[] = [];
+export default function LandingPage() {
+  const infoSectionRef = useRef<HTMLDivElement>(null);
 
-  habits.forEach((habit) => {
-    if (habit.todayStatus && habit.todayStatus !== HabitStatus.Pending) {
-      nonPending.push(habit);
-    } else {
-      pending.push(habit);
-    }
-  });
-
-  // Sort by due date, then alphabetically by title.
-  pending.sort((a, b) => {
-    // We want to sort habits that are overdue as if they were due today. So we clamp
-    // dueIn to 0 when sorting.
-    const aDueIn = Math.max(0, a.dueIn);
-    const bDueIn = Math.max(0, b.dueIn);
-
-    if (aDueIn === bDueIn) {
-      return a.title > b.title ? 1 : -1;
-    }
-    return aDueIn > bDueIn ? 1 : -1;
-  });
-
-  // Just sort alphabetically by title.
-  nonPending.sort((a, b) => (a.title > b.title ? 1 : -1));
-
-  return pending.concat(nonPending);
-}
-
-const Home: NextPage = () => {
-  const { settings, setSettings } = useContext(SettingsContext);
-
-  // Auth state.
-  const { status } = useSession();
-  const isAuthenticated = status === "authenticated";
-
-  // Date state.
-
-  const today = JustDate.today();
-
-  // This should only have a value of either 0, or -1...
-  // 0 meaning we are viewing today's habit list.
-  // -1 meaning we are viewing yesterday's habit list.
-  const [dateOffset, setDateOffset] = useState(0);
-
-  today.addDays(dateOffset);
-
-  // tRPC hooks.
-
-  const habitList = trpc.useQuery(["habit.list", { date: today }], {
-    enabled: isAuthenticated,
-  });
-
-  const habitSetStatus = trpc.useMutation("habit.setStatus");
-
-  // Other hooks. Effects, memos, etc.
-
-  const orderedHabits = useMemo(
-    () => (habitList.data ? orderHabits(habitList.data) : []),
-    [habitList.data]
-  );
-
-  const filteredHabits = useMemo(() => {
-    const { hiddenHabitDueInThreshold } = settings;
-
-    if (hiddenHabitDueInThreshold === undefined) {
-      return orderedHabits;
-    } else {
-      return orderedHabits.filter(
-        (habit) => habit.dueIn <= hiddenHabitDueInThreshold
-      );
-    }
-  }, [orderedHabits]);
-
-  // If the auth status of the user hasn't been determined, bail so we don't cause CLS.
-  if (status === "loading") return null;
-
-  // If the user's habit list hasn't loaded yet, we might mistakenly render content that should only
-  // show when the user's habit list is actually empty. This will cause an undesirable CLS effect.
-  if (isAuthenticated && habitList.isLoading) return null;
-
-  /**
-   * Helper function to render this component. Makes it easy for us to bail out early
-   * and just render the UnauthenticatedCard if the user is unauthenticated.
-   */
-  function render(node: React.ReactNode) {
-    return (
-      <Box as="main" p={6} px={{ base: 2, sm: 6 }}>
-        <Flex flexDirection="column" gap={4}>
-          {node}
-        </Flex>
-      </Box>
-    );
+  function scrollToInfo() {
+    infoSectionRef?.current?.scrollIntoView({ behavior: "smooth" });
   }
 
-  /**
-   * Helper function for rendering the Habit List (just tacks the Add Habit Button on to
-   * the end of the provided content).
-   */
-  function renderHabitList(node: React.ReactNode) {
-    return render(
-      <>
-        {/* Controls */}
-        <Flex justifyContent="space-between">{renderDateControl()}</Flex>
+  return (
+    <Flex flexDir="column" overflowX="hidden">
+      <Flex flexDir="column" h="100vh" minH="700px">
+        <Box p={4}>
+          {/* Site Brand */}
+          <Link href="/">
+            <Flex alignItems="center" gap={2} flexGrow={1} cursor="pointer">
+              <img
+                src="/frequency-logo.png"
+                height={48}
+                width={48}
+                style={{ borderRadius: "8px" }}
+              />
+              <Text
+                as="h1"
+                fontSize="3xl"
+                fontWeight="bold"
+                display={{ base: "none", sm: "block" }}
+              >
+                frequency
+              </Text>
+            </Flex>
+          </Link>
+        </Box>
 
-        {node}
-
-        {/* Add Habit Button */}
-        <Button
-          type_="gray"
-          h={12}
-          onClick={() => {
-            NiceModal.show(CreateHabitModal).then(() => habitList.refetch());
-          }}
+        {/* Hero Section */}
+        <Flex
+          flexDir="column"
+          gap={8}
+          p={6}
+          backgroundColor="black"
+          textColor="white"
+          flexGrow={1}
+          alignItems="center"
+          justifyContent="center"
+          textAlign="center"
         >
-          <IoAddCircleOutline size={32} />
-        </Button>
-      </>
-    );
-  }
+          <Text as="h1" fontSize="5xl" fontWeight="bold">
+            Build habits the right way.
+          </Text>
+          <Text as="p" fontSize="xl" textColor="gray.300">
+            Life is busy, and chaotic. Your habit tracker should reflect that.
+            With frequency, you will build the habits you need to live the life
+            you want, with a method that works with even the most hectic of
+            schedules.
+          </Text>
+          <Flex gap={4}>
+            <Button
+              type_="white"
+              w={44}
+              size="lg"
+              onClick={() => scrollToInfo()}
+            >
+              Learn More
+            </Button>
+            <Link href="/app">
+              <Button type_="white-outline" w={44} size="lg">
+                Try Now (Beta)
+              </Button>
+            </Link>
+          </Flex>
+        </Flex>
+      </Flex>
 
-  function renderDateControl() {
-    if (dateOffset !== 0 && dateOffset !== -1) {
-      // TODO: Add email link.
-      throw new Error(
-        "Date offset was not equal to 0 or -1, please email me a bug report."
-      );
-    }
+      {/* Info Section */}
+      <Flex
+        flexDir="column"
+        gap={{ base: 8, lg: 16 }}
+        p={{ base: 8, lg: 16 }}
+        ref={infoSectionRef}
+      >
+        <Flex flexDir="column" gap={8}>
+          <Text fontSize="4xl" fontWeight="bold">
+            Habit trackers are getting it wrong.
+          </Text>
+          <Text fontSize="lg">
+            Most habit trackers force you into rigid schedules that don't work
+            with real lives. Scheduling habits for specific days introduces too
+            much rigidity into your life, and trying to do a little bit of each
+            habit every day doesn't scale.
+          </Text>
+        </Flex>
+        <Flex flexDir="column" gap={8}>
+          <Text fontSize="4xl" fontWeight="bold">
+            How frequency is different.
+          </Text>
+          <Text fontSize="lg">
+            frequency takes a new approach to building habits that we call the{" "}
+            <b>frequency method</b>. Here's how it works:
+          </Text>
+          <Text fontSize="lg">
+            Each habit has a <b>frequency</b>, which is set by you, the user.
+            This number represents how many days you can take to complete the
+            habit one time. Once you complete the habit, starting on the
+            following day, you have the same number of days to complete the
+            habit again. Repeat ad infinitum. You are able to complete habits
+            ahead of schedule if you'd like, and habits will continue to show up
+            on your feed if they are past due until you complete them.
+          </Text>
+          <Text fontSize="lg">
+            The key features of this method are its scalability and flexibility.
+            By not having to cram every habit into every day, you can build more
+            habits in total. By being able to complete habits ahead or behind
+            schedule, you can plan ahead for habits you're likely to miss, or
+            make up for habits that you already missed.
+          </Text>
+        </Flex>
+      </Flex>
 
-    // TODO: Don't use any here, use actual types.
-    const buttonProps: any = {
-      type_: "transparent",
-      display: "flex",
-      alignItems: "center",
-      gap: 1,
-    };
+      {/* Testimonials Section */}
+      {/*<Flex
+        flexDir="column"
+        backgroundColor="gray.500"
+        textColor="white"
+        gap={8}
+        p={{ base: 8, lg: 16 }}
+      >
+        <Text fontSize="4xl" fontWeight="bold">
+          Don't take it from us...
+        </Text>
+        <Flex gap={4} overflowX="auto">
+          <TestimonialCard
+            name="Mathew Horner"
+            job="Software Engineer"
+            imageUrl="https://avatars.githubusercontent.com/u/33100798?v=4"
+            quote="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."
+          />
+          <TestimonialCard
+            name="Mathew Horner"
+            job="Software Engineer"
+            imageUrl="https://avatars.githubusercontent.com/u/33100798?v=4"
+            quote="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."
+          />
+          <TestimonialCard
+            name="Mathew Horner"
+            job="Software Engineer"
+            imageUrl="https://avatars.githubusercontent.com/u/33100798?v=4"
+            quote="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."
+          />
+        </Flex>
+      </Flex>*/}
 
-    const iconStyle: any = {
-      position: "relative",
-      top: "1px",
-    };
+      {/* Get Started Prompt */}
+      <Flex
+        flexDir="column"
+        p={16}
+        gap={16}
+        alignItems="center"
+        backgroundColor="gray.50"
+        borderTop="2px"
+        borderTopColor="gray.100"
+      >
+        <Text fontSize="4xl" textAlign="center">
+          Ready to try the beta version for free?
+        </Text>
+        <Link href="/app">
+          <Button type_="black" fontSize="4xl" p={8}>
+            Get Started
+          </Button>
+        </Link>
+      </Flex>
 
-    return dateOffset === 0 ? (
-      <Button {...buttonProps} onClick={() => setDateOffset(-1)}>
-        <IoArrowBackSharp style={iconStyle} />
-        Yesterday
-      </Button>
-    ) : (
-      <Button {...buttonProps} onClick={() => setDateOffset(0)}>
-        Today
-        <IoArrowForwardSharp style={iconStyle} />
-      </Button>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return render(<UnauthenticatedCard />);
-  }
-
-  // Callback functions for updating the status of a habit.
-
-  async function onSetComplete(habit: TrpcHabitListItem) {
-    return habitSetStatus
-      .mutateAsync({
-        habitId: habit.id,
-        date: today,
-        status: HabitStatus.Complete,
-      })
-      .then(() => habitList.refetch())
-      .then(() => Promise.resolve());
-  }
-
-  async function onSetIncomplete(habit: TrpcHabitListItem) {
-    return habitSetStatus
-      .mutateAsync({
-        habitId: habit.id,
-        date: today,
-        status: HabitStatus.Incomplete,
-      })
-      .then(() => habitList.refetch())
-      .then(() => Promise.resolve());
-  }
-
-  async function onSetPending(habit: TrpcHabitListItem) {
-    return habitSetStatus
-      .mutateAsync({
-        habitId: habit.id,
-        date: today,
-        status: HabitStatus.Pending,
-      })
-      .then(() => habitList.refetch())
-      .then(() => Promise.resolve());
-  }
-
-  function hideIntroCard() {
-    setSettings({
-      ...settings,
-      hideIntroCard: true,
-    });
-  }
-
-  function tryRenderIntroCard() {
-    return !settings.hideIntroCard ? (
-      <IntroCard onClickYes={() => {}} onClickNo={hideIntroCard} />
-    ) : null;
-  }
-
-  if (filteredHabits.length === 0) {
-    return renderHabitList(null);
-
-    // TODO: We should render this when we have an onboarding process.
-    // return renderHabitList(tryRenderIntroCard());
-  }
-
-  return renderHabitList(
-    <>
-      {filteredHabits.map((habit) => (
-        <HabitCard
-          key={habit.id}
-          habit={habit}
-          compact={settings.viewMode === "Compact"}
-          onSetComplete={() => onSetComplete(habit)}
-          onSetIncomplete={() => onSetIncomplete(habit)}
-          onSetPending={() => onSetPending(habit)}
-          onClick={() =>
-            NiceModal.show(EditHabitModal, {
-              habit,
-            }).then(() => habitList.refetch())
-          }
-        />
-      ))}
-    </>
+      {/* Footer */}
+      <Footer />
+    </Flex>
   );
-};
-
-export default Home;
+}

@@ -6,6 +6,7 @@ import { Box, Flex } from "@chakra-ui/react";
 
 import Card from "../../components/Card";
 import Markdown from "../../components/Markdown";
+import AppLayout from "../../layouts/app";
 
 interface Props {
   content: string;
@@ -22,6 +23,10 @@ export default function Blog({ content }: Props) {
     </Box>
   );
 }
+
+(Blog as any).getLayout = function getLayout(page: React.ReactNode) {
+  return <AppLayout>{page}</AppLayout>;
+};
 
 export const getStaticPaths: GetStaticPaths = () => {
   const postsPath = path.join(process.cwd(), "blog");

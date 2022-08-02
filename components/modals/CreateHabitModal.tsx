@@ -68,14 +68,15 @@ export default NiceModal.create(() => {
 
           {/* Modal Title Subtext */}
           <Text color="gray" fontSize="sm" fontWeight="normal">
-            This is the start of something great! Remember that doing a little
-            bit every day is the key to long term success.
+            This is the start of something great!
           </Text>
         </Flex>
       </ModalHeader>
 
       <Formik
-        initialValues={{ title: "", frequency: 1, start: "Today" } as FormValues}
+        initialValues={
+          { title: "", frequency: 1, start: "Today" } as FormValues
+        }
         validationSchema={toFormikValidationSchema(FormSchema)}
         onSubmit={formikOnSubmitHandler(({ title, frequency, start }) =>
           createHabit
@@ -90,11 +91,12 @@ export default NiceModal.create(() => {
                 toast({
                   position: "top-right",
                   title: "Success",
-                  description: "Your new habit will show up on your board starting tomorrow!",
+                  description:
+                    "Your new habit will show up on your feed starting tomorrow!",
                   status: "success",
                   isClosable: true,
                   duration: 6000,
-                }) 
+                });
               }
               modal.resolve();
             })
