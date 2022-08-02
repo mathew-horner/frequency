@@ -22,7 +22,7 @@ export default function BlogIndex({ posts }: Props) {
   return (
     <Flex p={6} flexDir="column" gap={4}>
       {posts.map((post) => (
-        <Link href={`/blog/${post.slug}`}>
+        <Link href={`/blog/${post.slug}`} key={post.slug}>
           <Card key={post.slug} display="flex" cursor="pointer" gap={4}>
             <Box flexGrow={1}>
               <Markdown>{post.title}</Markdown>

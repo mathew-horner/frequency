@@ -12,7 +12,7 @@ interface Props {
   content: string;
 }
 
-export default function Blog({ content }: Props) {
+function Blog({ content }: Props) {
   return (
     <Box p={6}>
       <Card p={6}>
@@ -27,6 +27,8 @@ export default function Blog({ content }: Props) {
 (Blog as any).getLayout = function getLayout(page: React.ReactNode) {
   return <AppLayout>{page}</AppLayout>;
 };
+
+export default Blog;
 
 export const getStaticPaths: GetStaticPaths = () => {
   const postsPath = path.join(process.cwd(), "blog");
