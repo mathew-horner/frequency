@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { useRef } from "react";
 
@@ -8,6 +9,8 @@ import Footer from "../components/Footer";
 
 export default function LandingPage() {
   const infoSectionRef = useRef<HTMLDivElement>(null);
+  const { status } = useSession();
+  const isAuthenticated = status === "authenticated";
 
   function scrollToInfo() {
     infoSectionRef?.current?.scrollIntoView({ behavior: "smooth" });
@@ -16,27 +19,43 @@ export default function LandingPage() {
   return (
     <Flex flexDir="column" overflowX="hidden">
       <Flex flexDir="column" h="100vh" minH="700px">
-        <Box p={4}>
+        <Flex p={4} alignItems="center">
           {/* Site Brand */}
-          <Link href="/">
-            <Flex alignItems="center" gap={2} flexGrow={1} cursor="pointer">
-              <img
-                src="/frequency-logo.png"
-                height={48}
-                width={48}
-                style={{ borderRadius: "8px" }}
-              />
-              <Text
-                as="h1"
-                fontSize="3xl"
-                fontWeight="bold"
-                display={{ base: "none", sm: "block" }}
+          <Box flexGrow={1}>
+            <Link href="/">
+              <Flex
+                alignItems="center"
+                gap={2}
+                cursor="pointer"
+                width="fit-content"
               >
-                frequency
-              </Text>
-            </Flex>
+                <img
+                  src="/frequency-logo.png"
+                  height={48}
+                  width={48}
+                  style={{ borderRadius: "8px" }}
+                />
+                <Text
+                  as="h1"
+                  fontSize="3xl"
+                  fontWeight="bold"
+                  display={{ base: "none", sm: "block" }}
+                >
+                  frequency
+                </Text>
+              </Flex>
+            </Link>
+          </Box>
+
+          {/* Go To App */}
+          {isAuthenticated && (
+          <Link href="/app">
+            <Button type_="black" fontSize="xl">
+              Go to App
+            </Button>
           </Link>
-        </Box>
+          )}
+        </Flex>
 
         {/* Hero Section */}
         <Flex
@@ -109,15 +128,15 @@ export default function LandingPage() {
             habit one time. Once you complete the habit, starting on the
             following day, you have the same number of days to complete the
             habit again. Repeat ad infinitum. You are able to complete habits
-            ahead of schedule if you&apos;d like, and habits will continue to show up
-            on your feed if they are past due until you complete them.
+            ahead of schedule if you&apos;d like, and habits will continue to
+            show up on your feed if they are past due until you complete them.
           </Text>
           <Text fontSize="lg">
             The key features of this method are its scalability and flexibility.
             By not having to cram every habit into every day, you can build more
             habits in total. By being able to complete habits ahead or behind
-            schedule, you can plan ahead for habits you&apos;re likely to miss, or
-            make up for habits that you already missed.
+            schedule, you can plan ahead for habits you&apos;re likely to miss,
+            or make up for habits that you already missed.
           </Text>
         </Flex>
       </Flex>
