@@ -1,5 +1,8 @@
 import prisma from "../utils/prisma";
 import JustDate from "../utils/justDate";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 async function run() {
   const threshold = JustDate.todayUtc();
