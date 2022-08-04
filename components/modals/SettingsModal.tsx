@@ -116,7 +116,7 @@ export default NiceModal.create(() => {
                         setFieldError("hiddenHabitDueInThreshold", "");
                         setFieldValue(
                           "hiddenHabitDueInThreshold",
-                          value ? parseInt(value) : undefined
+                          value ? parseInt(value) : null
                         );
                       }}
                       value={values.hiddenHabitDueInThreshold || ""}
