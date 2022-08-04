@@ -2,6 +2,7 @@ import * as trpc from "@trpc/server";
 import * as trpcNext from "@trpc/server/adapters/next";
 import Cors from "cors";
 import { habitRouter } from "../../../server/routers/habit";
+import { settingsRouter } from "../../../server/routers/settings";
 import { Context, createContext } from "../../../server/context";
 
 // Initializing the cors middleware
@@ -23,7 +24,10 @@ function runMiddleware(req: any, res: any, fn: any) {
   });
 }
 
-export const appRouter = trpc.router<Context>().merge("habit.", habitRouter);
+export const appRouter = trpc
+  .router<Context>()
+  .merge("habit.", habitRouter)
+  .merge("settings.", settingsRouter);
 
 // export type definition of API
 export type AppRouter = typeof appRouter;

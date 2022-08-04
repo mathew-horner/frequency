@@ -2,26 +2,35 @@ import "@fontsource/andika/400.css";
 import "@fontsource/andika/700.css";
 
 import React from "react";
-import type { AppProps } from "next/app";
 import Head from "next/head";
-
-import { Box, Flex } from "@chakra-ui/react";
+import type { AppProps } from "next/app";
 import { withTRPC } from "@trpc/next";
+import { SessionProvider, useSession } from "next-auth/react";
 
 import { AppRouter } from "./api/trpc/[trpc]";
 import theme from "../utils/theme";
-import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
+import { trpc } from "../utils/trpc";
 import GlobalContext from "../contexts/GlobalContext";
-import useSettings from "../hooks/useSettings";
 
 import "../styles/globals.css";
 
-function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
-  const settings = useSettings();
+function BaseApp(props: AppProps) {
+  const session = props?.pageProps?.session;
+  return (
+    <SessionProvider session={session}>
+      <MyApp {...props} />
+    </SessionProvider>
+  );
+}
 
-  // Rendering before settings are loaded can result in CLS (mainly due to the compact view).
-  if (!settings.loaded) return null;
+function MyApp({ Component, pageProps }: AppProps) {
+  const { status } = useSession();
+  const userSettingsGet = trpc.useQuery(["settings.get"], {
+    enabled: status === "authenticated"
+  });
+
+  const settings = userSettingsGet.data;
+  if (!settings) return null;
 
   const getLayout = (Component as any).getLayout || ((page: any) => page);
 
@@ -30,7 +39,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
       <Head>
         <title>frequency</title>
       </Head>
-      <GlobalContext {...{ session, theme, settings }}>
+      <GlobalContext {...{ theme, settings }}>
         {getLayout(<Component {...pageProps} />)}
       </GlobalContext>
     </>
@@ -48,4 +57,4 @@ export default withTRPC<AppRouter>({
     };
   },
   ssr: true,
-})(MyApp);
+})(BaseApp);

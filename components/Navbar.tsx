@@ -6,9 +6,11 @@ import { IoLogIn, IoLogOut, IoSettingsSharp } from "react-icons/io5";
 
 import Button from "../components/Button";
 import SettingsModal from "../components/modals/SettingsModal";
+import { trpc } from "../utils/trpc";
 
 export default function Navbar() {
   const session = useSession();
+  const trpcCtx = trpc.useContext();
 
   function renderControls() {
     if (session.status === "loading") return null;
@@ -22,7 +24,12 @@ export default function Navbar() {
               h={12}
               w={12}
               p={0}
-              onClick={() => NiceModal.show(SettingsModal)}
+              onClick={() =>
+                NiceModal.show(SettingsModal).then(() => {
+                  trpcCtx.invalidateQueries("settings.get");
+                  trpcCtx.invalidateQueries("habit.list");
+                })
+              }
             >
               <IoSettingsSharp size={24} />
             </Button>

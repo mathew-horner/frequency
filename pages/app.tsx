@@ -2,7 +2,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import { HabitStatus } from "@prisma/client";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
-import { useContext, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import NiceModal from "@ebay/nice-modal-react";
 import {
   IoAddCircleOutline,
@@ -15,11 +15,10 @@ import CreateHabitModal from "../components/modals/CreateHabitModal";
 import EditHabitModal from "../components/modals/EditHabitModal";
 import HabitCard from "../components/HabitCard";
 import UnauthenticatedCard from "../components/display/UnauthenticatedCard";
+import { useGlobalContext } from "../contexts/GlobalContext";
 import AppLayout from "../layouts/app";
 import { TrpcHabitListItem } from "../utils/types";
 import { trpc } from "../utils/trpc";
-import IntroCard from "../components/display/IntroCard";
-import SettingsContext from "../contexts/SettingsContext";
 import JustDate from "../utils/justDate";
 
 /** Order the habit list for display. */
@@ -55,8 +54,6 @@ function orderHabits(habits: TrpcHabitListItem[]): TrpcHabitListItem[] {
 }
 
 const Home: NextPage = () => {
-  const { settings, setSettings } = useContext(SettingsContext);
-
   // Auth state.
   const { status } = useSession();
   const isAuthenticated = status === "authenticated";
@@ -77,27 +74,28 @@ const Home: NextPage = () => {
   const habitList = trpc.useQuery(["habit.list", { date: today }], {
     enabled: isAuthenticated,
   });
-
+  
   const habitSetStatus = trpc.useMutation("habit.setStatus");
 
   // Other hooks. Effects, memos, etc.
+  const { settings } = useGlobalContext();
 
   const orderedHabits = useMemo(
     () => (habitList.data ? orderHabits(habitList.data) : []),
     [habitList.data]
   );
-
+  
   const filteredHabits = useMemo(() => {
-    const { hiddenHabitDueInThreshold } = settings;
+    const dueInThreshold = settings.hiddenHabitDueInThreshold;
 
-    if (hiddenHabitDueInThreshold === undefined) {
+    if (dueInThreshold == null) {
       return orderedHabits;
-    } else {
-      return orderedHabits.filter(
-        (habit) => habit.dueIn <= hiddenHabitDueInThreshold
-      );
     }
-  }, [orderedHabits]);
+
+    return orderedHabits.filter(
+      (habit) => habit.dueIn <= dueInThreshold
+    );
+  }, [orderedHabits, settings]);
 
   // If the auth status of the user hasn't been determined, bail so we don't cause CLS.
   if (status === "loading") return null;
@@ -219,26 +217,13 @@ const Home: NextPage = () => {
       .then(() => Promise.resolve());
   }
 
-  function hideIntroCard() {
-    setSettings({
-      ...settings,
-      hideIntroCard: true,
-    });
-  }
-
-  function tryRenderIntroCard() {
-    return !settings.hideIntroCard ? (
-      <IntroCard onClickYes={() => {}} onClickNo={hideIntroCard} />
-    ) : null;
-  }
-
   if (filteredHabits.length === 0) {
     return renderHabitList(null);
 
     // TODO: We should render this when we have an onboarding process.
     // return renderHabitList(tryRenderIntroCard());
   }
-
+  
   return renderHabitList(
     <>
       {filteredHabits.map((habit) => (

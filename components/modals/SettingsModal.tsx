@@ -21,15 +21,11 @@ import {
 
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import { Formik } from "formik";
-import { useContext } from "react";
 import { IoSettingsSharp } from "react-icons/io5";
+import z from "zod";
 
 import Modal from "../Modal";
-import UpgradePrompt from "../display/UpgradePrompt";
-
-import SettingsContext, {
-  SettingsSchema,
-} from "../../contexts/SettingsContext";
+import { trpc } from "../../utils/trpc";
 
 import {
   formikOnSubmitHandler,
@@ -38,11 +34,13 @@ import {
 
 export default NiceModal.create(() => {
   const modal = useModal();
-  const { settings, setSettings } = useContext(SettingsContext);
 
-  function setUpgradePromptHidden() {
-    setSettings({ ...settings, hideUpgradePrompt: true });
-  }
+  const userSettingsGet = trpc.useQuery(["settings.get"]);
+  const userSettingsUpdate = trpc.useMutation("settings.update");
+
+  const settings = userSettingsGet.data;
+
+  if (!settings) return null;
 
   return (
     <Modal isOpen={modal.visible} onClose={modal.remove} size="xl">
@@ -58,9 +56,18 @@ export default NiceModal.create(() => {
 
       <Formik
         initialValues={settings}
-        validationSchema={toFormikValidationSchema(SettingsSchema)}
-        onSubmit={formikOnSubmitHandler((values) => {
-          setSettings(values);
+        // TODO: Find a way to share this schema with the definition in the tRPC router.
+        validationSchema={toFormikValidationSchema(
+          z.object({
+            viewMode: z.enum(["Standard", "Compact"]),
+            hiddenHabitDueInThreshold: z.number().int().nullish(),
+          })
+        )}
+        onSubmit={formikOnSubmitHandler(async (values) => {
+          await userSettingsUpdate.mutateAsync({
+            ...values,
+          });
+
           modal.resolve();
           modal.remove();
           return Promise.resolve();
@@ -80,14 +87,6 @@ export default NiceModal.create(() => {
           return (
             <form onSubmit={handleSubmit}>
               <ModalBody display="flex" flexDirection="column" gap={6}>
-                {/* Upgrade from Trial Prompt */}
-                {/* TODO: This should be rendered when we have subscriptions */}
-                {/*{!settings.hideUpgradePrompt && (
-                  <UpgradePrompt
-                    onHidePrompt={() => setUpgradePromptHidden()}
-                  />
-                )}*/}
-
                 {/* View Mode */}
                 <FormControl as="fieldset">
                   <FormLabel as="legend" fontWeight="medium" fontSize="lg">
@@ -120,7 +119,7 @@ export default NiceModal.create(() => {
                           value ? parseInt(value) : undefined
                         );
                       }}
-                      value={values.hiddenHabitDueInThreshold}
+                      value={values.hiddenHabitDueInThreshold || ""}
                       isInvalid={
                         touched.hiddenHabitDueInThreshold &&
                         !!errors.hiddenHabitDueInThreshold

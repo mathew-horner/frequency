@@ -1,26 +1,38 @@
-import { SessionProvider } from "next-auth/react";
+import React, { useContext } from "react";
+import { UserSettings } from "@prisma/client";
 import NiceModal from "@ebay/nice-modal-react";
 import { ChakraProvider } from "@chakra-ui/react";
 
-import SettingsContext from "../contexts/SettingsContext";
-
 interface Props {
   children: React.ReactNode;
-  session: any;
-  settings: any;
+  settings: UserSettings;
   theme: any;
 }
 
-function GlobalContext({ children, session, settings, theme }: Props) {
+interface GlobalContextType {
+  settings: UserSettings;
+}
+
+const GlobalContextProvider = React.createContext<GlobalContextType | null>(
+  null
+);
+
+function GlobalContext({ children, settings, theme }: Props) {
   return (
-    <SessionProvider session={session}>
-      <SettingsContext.Provider value={settings}>
-        <ChakraProvider theme={theme}>
-          <NiceModal.Provider>{children}</NiceModal.Provider>
-        </ChakraProvider>
-      </SettingsContext.Provider>
-    </SessionProvider>
+    <ChakraProvider theme={theme}>
+      <GlobalContextProvider.Provider value={{ settings }}>
+        <NiceModal.Provider>{children}</NiceModal.Provider>
+      </GlobalContextProvider.Provider>
+    </ChakraProvider>
   );
+}
+
+export function useGlobalContext() {
+  const global = useContext(GlobalContextProvider);
+
+  // This should not be null if we are calling it in the component tree,
+  // as we should not render if we are unable to create the global context.
+  return global as GlobalContextType;
 }
 
 export default GlobalContext;
