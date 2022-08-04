@@ -1,5 +1,10 @@
 import {
-  Button,
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Box,
   Flex,
   FormControl,
   FormLabel,
@@ -22,8 +27,12 @@ import {
 import NiceModal, { useModal } from "@ebay/nice-modal-react";
 import { Formik } from "formik";
 import { IoSettingsSharp } from "react-icons/io5";
+import { signOut } from "next-auth/react";
 import z from "zod";
 
+import Button from "../Button";
+import Card from "../Card";
+import ConfirmationModal from "./ConfirmationModal";
 import Modal from "../Modal";
 import { trpc } from "../../utils/trpc";
 
@@ -37,10 +46,22 @@ export default NiceModal.create(() => {
 
   const userSettingsGet = trpc.useQuery(["settings.get"]);
   const userSettingsUpdate = trpc.useMutation("settings.update");
+  const userDelete = trpc.useMutation("user.delete");
 
   const settings = userSettingsGet.data;
 
   if (!settings) return null;
+
+  function handleDeleteAccount() {
+    NiceModal.show(ConfirmationModal, {
+      title: "Delete Account?",
+      body: "Are you sure you want to delete your account? This action will result in a permanent loss of data.",
+    }).then(async () => {
+      await userDelete.mutateAsync();
+      signOut();
+      modal.remove();
+    });
+  }
 
   return (
     <Modal isOpen={modal.visible} onClose={modal.remove} size="xl">
@@ -135,11 +156,39 @@ export default NiceModal.create(() => {
                     <InputRightAddon>day(s)</InputRightAddon>
                   </InputGroup>
                 </Flex>
+
+                {/* Danger Zone */}
+                <Card p={0}>
+                  <Accordion border="none" allowToggle>
+                    <AccordionItem border="none">
+                      <AccordionButton>
+                        <Box flexGrow={1} textAlign="left">
+                          Account Controls
+                        </Box>
+                        <AccordionIcon />
+                      </AccordionButton>
+                      <AccordionPanel>
+                        <Button
+                          type_="red"
+                          onClick={() => handleDeleteAccount()}
+                        >
+                          Delete Account
+                        </Button>
+                      </AccordionPanel>
+                    </AccordionItem>
+                  </Accordion>
+                </Card>
               </ModalBody>
 
               {/* Submit Button */}
               <ModalFooter>
-                <Button type="submit" disabled={isSubmitting} size="lg" mt={4}>
+                <Button
+                  type_="gray"
+                  type="submit"
+                  disabled={isSubmitting}
+                  size="lg"
+                  mt={4}
+                >
                   Submit
                 </Button>
               </ModalFooter>
