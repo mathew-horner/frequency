@@ -1,5 +1,6 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 import Button from "./Button";
 
@@ -16,9 +17,11 @@ export default function Footer() {
       w="100vw"
     >
       <Flex gap={8} flexDir={{ base: "column", sm: "row" }}>
-        <Button type_="transparent" textColor="gray.600">
-          Privacy
-        </Button>
+        <Link href="/privacy">
+          <Button type_="transparent" textColor="gray.600">
+            Privacy
+          </Button>
+        </Link>
         <Button
           type_="transparent"
           textColor="gray.600"
@@ -26,7 +29,11 @@ export default function Footer() {
         >
           Contact
         </Button>
-        <Button type_="transparent" textColor="gray.600" onClick={() => router.push("https://discord.gg/GcSSX7t2Nf")}>
+        <Button
+          type_="transparent"
+          textColor="gray.600"
+          onClick={() => router.push("https://discord.gg/GcSSX7t2Nf")}
+        >
           Discord
         </Button>
         <Button
