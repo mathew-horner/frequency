@@ -17,9 +17,6 @@ export default function Footer() {
     >
       <Flex gap={8} flexDir={{ base: "column", sm: "row" }}>
         <Button type_="transparent" textColor="gray.600">
-          Terms
-        </Button>
-        <Button type_="transparent" textColor="gray.600">
           Privacy
         </Button>
         <Button

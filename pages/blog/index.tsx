@@ -3,7 +3,7 @@ import path from "path";
 
 import { GetStaticProps } from "next";
 import Link from "next/link";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 
 import Card from "../../components/Card";
 import Markdown from "../../components/Markdown";
@@ -19,6 +19,14 @@ interface Props {
 }
 
 export default function BlogIndex({ posts }: Props) {
+  if (posts.length === 0) {
+    return (
+      <Flex p={6} flexGrow={1} justifyContent="center" alignItems="center">
+        <Text mt={8}>Nothing here yet! Please come back later.</Text>
+      </Flex>
+    );
+  }
+
   return (
     <Flex p={6} flexDir="column" gap={4}>
       {posts.map((post) => (
