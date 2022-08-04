@@ -22,7 +22,7 @@ function Section({ title, content }: SectionProps) {
 export default function Privacy() {
   return (
     <Box p={6}>
-      <Card>
+      <Card p={8}>
         <Flex flexDir="column" gap={6}>
           <Flex flexDir="column">
             <Text as="h1" fontSize="3xl" fontWeight="bold">
