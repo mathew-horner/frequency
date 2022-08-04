@@ -24,13 +24,20 @@ function BaseApp(props: AppProps) {
 }
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const { status } = useSession();
+  const { status  } = useSession();
+
+  const isAuthenticated = status === "authenticated";
+  const isLoadingAuth = status === "loading";
+
   const userSettingsGet = trpc.useQuery(["settings.get"], {
-    enabled: status === "authenticated"
+    enabled: isAuthenticated
   });
+  
+  if (isLoadingAuth) return null;
 
   const settings = userSettingsGet.data;
-  if (!settings) return null;
+
+  if (isAuthenticated && !settings) return null;
 
   const getLayout = (Component as any).getLayout || ((page: any) => page);
 

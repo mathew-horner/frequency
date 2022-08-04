@@ -86,7 +86,7 @@ const Home: NextPage = () => {
   );
   
   const filteredHabits = useMemo(() => {
-    const dueInThreshold = settings.hiddenHabitDueInThreshold;
+    const dueInThreshold = settings?.hiddenHabitDueInThreshold;
 
     if (dueInThreshold == null) {
       return orderedHabits;
@@ -230,7 +230,7 @@ const Home: NextPage = () => {
         <HabitCard
           key={habit.id}
           habit={habit}
-          compact={settings.viewMode === "Compact"}
+          compact={settings?.viewMode === "Compact"}
           onSetComplete={() => onSetComplete(habit)}
           onSetIncomplete={() => onSetIncomplete(habit)}
           onSetPending={() => onSetPending(habit)}

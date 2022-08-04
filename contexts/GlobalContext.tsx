@@ -5,12 +5,12 @@ import { ChakraProvider } from "@chakra-ui/react";
 
 interface Props {
   children: React.ReactNode;
-  settings: UserSettings;
+  settings?: UserSettings;
   theme: any;
 }
 
 interface GlobalContextType {
-  settings: UserSettings;
+  settings?: UserSettings;
 }
 
 const GlobalContextProvider = React.createContext<GlobalContextType | null>(
