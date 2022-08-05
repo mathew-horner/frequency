@@ -157,10 +157,10 @@ export default function LandingPage() {
 
         {/* Images */}
         <Flex flexDir={{ base: "column", md: "row", lg: "column" }} gap={8} alignItems="center">
-          <Card p={0} minW="400px" maxW="600px">
+          <Card p={0} minW="400px" maxW="600px" overflow="hidden">
             <img src="/app.png" />
           </Card>
-          <Card p={0} minW="400px" maxW="600px">
+          <Card p={0} minW="400px" maxW="600px" overflow="hidden">
             <img src="/create.png" />
           </Card>
         </Flex>
