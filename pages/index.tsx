@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { useRef } from "react";
+import { IoArrowForwardSharp } from "react-icons/io5";
 
 import Button from "../components/Button";
 import Card from "../components/Card";
@@ -19,10 +20,10 @@ export default function LandingPage() {
 
   return (
     <Flex flexDir="column" overflowX="hidden">
-      <Flex flexDir="column" h="100vh" minH="700px" alignItems="center">
-        <Flex p={4} alignItems="center" w="full">
+      <Flex flexDir="column" h="100vh" minH="700px" alignItems="center" position="relative">
+        <Flex p={4} alignItems="center" w="full" backgroundColor="black" position="absolute" top={0} left={0}>
           {/* Site Brand */}
-          <Box flexGrow={1}>
+          <Box flexGrow={1} textColor="white">
             <Link href="/">
               <Flex
                 alignItems="center"
@@ -51,8 +52,8 @@ export default function LandingPage() {
           {/* Go To App */}
           {isAuthenticated && (
             <Link href="/app">
-              <Button type_="black" fontSize="xl">
-                Go to App
+              <Button type_="black" fontSize="xl" display="flex" alignItems="center" gap={1}>
+                <Text>Go to App</Text><IoArrowForwardSharp style={{ position: "relative", top: "1px" }}/>
               </Button>
             </Link>
           )}
