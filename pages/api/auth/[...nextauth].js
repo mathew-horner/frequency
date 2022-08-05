@@ -8,8 +8,8 @@ import prisma from "../../../utils/prisma";
 export const authOptions = {
   adapter: PrismaAdapter(prisma),
   callbacks: {
-    redirect() {
-      return "/app";
+    redirect({ baseUrl }) {
+      return `${baseUrl}/app`;
     },
     async session({ session, user }) {
       session.user = user;
