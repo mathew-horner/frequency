@@ -18,8 +18,8 @@ export default function LandingPage() {
 
   return (
     <Flex flexDir="column" overflowX="hidden">
-      <Flex flexDir="column" h="100vh" minH="700px">
-        <Flex p={4} alignItems="center">
+      <Flex flexDir="column" h="100vh" minH="700px" alignItems="center">
+        <Flex p={4} alignItems="center" w="full">
           {/* Site Brand */}
           <Box flexGrow={1}>
             <Link href="/">
@@ -49,49 +49,51 @@ export default function LandingPage() {
 
           {/* Go To App */}
           {isAuthenticated && (
-          <Link href="/app">
-            <Button type_="black" fontSize="xl">
-              Go to App
-            </Button>
-          </Link>
+            <Link href="/app">
+              <Button type_="black" fontSize="xl">
+                Go to App
+              </Button>
+            </Link>
           )}
         </Flex>
 
         {/* Hero Section */}
-        <Flex
-          flexDir="column"
-          gap={8}
-          p={6}
-          backgroundColor="black"
-          textColor="white"
-          flexGrow={1}
-          alignItems="center"
-          justifyContent="center"
-          textAlign="center"
-        >
-          <Text as="h1" fontSize="5xl" fontWeight="bold">
-            Build habits the right way.
-          </Text>
-          <Text as="p" fontSize="xl" textColor="gray.300">
-            Life is busy, and chaotic. Your habit tracker should reflect that.
-            With frequency, you will build the habits you need to live the life
-            you want, with a method that works with even the most hectic of
-            schedules.
-          </Text>
-          <Flex gap={4}>
-            <Button
-              type_="white"
-              w={44}
-              size="lg"
-              onClick={() => scrollToInfo()}
-            >
-              Learn More
-            </Button>
-            <Link href="/app">
-              <Button type_="white-outline" w={44} size="lg">
-                Try Now (Beta)
+        <Flex justifyContent="center" flexGrow={1} backgroundColor="black" w="full"> 
+          <Flex
+            flexDir="column"
+            gap={8}
+            p={6}
+            h="full"
+            maxW="800px"
+            textColor="white"
+            alignItems="center"
+            justifyContent="center"
+            textAlign="center"
+          >
+            <Text as="h1" fontSize="5xl" fontWeight="bold">
+              Build habits the right way.
+            </Text>
+            <Text as="p" fontSize="xl" textColor="gray.300">
+              Life is busy, and chaotic. Your habit tracker should reflect that.<br/>
+              With frequency, you will build the habits you need to live the
+              life you want, with a method that works with even the most hectic
+              of schedules.
+            </Text>
+            <Flex gap={4}>
+              <Button
+                type_="white"
+                w={44}
+                size="lg"
+                onClick={() => scrollToInfo()}
+              >
+                Learn More
               </Button>
-            </Link>
+              <Link href="/app">
+                <Button type_="white-outline" w={44} size="lg">
+                  Try Now (Beta)
+                </Button>
+              </Link>
+            </Flex>
           </Flex>
         </Flex>
       </Flex>
