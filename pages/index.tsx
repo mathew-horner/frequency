@@ -20,8 +20,22 @@ export default function LandingPage() {
 
   return (
     <Flex flexDir="column" overflowX="hidden">
-      <Flex flexDir="column" h="100vh" minH="700px" alignItems="center" position="relative">
-        <Flex p={4} alignItems="center" w="full" backgroundColor="black" position="absolute" top={0} left={0}>
+      <Flex
+        flexDir="column"
+        h="100vh"
+        minH="700px"
+        alignItems="center"
+        position="relative"
+      >
+        <Flex
+          p={4}
+          alignItems="center"
+          w="full"
+          backgroundColor="black"
+          position="absolute"
+          top={0}
+          left={0}
+        >
           {/* Site Brand */}
           <Box flexGrow={1} textColor="white">
             <Link href="/">
@@ -52,8 +66,17 @@ export default function LandingPage() {
           {/* Go To App */}
           {isAuthenticated && (
             <Link href="/app">
-              <Button type_="black" fontSize="xl" display="flex" alignItems="center" gap={1}>
-                <Text>Go to App</Text><IoArrowForwardSharp style={{ position: "relative", top: "1px" }}/>
+              <Button
+                type_="black"
+                fontSize="xl"
+                display="flex"
+                alignItems="center"
+                gap={1}
+              >
+                <Text>Go to App</Text>
+                <IoArrowForwardSharp
+                  style={{ position: "relative", top: "1px" }}
+                />
               </Button>
             </Link>
           )}
@@ -71,21 +94,19 @@ export default function LandingPage() {
             gap={8}
             p={6}
             h="full"
-            maxW="800px"
+            maxW="900px"
             textColor="white"
             alignItems="center"
             justifyContent="center"
             textAlign="center"
           >
             <Text as="h1" fontSize="5xl" fontWeight="bold">
-              Build habits the right way.
+              The flexible habit tracker.
             </Text>
             <Text as="p" fontSize="xl" textColor="gray.300">
-              Life is busy, and chaotic. Your habit tracker should reflect that.
-              <br />
-              With frequency, you will build the habits you need to live the
-              life you want, with a method that works with even the most hectic
-              of schedules.
+              Come try our new method of building habits, which works even with
+              the busiest of schedules, the most ambitious of goals, and the
+              most disorganized of people.
             </Text>
             <Flex gap={4}>
               <Button
@@ -98,7 +119,7 @@ export default function LandingPage() {
               </Button>
               <Link href="/app">
                 <Button type_="white-outline" w={44} size="lg">
-                  Try Now (Beta)
+                  Try Now
                 </Button>
               </Link>
             </Flex>
@@ -157,7 +178,11 @@ export default function LandingPage() {
         </Box>
 
         {/* Images */}
-        <Flex flexDir={{ base: "column", md: "row", lg: "column" }} gap={8} alignItems="center">
+        <Flex
+          flexDir={{ base: "column", md: "row", lg: "column" }}
+          gap={8}
+          alignItems="center"
+        >
           <Card p={0} minW="400px" maxW="600px" overflow="hidden">
             <img src="/app.png" />
           </Card>
